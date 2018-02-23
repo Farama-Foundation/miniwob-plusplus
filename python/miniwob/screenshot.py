@@ -1,6 +1,5 @@
 # Dealing with screenshots
 import json
-import os
 import sys
 
 import numpy as np

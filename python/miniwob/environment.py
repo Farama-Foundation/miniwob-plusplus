@@ -178,7 +178,7 @@ def test_environment():
     except IndexError:
         print 'Usage: python {} TASK_NAME'.format(sys.argv[0])
         exit(1)
-    env = Environment.make('miniwob', task_name)
+    env = MiniWoBEnvironment(task_name)
     base_url = os.environ.get('MINIWOB_BASE_URL')
     env.configure(num_instances=1, seeds=[0], base_url=base_url)
     states = env.reset()

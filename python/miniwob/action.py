@@ -86,6 +86,9 @@ class MiniWoBCoordClick(MiniWoBAction):
     def __hash__(self):
         return hash((self.__class__.__name__, self.left, self.top))
 
+    def to_dict(self):
+        return {'type': 'CoordClick', 'left': self._left, 'top': self._top}
+
 
 class MiniWoBElementClick(MiniWoBAction):
     """An action that clicks on a DOM element regardless of its position
@@ -123,7 +126,7 @@ class MiniWoBElementClick(MiniWoBAction):
             if self._fail_hard:
                 raise RuntimeError('{} failed: {}'.format(self, result))
             else:
-                logging.warn('{} failed: {}'.format(self, result))
+                logging.warn('%s failed: %s', self, result)
 
     @property
     def ref(self):
@@ -187,6 +190,9 @@ class MiniWoBType(MiniWoBAction):
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.text))
+
+    def to_dict(self):
+        return {'type': 'Type', 'text': self.text}
 
 
 class MiniWoBFocusAndType(MiniWoBAction):

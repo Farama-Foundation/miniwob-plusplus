@@ -1,11 +1,5 @@
 import re
 
-import numpy as np
-
-from collections import namedtuple
-from cStringIO import StringIO
-from PIL import Image
-from selenium.webdriver.remote.webelement import WebElement
 from miniwob.utils import Phrase
 
 
@@ -484,10 +478,10 @@ class DOMElement(object):
             return 1., 1., 1., 1.
 
         if "rgba" in rgba:
-            m = re.search("rgba\(([0-9.]+), ([0-9.]+), ([0-9.]+), ([0-9.]+)\)", rgba)
+            m = re.search(r"rgba\(([0-9.]+), ([0-9.]+), ([0-9.]+), ([0-9.]+)\)", rgba)
             a = float(m.group(4))
         else:
-            m = re.search("rgb\(([0-9.]+), ([0-9.]+), ([0-9.]+)\)", rgba)
+            m = re.search(r"rgb\(([0-9.]+), ([0-9.]+), ([0-9.]+)\)", rgba)
             a = 1.
         return float(m.group(1)) / 255, float(m.group(2)) / 255, \
                float(m.group(3)) / 255, a

@@ -14,7 +14,7 @@ class MiniWoBTester(object):
 
     @pytest.fixture
     def env(self):
-        env = MiniWoBEnvironment.make(self.TASK_NAME)
+        env = MiniWoBEnvironment(self.TASK_NAME)
         base_url = os.environ.get('MINIWOB_BASE_URL')
         print 'BASE URL:', base_url
         env.configure(num_instances=3, seeds=[1,2,'hello'], base_url=base_url)

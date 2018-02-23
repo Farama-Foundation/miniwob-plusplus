@@ -1,20 +1,16 @@
 import json
 import logging
-import os
 from Queue import Queue
-import sys
 import time
 import traceback
 import urlparse
-from threading import Thread, Event
+from threading import Thread
 
 import numpy as np
 
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -278,8 +274,8 @@ class MiniWoBInstance(Thread):
         """
         if action is not None:
             if self.get_metadata()['done']:
-                logging.warn('Cannot call {} on instance {}, which is already done'
-                        .format(action, self.index))
+                logging.warn('Cannot call %s on instance %d, which is already done',
+                        action, self.index)
             else:
                 action(self.driver)
         if self.wait_ms:
