@@ -32,3 +32,11 @@
     ```
     export MINIWOB_BASE_URL=file:///path/to/miniwob-plusplus/html/
     ```
+
+## Running Tests
+
+```
+pytest
+```
+
+The tests in the `tests` directory also illustrate how the code can be used.
