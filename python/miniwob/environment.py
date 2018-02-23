@@ -2,11 +2,10 @@ import os
 import sys
 import logging
 
-from variational.environment import Environment
-from variational.miniwob.instance import MiniWoBInstance
+from miniwob.instance import MiniWoBInstance
 
 
-class MiniWoBEnvironment(Environment):
+class MiniWoBEnvironment(object):
     """MiniWoB environment."""
 
     def __init__(self, subdomain):
@@ -39,7 +38,7 @@ class MiniWoBEnvironment(Environment):
                 state; only make sense if the task interface never changes
             threading (bool): Whether to run the instances in separate threads
             reward_processor (callable; optional): A function that takes
-                the metadata and return a reward (see variational.miniwob.reward)
+                the metadata and return a reward (see miniwob.reward)
             seeds (list[object]): Random seeds to set for each instance;
                 len(seeds) must be equal to num_instances.
             wait_ms (float): Pause the instance after each action for this

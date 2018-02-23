@@ -6,7 +6,7 @@ from collections import namedtuple
 from cStringIO import StringIO
 from PIL import Image
 from selenium.webdriver.remote.webelement import WebElement
-from variational.utils import Phrase
+from miniwob.utils import Phrase
 
 
 class MiniWoBState(object):
@@ -147,12 +147,9 @@ class DOMElement(object):
         self._top = raw_dom['top']
         self._width = raw_dom['width']
         self._height = raw_dom['height']
-        self._ref = raw_dom.get('ref')  # TODO(kelvin): eventually make this `raw_dom['ref']`,
-                                        # since everything should have a ref now
-
+        self._ref = raw_dom.get('ref')
         if self.tag == 't':
             self._ref = None  # ignore refs for text, since they are unreliable
-
         if 'text' in raw_dom:
             self._text = unicode(raw_dom['text'])
         else:
@@ -190,10 +187,6 @@ class DOMElement(object):
 
     def __ne__(self, other):
         return not self.__eq__(other)
-
-    # TODO: change this to NotImplemented. Currently, certain ProgramPolicy's rely on hash being id based
-    def __hash__(self):
-        return super(DOMElement, self).__hash__()
 
     def to_dict(self):
         return {
@@ -498,20 +491,3 @@ class DOMElement(object):
             a = 1.
         return float(m.group(1)) / 255, float(m.group(2)) / 255, \
                float(m.group(3)) / 255, a
-
-
-# TODO: Inherit from DOMElement
-class DOMElementPAD(namedtuple(
-    "DOMElementPAD", ["text", "tag", "value", "fg_color", "bg_color",
-                      "ref", "id", "left", "top", "tampered", "classes"])):
-    """Dummy DOM element to pad batches. Sets default values for all the
-    stuff that DOMElementEmbedder embeds.
-    """
-    def __new__(cls):
-        pad = super(DOMElementPAD, cls).__new__(
-                cls, "", "t", None, (1., 1., 1., 1.),
-                (1., 1., 1., 1.), None, "", 0, 0, False, "")
-        return pad
-
-    def __repr__(self):
-        return 'DOMElementPAD'

@@ -18,10 +18,10 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from variational.miniwob.fields import Fields, get_field_extractor
-from variational.miniwob.state import MiniWoBState
-from variational.miniwob.reward import get_original_reward
-from variational.miniwob.screenshot import get_screenshot
+from miniwob.fields import Fields, get_field_extractor
+from miniwob.state import MiniWoBState
+from miniwob.reward import get_original_reward
+from miniwob.screenshot import get_screenshot
 
 
 class MiniWoBInstance(Thread):
@@ -58,7 +58,7 @@ class MiniWoBInstance(Thread):
                 state; only make sense if the task interface never changes
             threading (bool): Whether to run this instance as a Thread
             reward_processor (callable; optional): A function that takes
-                the metadata and return a reward (see variational.miniwob.reward)
+                the metadata and return a reward (see miniwob.reward)
             wait_ms (float): Pause the instance after each action for this
                 amount of time (in milliseconds).
             block_on_reset (bool): On reset, block until the page loads.

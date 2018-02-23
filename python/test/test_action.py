@@ -2,8 +2,8 @@ import os
 import pytest
 import time
 
-from variational.environment import Environment
-from variational.miniwob.action import (
+from miniwob.environment import MiniWoBEnvironment
+from miniwob.action import (
         MiniWoBCoordClick, MiniWoBElementClick, MiniWoBType, MiniWoBFocusAndType
         )
 
@@ -20,7 +20,7 @@ class RepeatedTester(object):
 
     @pytest.fixture
     def env(self):
-        env = Environment.make('miniwob', self.TASK_NAME)
+        env = MiniWoBEnvironment(self.TASK_NAME)
         base_url = os.environ.get('MINIWOB_BASE_URL')
         print 'BASE URL:', base_url
         if self.FRAGILE is True:

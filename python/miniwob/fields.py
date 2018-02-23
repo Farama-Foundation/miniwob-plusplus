@@ -902,9 +902,9 @@ def extract_utterances():
     except:
         print >> sys.stderr, 'Usage: {} task_name'.format(sys.argv[0])
         exit(1)
-    from variational.environment import Environment
     FIELD_EXTRACTORS[task_name] = lambda utt: Fields({})
-    env = Environment.make('miniwob', task_name)
+    from miniwob.environment import MiniWoBEnvironment
+    env = MiniWoBEnvironment(task_name)
     base_url = os.environ.get('MINIWOB_BASE_URL')
     env.configure(num_instances=4, seeds=range(4), base_url=base_url)
     for i in xrange(25):
