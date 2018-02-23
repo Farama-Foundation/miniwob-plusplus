@@ -33,7 +33,7 @@ class MiniWoBEnvironment(object):
             headless (bool): Whether to render GUI
             base_url (str): Base URL, which is usually one of the following
                 - http://localhost:8000/     (served by http-serve)
-                - file:///path/to/miniwob-sandbox/html/
+                - file:///path/to/miniwob-plusplus/html/
             cache_state (bool): Whether to cache and return the initial
                 state; only make sense if the task interface never changes
             threading (bool): Whether to run the instances in separate threads
