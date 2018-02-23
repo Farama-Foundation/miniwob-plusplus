@@ -1,0 +1,95 @@
+body {
+  font-family: sans-serif;
+}
+
+#wrapper {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-flow: row;
+}
+
+#file-column {
+  padding: 10px 20px;
+  background-color: #EEE;
+  overflow: auto;
+  flex-shrink: 0;
+}
+#file-column > h1 {
+  font-size: 120%;
+}
+#file-column > ul {
+  padding: 0;
+}
+#file-column > ul > li {
+  list-style-type: none;
+  line-height: 1.5;
+  cursor: pointer;
+  color: #229;
+}
+#file-column li.selected {
+  font-weight: bold;
+  color: #922;
+}
+#file-column li:hover {
+  color: #922;
+}
+
+#display-column {
+  flex-grow: 1;
+  display: flex;
+  flex-flow: column;
+}
+#display-metadata {
+  padding: 10px;
+}
+#display-metadata.success > table {
+  background-color: #EFE;
+}
+#display-metadata.fail > table {
+  background-color: #FEE;
+}
+#display-episode {
+  overflow: auto;
+  padding: 10px;
+}
+#display-column .metadata {
+  background-color: white;
+  margin: 10px 0;
+}
+#display-column .metadata th {
+  text-align: right;
+  padding: 2px 5px;
+}
+#display-column .metadata td {
+  padding: 2px 5px;
+}
+#display-column .state-wrapper {
+  float: left;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  background-color: #eee;
+}
+#display-column .screen-wrapper {
+  position: relative;
+  margin: 10px;
+}
+#display-column canvas {
+}
+#display-column img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  display: none;
+}
+#display-column.show-images img {
+  display: block;
+}
