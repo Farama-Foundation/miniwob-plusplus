@@ -6,7 +6,7 @@ Python code for interacting with the environment via Selenium.
 
 The MiniWoB++ benchmark is introduced in our paper:
 
-> **Reinforcement Learning on Web Interfaces using Workflow-Guided Exploration.**
+> **Reinforcement Learning on Web Interfaces using Workflow-Guided Exploration.**  
 > _Evan Zheran Liu\*, Kelvin Guu\*, Panupong Pasupat\*, Tianlin Shi, Percy Liang_  
 > ICLR, 2018.
 
@@ -33,10 +33,10 @@ There are 2 ways to access the tasks:
     We found this method to be less stable with a large amount of access,
     which is required by reinforcement learning.
 
-* **Use the `file://` protocol:** open `miniwob-sandbox/html/miniwob/` in the browser.
+* **Use the `file://` protocol:** open `miniwob-plusplus/html/miniwob/` in the browser.
   * The URL should now be something like
   
-        file:///path/to/web-agents/miniwob-sandbox/html/miniwob/
+        file:///path/to/miniwob-plusplus/html/miniwob/
               
   * This should show the directory listing of all task HTML files.
 
@@ -55,12 +55,12 @@ There are 2 ways to access the tasks:
 
 2. Append `?record=true` to the URL of the task you want to record. For example, for the `click-test` task, go to
   ```
-  file:///path/to/web-agents/miniwob-sandbox/html/miniwob/click-test.html?record=true
+  file:///path/to/miniwob-plusplus/html/miniwob/click-test.html?record=true
   ```
 
 3. To view the results, open `viewer/viewer.html` while the recording server is running. The URL should be like
   ```
-  file:///path/to/web-agents/miniwob-sandbox/html/viewer/viewer.html
+  file:///path/to/miniwob-plusplus/html/viewer/viewer.html
   ```
 
 ## Demonstration Format
