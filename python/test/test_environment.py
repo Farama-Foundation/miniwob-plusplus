@@ -63,6 +63,7 @@ class TestMiniWoBEnvironment(MiniWoBTester):
         print [x.utterance for x in states]
         assert all(x.utterance == 'Click the button.' for x in states)
         print [x.fields for x in states]
+        assert all(x.fields.keys == ['dummy'] for x in states)
         print [x.dom for x in states]
         print states[0].dom_elements
         print states[0].dom.visualize()
