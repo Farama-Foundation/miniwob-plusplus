@@ -1,6 +1,6 @@
 # MiniWoB++
 
-The MiniWoB++ benchmark is an extension of the [OpenAI MiniWoB benchmark](http://alpha.openai.com/miniwob/).
+The MiniWoB++ benchmark is an extension of the [OpenAI MiniWoB benchmark](http://proceedings.mlr.press/v70/shi17a/shi17a.pdf).
 It adds a number of tasks, Javascript interfaces, as well as
 Python code for interacting with the environment via Selenium.
 
