@@ -4,7 +4,9 @@ The MiniWoB++ benchmark is an extension of the [OpenAI MiniWoB benchmark](http:/
 It adds a number of tasks, Javascript interfaces, as well as
 Python code for interacting with the environment via Selenium.
 
-[The list of tasks can be viewed here](https://docs.google.com/spreadsheets/d/1fVJaBq9ShfwaUuukXNjYIMzCh3QBJPeW5WcLflzMC68)
+[The list of tasks can be viewed here](https://stanfordnlp.github.io/miniwob-plusplus/)
+
+[More statistics about the tasks](https://docs.google.com/spreadsheets/d/1fVJaBq9ShfwaUuukXNjYIMzCh3QBJPeW5WcLflzMC68)
 
 The MiniWoB++ benchmark is introduced in our paper:
 
