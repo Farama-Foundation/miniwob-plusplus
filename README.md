@@ -75,21 +75,22 @@ Each state object has the following fields:
 ## Recording Your Own Demonstrations
 
 1. Start the recording server:
-  ```
-  # Create an output directory
-  mkdir out/
-  ./record.py out/
-  ```
+   ```
+   # Create an output directory
+   mkdir out/
+   ./record.py out/
+   ```
 
 2. Append `?record=true` to the URL of the task you want to record. For example, for the `click-test` task, go to
-  ```
-  file:///path/to/miniwob-plusplus/html/miniwob/click-test.html?record=true
-  ```
+   ```
+   file:///path/to/miniwob-plusplus/html/miniwob/click-test.html?record=true
+   ```
+   (Note: For recent versions of Chrome, you might have to retype the whole URL instead of just appending `?record=true`.)
 
 3. To view the results, open `viewer/viewer.html` while the recording server is running. The URL should be like
-  ```
-  file:///path/to/miniwob-plusplus/html/viewer/viewer.html
-  ```
+   ```
+   file:///path/to/miniwob-plusplus/html/viewer/viewer.html
+   ```
 
 ---
 
