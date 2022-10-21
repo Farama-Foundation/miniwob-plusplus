@@ -14,6 +14,8 @@ The MiniWoB++ benchmark is introduced in our paper:
 > _Evan Zheran Liu\*, Kelvin Guu\*, Panupong Pasupat\*, Tianlin Shi, Percy Liang_  
 > ICLR, 2018.
 
+Development on MiniWoB++ is currently ongoing to bring it up to our standards for mature projects (https://farama.org/project_standards.html) and will be maintained long term after this point. If you'd like to help out, you can join our discord server here- https://discord.gg/PfR7a79FpQ
+
 ---
 
 # Viewing the Tasks
