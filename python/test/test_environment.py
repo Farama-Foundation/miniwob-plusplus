@@ -16,7 +16,7 @@ class MiniWoBTester(object):
     def env(self):
         env = MiniWoBEnvironment(self.TASK_NAME)
         base_url = os.environ.get('MINIWOB_BASE_URL')
-        print 'BASE URL:', base_url
+        print('BASE URL:', base_url)
         env.configure(num_instances=3, seeds=[1,2,'hello'], base_url=base_url)
         yield env
         env.close()
@@ -33,7 +33,7 @@ class TestMiniWoBEnvironment(MiniWoBTester):
         for element in state.dom_elements:
             if element.tag == 'button':
                 action = MiniWoBCoordClick(element.left + 5, element.top + 5)
-                print 'Clicking with {}'.format(action)
+                print('Clicking with {}'.format(action))
                 return action
         raise ValueError('Cannot find button: {}'.format(str(state.dom_elements)))
 
@@ -42,7 +42,7 @@ class TestMiniWoBEnvironment(MiniWoBTester):
         for element in state.dom_elements:
             if element.tag == 'button':
                 action = MiniWoBElementClick(element, fail_hard=True)
-                print 'Clicking with {}'.format(action)
+                print('Clicking with {}'.format(action))
                 return action
         raise ValueError('Cannot find button: {}'.format(str(state.dom_elements)))
 
@@ -58,110 +58,110 @@ class TestMiniWoBEnvironment(MiniWoBTester):
 
     def test_run(self, env):
         """Test reset and step."""
-        print '=' * 40
+        print('=' * 40)
         states = env.reset()
-        print [x.utterance for x in states]
+        print([x.utterance for x in states])
         assert all(x.utterance == 'Click the button.' for x in states)
-        print [x.fields for x in states]
+        print([x.fields for x in states])
         assert all(x.fields.keys == ['dummy'] for x in states)
-        print [x.dom for x in states]
-        print states[0].dom_elements
-        print states[0].dom.visualize()
+        print([x.dom for x in states])
+        print(states[0].dom_elements)
+        print(states[0].dom.visualize())
         ################################
-        print '=' * 40
+        print('=' * 40)
         states, rewards, dones, info = env.step([None, None, None])
-        print [x.utterance for x in states]
-        print [x.dom for x in states]
-        print rewards
+        print([x.utterance for x in states])
+        print([x.dom for x in states])
+        print(rewards)
         assert rewards == [0, 0, 0]
-        print dones
+        print(dones)
         assert dones == [False, False, False]
-        print info
+        print(info)
         ################################
         # Test clicking
-        print '=' * 40
+        print('=' * 40)
         action = self.get_click(states[1])
         states, rewards, dones, info = env.step([None, action, None])
         assert states[1] is None
         states = [states[0], states[2]]
-        print [x.utterance for x in states]
-        print [x.dom for x in states]
-        print rewards
+        print([x.utterance for x in states])
+        print([x.dom for x in states])
+        print(rewards)
         assert rewards[0] == 0 and rewards[1] > 0 and rewards[2] == 0
-        print dones
+        print(dones)
         assert dones == [False, True, False]
-        print info
+        print(info)
         ################################
         # Wait for timeout
-        print '=' * 40
-        for i in xrange(1, 13):
-            print 'Sleeping ... ({})'.format(i)
+        print('=' * 40)
+        for i in range(1, 13):
+            print('Sleeping ... ({})'.format(i))
             time.sleep(1)
         states, rewards, dones, info = env.step([None, None, None])
         assert states == [None, None, None]
-        print rewards
+        print(rewards)
         assert rewards[0] < 0 and rewards[1] > 0 and rewards[2] < 0
-        print dones
+        print(dones)
         assert dones == [True, True, True]
-        print info
+        print(info)
         ################################
         # Start again
-        print '=' * 40
+        print('=' * 40)
         states = env.reset()
-        print [x.utterance for x in states]
-        print [x.dom for x in states]
+        print([x.utterance for x in states])
+        print([x.dom for x in states])
         ################################
-        print '=' * 40
+        print('=' * 40)
         states, rewards, dones, info = env.step([None, None, None])
-        print [x.utterance for x in states]
-        print [x.dom for x in states]
-        print rewards
+        print([x.utterance for x in states])
+        print([x.dom for x in states])
+        print(rewards)
         assert rewards == [0, 0, 0]
-        print dones
+        print(dones)
         assert dones == [False, False, False]
-        print info
+        print(info)
 
     def test_speed(self, env):
         states = env.reset()
         start_time = time.time()
         elapsed = []
         N = 50
-        for i in xrange(1, N + 1):
-            print 'Iteration', i, '/', N
+        for i in range(1, N + 1):
+            print('Iteration', i, '/', N)
             actions = [None] * len(states)
             states, rewards, dones, info = env.step(actions)
             elapsed.append(time.time() - start_time)
             start_time = time.time()
         mean = sum(elapsed) / len(elapsed)
-        print 'Average time:', mean
-        print 'SD:', sum((x - mean) ** 2 for x in elapsed) / len(elapsed)
+        print('Average time:', mean)
+        print('SD:', sum((x - mean) ** 2 for x in elapsed) / len(elapsed))
 
     def test_reset(self, env):
-        print '=' * 40
+        print('=' * 40)
         states = env.reset()
         # Test clicking
         action = self.get_click(states[1])
         states, rewards, dones, info = env.step([None, action, None])
         assert dones == [False, True, False]
-        print info
+        print(info)
         # Should issue a warning on the second instance
         states, rewards, dones, info = env.step([None, action, None])
         assert dones == [False, True, False]
-        print info
+        print(info)
         # Hard reset
         states = env.reset()
         states, rewards, dones, info = env.step([None, None, None])
         assert dones == [False, False, False]
-        print info
+        print(info)
         # Now click the first and second
         action_0 = self.get_click(states[0])
         action_1 = self.get_click(states[1])
         states, rewards, dones, info = env.step([action_0, action_1, None])
         assert dones == [True, True, False]
-        print info
+        print(info)
 
     def test_attention(self, env):
-        print '=' * 40
+        print('=' * 40)
         states = env.reset()
         attention = np.random.rand(20, 20) * .02
         env.visualize_attention([attention, None, None])
@@ -170,7 +170,7 @@ class TestMiniWoBEnvironment(MiniWoBTester):
         time.sleep(2)
 
     def test_suicide(self, env):
-        print '=' * 40
+        print('=' * 40)
         states = env.reset()
         action = MiniWoBTerminate()
         states, rewards, dones, info = env.step([None, action, None])
@@ -188,7 +188,7 @@ class TestMiniWoBSeed(MiniWoBTester):
         for element in state.dom_elements:
             if element.tag == 'button' and element.text == state.fields['target']:
                 action = MiniWoBElementClick(element, fail_hard=True)
-                print 'Clicking with {}'.format(action)
+                print('Clicking with {}'.format(action))
                 return action
         raise ValueError('Cannot find button: {}'.format(str(state.dom_elements)))
 
@@ -197,14 +197,14 @@ class TestMiniWoBSeed(MiniWoBTester):
         for element in state.dom_elements:
             if element.tag == 'input_text':
                 action = MiniWoBElementClick(element, fail_hard=True)
-                print 'Clicking with {}'.format(action)
+                print('Clicking with {}'.format(action))
                 return action
         raise ValueError('Cannot find input: {}'.format(str(state.dom_elements)))
 
     def test_seed(self, env):
-        print '=' * 40
+        print('=' * 40)
         states = env.reset(seeds=['hello', 'itsme', 'hello'])
-        print states[0].dom.visualize()
+        print(states[0].dom.visualize())
         # Check that everything is the same for instances 0 and 2
         utt_hello = states[0].utterance
         utt_itsme = states[1].utterance
@@ -247,7 +247,7 @@ class TestMiniWoBMode(MiniWoBTester):
         for element in state.dom_elements:
             if element.tag == 'button' and element.text == text:
                 action = MiniWoBElementClick(element, fail_hard=True)
-                print 'Clicking with {}'.format(action)
+                print('Clicking with {}'.format(action))
                 return action
         raise ValueError('Cannot find button: {}'.format(str(state.dom_elements)))
 
@@ -256,7 +256,7 @@ class TestMiniWoBMode(MiniWoBTester):
         - mode = 'train': click on button ONE
         - mode = 'test':  click on button TWO
         """
-        print '=' * 40
+        print('=' * 40)
         # Training time
         states = env.reset()
         targets = ['ONE', 'TWO', 'ONE']
@@ -303,12 +303,12 @@ class TestMiniWoBFields(MiniWoBTester):
     TASK_NAME = 'email-inbox-forward-nl'
 
     def test_fields(self, env):
-        print '=' * 40
+        print('=' * 40)
         # Training time
         states = env.reset()
         for state in states:
-            print state.utterance
-            print state.fields
+            print(state.utterance)
+            print(state.fields)
             assert 'by' in state.fields.keys
             assert 'to' in state.fields.keys
             assert state.fields['by'] in state.utterance
@@ -316,15 +316,15 @@ class TestMiniWoBFields(MiniWoBTester):
         # Test time
         states = env.reset(mode='test')
         for state in states:
-            print state.utterance
-            print state.fields
+            print(state.utterance)
+            print(state.fields)
             assert state.fields.keys == ['dummy']
             assert state.utterance
         # Training time
         states = env.reset(mode='train')
         for state in states:
-            print state.utterance
-            print state.fields
+            print(state.utterance)
+            print(state.fields)
             assert 'by' in state.fields.keys
             assert 'to' in state.fields.keys
             assert state.fields['by'] in state.utterance

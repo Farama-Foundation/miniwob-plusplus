@@ -56,7 +56,7 @@ class MiniWoBEnvironment(object):
         for instance in self.instances:
             instance.close()
         self.instances = []
-        for index in xrange(num_instances):
+        for index in range(num_instances):
             logging.info('Starting WebDriver Instance %d', index)
             instance = MiniWoBInstance(
                     index, self.subdomain, seeds[index], **kwargs)
@@ -176,13 +176,13 @@ def test_environment():
     try:
         task_name = sys.argv[1]
     except IndexError:
-        print 'Usage: python {} TASK_NAME'.format(sys.argv[0])
+        print('Usage: python {} TASK_NAME'.format(sys.argv[0]))
         exit(1)
     env = MiniWoBEnvironment(task_name)
     base_url = os.environ.get('MINIWOB_BASE_URL')
     env.configure(num_instances=1, seeds=[0], base_url=base_url)
     states = env.reset()
-    print states[0].dom.visualize()
+    print(states[0].dom.visualize())
     env.close()
 
 if __name__ == '__main__':

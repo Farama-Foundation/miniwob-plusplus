@@ -4,7 +4,7 @@ import sys
 
 import numpy as np
 
-from cStringIO import StringIO
+from io import StringIO
 from PIL import Image, ImageDraw
 
 
@@ -79,8 +79,8 @@ def create_gif(path_prefix):
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print 'Usage: {} PATH_PREFIX'.format(sys.argv[0])
-        print '  where PATH_PREFIX is something like '\
-                'data/experiments/123_unnamed/traces/test/2000-img/2000-3'
+        print('Usage: {} PATH_PREFIX'.format(sys.argv[0]))
+        print('  where PATH_PREFIX is something like '
+              'data/experiments/123_unnamed/traces/test/2000-img/2000-3')
         exit(1)
     create_gif(sys.argv[1])

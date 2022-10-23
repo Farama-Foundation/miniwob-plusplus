@@ -3,11 +3,11 @@ import abc
 import logging
 
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
 
 
-class MiniWoBAction(object):
+class MiniWoBAction(metaclass=abc.ABCMeta):
     """Defines an action in its __call__ method."""
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def __call__(self, driver):
@@ -61,10 +61,12 @@ class MiniWoBCoordClick(MiniWoBAction):
 
     def __call__(self, driver):
         """Clicks at coordinates (left, top)"""
-        body = driver.find_element_by_tag_name('body')
+        body = driver.find_element(By.TAG_NAME, 'body')
+        # The offset is from the center, not top-left.
+        x = - body.size['width'] / 2 + self.left
+        y = - body.size['height'] / 2 + self.top
         chain = ActionChains(driver)
-        chain.move_to_element_with_offset(
-                body, self.left, self.top).click().perform()
+        chain.move_to_element_with_offset(body, x, y).click().perform()
 
     @property
     def left(self):
@@ -114,7 +116,7 @@ class MiniWoBElementClick(MiniWoBAction):
     def __call__(self, driver):
         if self.element.tag == 'select':
             # SPECIAL CASE: <select>
-            body = driver.find_element_by_tag_name('body')
+            body = driver.find_element(By.TAG_NAME, 'body')
             chain = ActionChains(driver)
             chain.move_to_element_with_offset(
                     body, self.element.left + 5,
@@ -126,7 +128,7 @@ class MiniWoBElementClick(MiniWoBAction):
             if self._fail_hard:
                 raise RuntimeError('{} failed: {}'.format(self, result))
             else:
-                logging.warn('%s failed: %s', self, result)
+                logging.warning('%s failed: %s', self, result)
 
     @property
     def ref(self):
