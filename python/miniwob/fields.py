@@ -52,7 +52,7 @@ class Fields(object):
         return list(self._d.values())
 
     def __repr__(self):
-        return '\n'.join('{}: {}'.format(k, repr(v)) for k, v in list(self._d.items()))
+        return '\n'.join('{}: {}'.format(k, repr(v)) for k, v in self._d.items())
     __str__ = __repr__
 
 
