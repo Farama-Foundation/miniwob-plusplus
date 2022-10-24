@@ -7,7 +7,7 @@ Dependency: bottle
 
 import sys, os, shutil, re, argparse, json, time
 from codecs import open
-from itertools import izip
+
 from collections import defaultdict, Counter
 
 from bottle import Bottle, request, response
@@ -33,7 +33,7 @@ class Saver(object):
             filename += 'x'
         with open(filename, 'w') as fout:
             json.dump(data, fout)
-        print 'Saved to {}'.format(filename)
+        print('Saved to {}'.format(filename))
         return filename
 
     def save_turk(self, request):
@@ -49,7 +49,7 @@ class Saver(object):
                 filename += 'x'
             with open(filename, 'w') as fout:
                 fout.write(data)
-            print 'Saved to {}'.format(filename)
+            print('Saved to {}'.format(filename))
 
     @staticmethod
     def decompress_turk(compressed):
@@ -110,7 +110,7 @@ def main():
     # Start the server
     host = 'localhost' if not args.global_access else '0.0.0.0'
     app.run(host=host, port=args.port)
-    print '\nGood bye!'
+    print('\nGood bye!')
     
 
 if __name__ == '__main__':

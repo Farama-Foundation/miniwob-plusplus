@@ -1,4 +1,4 @@
-import regex as re
+import re
 
 
 def strip_punctuation(uni):
@@ -10,7 +10,7 @@ def strip_punctuation(uni):
     Returns:
         unicode
     """
-    return re.sub(ur"\p{P}+", " ", uni)
+    return re.sub(r"\p{P}+", " ", uni)
 
 
 def strip_whitespace(uni):
@@ -22,7 +22,7 @@ def strip_whitespace(uni):
     Returns:
         unicode
     """
-    return re.sub(ur"\s+", u"", uni)
+    return re.sub(r"\s+", "", uni)
 
 
 def find_sublist(l, sublist):
@@ -36,7 +36,7 @@ def find_sublist(l, sublist):
     Returns
         int
     """
-    for i in xrange(len(l)):
+    for i in range(len(l)):
         # Check index 0 first for optimization
         if l[i] == sublist[0] and l[i: i + len(sublist)] == sublist:
             return i
@@ -59,7 +59,7 @@ class Phrase(object):
         Args:
             text (str or unicode)
         """
-        self._text = unicode(text)
+        self._text = str(text)
         self._tokens = None
 
     @property

@@ -45,14 +45,14 @@ class Fields(object):
 
     @property
     def keys(self):
-        return self._d.keys()
+        return list(self._d.keys())
 
     @property
     def values(self):
-        return self._d.values()
+        return list(self._d.values())
 
     def __repr__(self):
-        return '\n'.join(u'{}: {}'.format(k, repr(v)) for k, v in self._d.items())
+        return '\n'.join('{}: {}'.format(k, repr(v)) for k, v in self._d.items())
     __str__ = __repr__
 
 
@@ -134,7 +134,7 @@ def extract_click_checkboxes(utterance):
     else:
         targets = re.split(', ?', targets)
     fields = dict(zip(
-        ["target {}".format(i) for i in xrange(len(targets))], targets))
+        ["target {}".format(i) for i in range(len(targets))], targets))
     fields["button"] = "submit"
     return Fields(fields)
 FIELD_EXTRACTORS['click-checkboxes'] = extract_click_checkboxes
@@ -156,7 +156,7 @@ def extract_click_checkboxes_soft(utterance):
     targets = re.match(r'Select words similar to (.*) and click Submit\.', utterance).group(1)
     targets = re.split(', ?', targets)
     fields = dict(zip(
-        ["target {}".format(i) for i in xrange(len(targets))], targets))
+        ["target {}".format(i) for i in range(len(targets))], targets))
     fields["button"] = "submit"
     return Fields(fields)
 FIELD_EXTRACTORS['click-checkboxes-soft'] = extract_click_checkboxes_soft
@@ -900,17 +900,17 @@ def extract_utterances():
     try:
         task_name = sys.argv[1]
     except:
-        print >> sys.stderr, 'Usage: {} task_name'.format(sys.argv[0])
+        print('Usage: {} task_name'.format(sys.argv[0]), file=sys.stderr)
         exit(1)
     FIELD_EXTRACTORS[task_name] = lambda utt: Fields({})
     from miniwob.environment import MiniWoBEnvironment
     env = MiniWoBEnvironment(task_name)
     base_url = os.environ.get('MINIWOB_BASE_URL')
-    env.configure(num_instances=4, seeds=range(4), base_url=base_url)
-    for i in xrange(25):
+    env.configure(num_instances=4, seeds=list(range(4)), base_url=base_url)
+    for i in range(25):
         states = env.reset()
         for state in states:
-            print 'UTT:\t{}'.format(state.utterance.replace('\n', ' '))
+            print('UTT:\t{}'.format(state.utterance.replace('\n', ' ')))
     env.close()
 
 if __name__ == '__main__':

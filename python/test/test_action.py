@@ -22,7 +22,7 @@ class RepeatedTester(object):
     def env(self):
         env = MiniWoBEnvironment(self.TASK_NAME)
         base_url = os.environ.get('MINIWOB_BASE_URL')
-        print 'BASE URL:', base_url
+        print('BASE URL:', base_url)
         if self.FRAGILE is True:
             env.configure(base_url=base_url,
                     num_instances=1, seeds=[1], wait_ms=300)
@@ -31,21 +31,21 @@ class RepeatedTester(object):
                     num_instances=1, seeds=[1])
         elif self.FRAGILE == 'delay':
             env.configure(base_url=base_url,
-                    num_instances=3, seeds=range(3), wait_ms=1000)
+                    num_instances=3, seeds=list(range(3)), wait_ms=1000)
         else:
             env.configure(base_url=base_url,
-                    num_instances=3, seeds=range(3))
+                    num_instances=3, seeds=list(range(3)))
         yield env
         env.close()
 
     def test_run(self, env):
-        for i in xrange(self.N):
-            print 'Iteration {} / {}'.format(i + 1, self.N)
+        for i in range(self.N):
+            print('Iteration {} / {}'.format(i + 1, self.N))
             states = env.reset()
             for j, state in enumerate(states):
-                print 'Fields {}: {}'.format(j, state.fields)
-            for s in xrange(self.MAX_STEPS):
-                print 'Step {} / {}'.format(s + 1, self.MAX_STEPS)
+                print('Fields {}: {}'.format(j, state.fields))
+            for s in range(self.MAX_STEPS):
+                print('Step {} / {}'.format(s + 1, self.MAX_STEPS))
                 actions = [self.get_action(x, s) for x in states]
                 states, rewards, dones, info = env.step(actions)
                 if all(x for x in dones):
@@ -61,7 +61,7 @@ class RepeatedTester(object):
 
     def create_element_click_action(self, element):
         action = MiniWoBElementClick(element, fail_hard=True)
-        print 'Clicking with {}'.format(action)
+        print('Clicking with {}'.format(action))
         return action
 
     def click_button(self, state, text):
@@ -75,17 +75,17 @@ class RepeatedTester(object):
         action = MiniWoBCoordClick(
                 element.left + (element.width / 2),
                 element.top + (element.height / 2))
-        print 'Clicking with {}'.format(action)
+        print('Clicking with {}'.format(action))
         return action
 
     def create_type_action(self, text):
         action = MiniWoBType(text)
-        print 'Typing with {}'.format(action)
+        print('Typing with {}'.format(action))
         return action
 
     def create_focus_and_type_action(self, element, text):
         action = MiniWoBFocusAndType(element, text)
-        print 'Focus and Type: {}'.format(action)
+        print('Focus and Type: {}'.format(action))
         return action
 
 
@@ -141,7 +141,7 @@ class TestIdentifyShape(RepeatedTester):
         for element in state.dom_elements:
             if element.tag == 'svg':
                 child = element.children[0]
-                print child
+                print(child)
                 if child.tag == 'circle':
                     return 'Circle'
                 elif child.tag == 'text':
@@ -196,7 +196,7 @@ class TestEnterText(RepeatedTester):
             target = state.fields['target']
             if len(target) > 2:
                 # Hmm... Let's try the LEFT arrow key
-                target = target[:-2] + target[-1] + u'\ue012' + target[-2]
+                target = target[:-2] + target[-1] + '\ue012' + target[-2]
             return self.create_type_action(target)
         elif step == 2:
             # Click submit
@@ -399,7 +399,7 @@ class TestClickPie(RepeatedTester):
     MAX_STEPS = 2
 
     def get_action(self, state, step):
-        print state.dom.visualize()
+        print(state.dom.visualize())
         if step == 0:
             path = None
             for element in state.dom_elements:
@@ -409,7 +409,7 @@ class TestClickPie(RepeatedTester):
                     return self.create_element_click_action(path)
             assert False, 'Select not found'
         elif step == 1:
-            print state.dom.visualize()
+            print(state.dom.visualize())
             path = None
             for element in state.dom_elements:
                 if element.tag == 'path':

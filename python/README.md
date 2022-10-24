@@ -10,7 +10,7 @@
 
 - Selenium
   - Outside this repository, download
-    [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads).
+    [ChromeDriver](https://chromedriver.chromium.org/downloads).
     Unzip it and then add the directory
     containing the `chromedriver` executable to the `PATH` environment variable
     ```

@@ -41,11 +41,11 @@ var generateDialog = function(div){
     position: {my: 'center', at: 'center', of: document.getElementById('area')},
     buttons: [
       { text: 'Cancel', click: function(e) {
-        var r = e.toElement.innerHTML === expectedButton ? 1.0 : -1.0;
+        var r = e.target.innerHTML === expectedButton ? 1.0 : -1.0;
         core.endEpisode(r, r > 0);
       } },
       { text: 'OK', click: function(e) {
-        var r = e.toElement.innerHTML === expectedButton ? 1.0 : -1.0;
+        var r = e.target.innerHTML === expectedButton ? 1.0 : -1.0;
         core.endEpisode(r, r > 0);
       } }
     ]

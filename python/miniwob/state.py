@@ -24,7 +24,7 @@ class MiniWoBState(object):
         """
         ################
         # Parse utterance
-        assert isinstance(utterance, basestring)
+        assert isinstance(utterance, str)
         self._phrase = Phrase(utterance)
         self._fields = fields
         ################
@@ -145,7 +145,7 @@ class DOMElement(object):
         if self.tag == 't':
             self._ref = None  # ignore refs for text, since they are unreliable
         if 'text' in raw_dom:
-            self._text = unicode(raw_dom['text'])
+            self._text = str(raw_dom['text'])
         else:
             self._text = None
         self._value = raw_dom.get('value')
@@ -168,7 +168,7 @@ class DOMElement(object):
         # Fix a bug where sometimes children are created even though all children are <t>
         # (which will incorrectly make this element a non-leaf and thus unclickable)
         if self._children and all(child.tag == 't' for child in self._children):
-            self._text = u' '.join(child.text for child in self._children)
+            self._text = ' '.join(child.text for child in self._children)
             self._children = []
         # Add to the collection
         if dom_elements is not None:
@@ -350,7 +350,7 @@ class DOMElement(object):
         lines = []
         lines.append('- {}'.format(self))
         for i, child in enumerate(self.children):
-            if isinstance(child, unicode):
+            if isinstance(child, str):
                 child = child[:20] + '...' if len(child) > 20 else child
                 lines.append('  |- "{}"'.format(child))
             else:
