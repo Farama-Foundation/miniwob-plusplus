@@ -3,7 +3,7 @@ import re
 from miniwob.utils import Phrase
 
 
-class MiniWoBState(object):
+class MiniWoBState:
     """MiniWoB state.
 
     Warning: The return types might be changed in the future!!!
@@ -30,7 +30,9 @@ class MiniWoBState(object):
         ################
         # Store DOM
         self._dom_elements = []
-        self._root_dom = DOMElement(dom_info, parent=None, dom_elements=self._dom_elements)
+        self._root_dom = DOMElement(
+            dom_info, parent=None, dom_elements=self._dom_elements
+        )
         ################
         # Screenshot (None by default)
         self._screenshot = None
@@ -102,12 +104,13 @@ class MiniWoBState(object):
         return self._dom_elements
 
     def __str__(self):
-        return "MiniWoBState(utterance: {})".format(repr(self.utterance))
+        return f"MiniWoBState(utterance: {repr(self.utterance)})"
+
     __repr__ = __str__
 
     def set_screenshot(self, pil_image):
         """Add screenshot to the state.
-        
+
         Args:
             pil_image (PIL Image)
         """
@@ -116,14 +119,14 @@ class MiniWoBState(object):
     @property
     def screenshot(self):
         """Return screenshot, or None if not exist.
-        
+
         Returns:
             PIL Image or None
         """
-        return self._screenshot 
+        return self._screenshot
 
 
-class DOMElement(object):
+class DOMElement:
     """Encapsulate the DOM element."""
 
     def __init__(self, raw_dom, parent=None, dom_elements=None):
@@ -136,39 +139,41 @@ class DOMElement(object):
                 object to the list
         """
         self._parent = parent
-        self._tag = raw_dom['tag'].lower()
-        self._left = raw_dom['left']
-        self._top = raw_dom['top']
-        self._width = raw_dom['width']
-        self._height = raw_dom['height']
-        self._ref = raw_dom.get('ref')
-        if self.tag == 't':
+        self._tag = raw_dom["tag"].lower()
+        self._left = raw_dom["left"]
+        self._top = raw_dom["top"]
+        self._width = raw_dom["width"]
+        self._height = raw_dom["height"]
+        self._ref = raw_dom.get("ref")
+        if self.tag == "t":
             self._ref = None  # ignore refs for text, since they are unreliable
-        if 'text' in raw_dom:
-            self._text = str(raw_dom['text'])
+        if "text" in raw_dom:
+            self._text = str(raw_dom["text"])
         else:
             self._text = None
-        self._value = raw_dom.get('value')
-        self._id = raw_dom.get('id')
-        classes = raw_dom.get('classes', 'TEXT_CLASS')
+        self._value = raw_dom.get("value")
+        self._id = raw_dom.get("id")
+        classes = raw_dom.get("classes", "TEXT_CLASS")
         if isinstance(classes, dict):
-            classes = 'SVG_CLASS'
-        elif classes == '':
-            classes = 'NO_CLASS'
+            classes = "SVG_CLASS"
+        elif classes == "":
+            classes = "NO_CLASS"
         self._classes = classes
-        self._bg_color = self._rgba_str_to_floats(raw_dom.get('bgColor'))
-        self._fg_color = self._rgba_str_to_floats(raw_dom.get('fgColor'))
-        self._focused = raw_dom.get('focused', False)
-        self._tampered = raw_dom.get('tampered', False)
-        self._targeted = raw_dom.get('recordingTarget', False)
+        self._bg_color = self._rgba_str_to_floats(raw_dom.get("bgColor"))
+        self._fg_color = self._rgba_str_to_floats(raw_dom.get("fgColor"))
+        self._focused = raw_dom.get("focused", False)
+        self._tampered = raw_dom.get("tampered", False)
+        self._targeted = raw_dom.get("recordingTarget", False)
         # Recurse on the children
         self._children = []
-        for raw_child in raw_dom['children']:
-            self._children.append(DOMElement(raw_child, parent=self, dom_elements=dom_elements))
+        for raw_child in raw_dom["children"]:
+            self._children.append(
+                DOMElement(raw_child, parent=self, dom_elements=dom_elements)
+            )
         # Fix a bug where sometimes children are created even though all children are <t>
         # (which will incorrectly make this element a non-leaf and thus unclickable)
-        if self._children and all(child.tag == 't' for child in self._children):
-            self._text = ' '.join(child.text for child in self._children)
+        if self._children and all(child.tag == "t" for child in self._children):
+            self._text = " ".join(child.text for child in self._children)
             self._children = []
         # Add to the collection
         if dom_elements is not None:
@@ -184,12 +189,16 @@ class DOMElement(object):
 
     def to_dict(self):
         return {
-            'tag': self.tag,
-            'left': self.left, 'top': self.top,
-            'width': self.width, 'height': self.height,
-            'text': self.text, 'value': self.value,
-            'id': self.id, 'classes': self.classes,
-            }
+            "tag": self.tag,
+            "left": self.left,
+            "top": self.top,
+            "width": self.width,
+            "height": self.height,
+            "text": self.text,
+            "value": self.value,
+            "id": self.id,
+            "classes": self.classes,
+        }
 
     @property
     def tag(self):
@@ -329,35 +338,42 @@ class DOMElement(object):
     def __str__(self):
         if self.text:
             text = self.text
-            text = text[:20] + '...' if len(text) > 20 else text
-            text_str = ' text={}'.format(repr(text))
+            text = text[:20] + "..." if len(text) > 20 else text
+            text_str = f" text={repr(text)}"
         else:
-            text_str = ''
+            text_str = ""
 
-        value_str = ' value={}'.format(self.value) if self.value is not None else ''
-        classes_str = ' classes=[{}]'.format(self.classes)
+        value_str = f" value={self.value}" if self.value is not None else ""
+        classes_str = f" classes=[{self.classes}]"
         num_children = len(self.children)
-        children_str = ' children={}'.format(num_children) if num_children != 0 else ''
+        children_str = f" children={num_children}" if num_children != 0 else ""
 
-        return '[{ref}] {tag} @ ({left}, {top}){text}{value}{classes}{children}'.format(
-            ref=self.ref, tag=self.tag, left=round(self.left, 2), top=round(self.top, 2),
-            text=text_str, value=value_str, classes=classes_str, children=children_str)
+        return "[{ref}] {tag} @ ({left}, {top}){text}{value}{classes}{children}".format(
+            ref=self.ref,
+            tag=self.tag,
+            left=round(self.left, 2),
+            top=round(self.top, 2),
+            text=text_str,
+            value=value_str,
+            classes=classes_str,
+            children=children_str,
+        )
 
     __repr__ = __str__
 
     def visualize(self, join=True):
         """Return a string visualizing the tree structure."""
         lines = []
-        lines.append('- {}'.format(self))
+        lines.append(f"- {self}")
         for i, child in enumerate(self.children):
             if isinstance(child, str):
-                child = child[:20] + '...' if len(child) > 20 else child
-                lines.append('  |- "{}"'.format(child))
+                child = child[:20] + "..." if len(child) > 20 else child
+                lines.append(f'  |- "{child}"')
             else:
                 for j, line in enumerate(child.visualize(join=False)):
-                    prefix = '   ' if (i == len(self.children) - 1 and j) else '  |'
+                    prefix = "   " if (i == len(self.children) - 1 and j) else "  |"
                     lines.append(prefix + line)
-        return '\n'.join(lines) if join else lines
+        return "\n".join(lines) if join else lines
 
     def lca(self, other):
         """Returns the least common ancestor of two DOMElement (the node with
@@ -377,14 +393,17 @@ class DOMElement(object):
 
         # Find the first spot at which the ancestor paths diverge
         for i, (self_ancestor, other_ancestor) in enumerate(
-                zip(self.ancestor_path, other.ancestor_path)):
+            zip(self.ancestor_path, other.ancestor_path)
+        ):
             if self_ancestor != other_ancestor:
                 return self.ancestor_path[i - 1]
 
         raise ValueError(
-            ("{} is not in the same DOM tree as {}\n\nself tree: {}\n\n"
-             "other tree: {}").format(
-                 self, other, self.visualize(), other.visualize()))
+            (
+                "{} is not in the same DOM tree as {}\n\nself tree: {}\n\n"
+                "other tree: {}"
+            ).format(self, other, self.visualize(), other.visualize())
+        )
 
     def diff(self, other_dom):
         """Traverses the two DOM trees in the same order and returns all the
@@ -414,6 +433,7 @@ class DOMElement(object):
             Compares the first child against first child, second child against
             second, and so on...
         """
+
         def element_diff(first, second, l):
             """Diffs two DOMElements, and adds them to list l if they differ."""
             # Base cases
@@ -432,19 +452,21 @@ class DOMElement(object):
                 l.append(first)
                 l.append(second)
             else:
-                if (first.text != second.text
-                        or first.tampered != second.tampered
-                        #or first.focused != second.focused
-                        or first.value != second.value
-                        #or first.left != second.left
-                        #or first.top != second.top
-                        or first.width != second.width
-                        or first.height != second.height
-                        or first.classes != second.classes
-                        or first.tag != second.tag
-                        or first.fg_color != second.fg_color
-                        or first.bg_color != second.bg_color
-                        or first.is_leaf != second.is_leaf):
+                if (
+                    first.text != second.text
+                    or first.tampered != second.tampered
+                    # or first.focused != second.focused
+                    or first.value != second.value
+                    # or first.left != second.left
+                    # or first.top != second.top
+                    or first.width != second.width
+                    or first.height != second.height
+                    or first.classes != second.classes
+                    or first.tag != second.tag
+                    or first.fg_color != second.fg_color
+                    or first.bg_color != second.bg_color
+                    or first.is_leaf != second.is_leaf
+                ):
                     l.append(first)
 
             # Pad the children with None and diff them
@@ -475,13 +497,17 @@ class DOMElement(object):
             (float, float, float, float): rgba
         """
         if rgba is None:  # Assume is white
-            return 1., 1., 1., 1.
+            return 1.0, 1.0, 1.0, 1.0
 
         if "rgba" in rgba:
             m = re.search(r"rgba\(([0-9.]+), ([0-9.]+), ([0-9.]+), ([0-9.]+)\)", rgba)
             a = float(m.group(4))
         else:
             m = re.search(r"rgb\(([0-9.]+), ([0-9.]+), ([0-9.]+)\)", rgba)
-            a = 1.
-        return float(m.group(1)) / 255, float(m.group(2)) / 255, \
-               float(m.group(3)) / 255, a
+            a = 1.0
+        return (
+            float(m.group(1)) / 255,
+            float(m.group(2)) / 255,
+            float(m.group(3)) / 255,
+            a,
+        )

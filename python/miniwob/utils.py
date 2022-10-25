@@ -26,7 +26,7 @@ def strip_whitespace(uni):
 
 
 def find_sublist(l, sublist):
-    """Returns the index of the first occurence of sublist in the list l if
+    """Returns the index of the first occurrence of sublist in the list l if
     it exists, otherwise -1. Like string.find
 
     Args:
@@ -38,12 +38,12 @@ def find_sublist(l, sublist):
     """
     for i in range(len(l)):
         # Check index 0 first for optimization
-        if l[i] == sublist[0] and l[i: i + len(sublist)] == sublist:
+        if l[i] == sublist[0] and l[i : i + len(sublist)] == sublist:
             return i
     return -1
 
 
-class Phrase(object):
+class Phrase:
     """Represents a phrase and its tokenization.
     Uses regex-based tokenization copied from nltk.tokenize.RegexpTokenizer.
 
@@ -51,7 +51,7 @@ class Phrase(object):
     """
 
     # I like "trains". --> [I, like, ", trains, ", .]
-    TOKENIZER = re.compile(r'\w+|[^\w\s]', re.UNICODE | re.MULTILINE | re.DOTALL)
+    TOKENIZER = re.compile(r"\w+|[^\w\s]", re.UNICODE | re.MULTILINE | re.DOTALL)
 
     def __init__(self, text):
         """Initialize a Phrase.
@@ -98,7 +98,7 @@ class Phrase(object):
         """
         if self._tokens is None:
             self._tokenize()
-        return self._text[self._token_spans[start][0]:self._token_spans[end-1][1]]
+        return self._text[self._token_spans[start][0] : self._token_spans[end - 1][1]]
 
     def __repr__(self):
         return repr(self._text)

@@ -28,11 +28,13 @@ class MiniWoBTerminate(MiniWoBAction):
 
     This is done via a JavaScript call.
     """
+
     def __call__(self, driver):
         driver.execute_script('return core.endEpisode(-1,false,"terminate");')
 
     def __str__(self):
         return "MiniWoBTerminate"
+
     __repr__ = __str__
 
     def __eq__(self, other):
@@ -42,7 +44,7 @@ class MiniWoBTerminate(MiniWoBAction):
         return hash(self.__class__.__name__)
 
     def to_dict(self):
-        return {'type': 'Terminate'}
+        return {"type": "Terminate"}
 
 
 class MiniWoBCoordClick(MiniWoBAction):
@@ -55,16 +57,17 @@ class MiniWoBCoordClick(MiniWoBAction):
         left (int): number of pixels from the left of the screen
         top (int): number of pixels from the top of the screen
     """
+
     def __init__(self, left, top):
         self._left = left
         self._top = top
 
     def __call__(self, driver):
         """Clicks at coordinates (left, top)"""
-        body = driver.find_element(By.TAG_NAME, 'body')
+        body = driver.find_element(By.TAG_NAME, "body")
         # The offset is from the center, not top-left.
-        x = - body.size['width'] / 2 + self.left
-        y = - body.size['height'] / 2 + self.top
+        x = -body.size["width"] / 2 + self.left
+        y = -body.size["height"] / 2 + self.top
         chain = ActionChains(driver)
         chain.move_to_element_with_offset(body, x, y).click().perform()
 
@@ -77,7 +80,8 @@ class MiniWoBCoordClick(MiniWoBAction):
         return self._top
 
     def __str__(self):
-        return "CoordClick(coords: ({}, {}))".format(self.left, self.top)
+        return f"CoordClick(coords: ({self.left}, {self.top}))"
+
     __repr__ = __str__
 
     def __eq__(self, other):
@@ -89,7 +93,7 @@ class MiniWoBCoordClick(MiniWoBAction):
         return hash((self.__class__.__name__, self.left, self.top))
 
     def to_dict(self):
-        return {'type': 'CoordClick', 'left': self._left, 'top': self._top}
+        return {"type": "CoordClick", "left": self._left, "top": self._top}
 
 
 class MiniWoBElementClick(MiniWoBAction):
@@ -105,30 +109,29 @@ class MiniWoBElementClick(MiniWoBAction):
         fail_hard (bool): If True, throw an error when the click cannot
             be successfully performed
     """
+
     def __init__(self, element, fail_hard=False):
         self._element = element
         self._ref = element.ref
         if self._ref is None:
-            raise RuntimeError(
-                    'Cannot click on {} with _ref = None'.format(element))
+            raise RuntimeError(f"Cannot click on {element} with _ref = None")
         self._fail_hard = fail_hard
 
     def __call__(self, driver):
-        if self.element.tag == 'select':
+        if self.element.tag == "select":
             # SPECIAL CASE: <select>
-            body = driver.find_element(By.TAG_NAME, 'body')
+            body = driver.find_element(By.TAG_NAME, "body")
             chain = ActionChains(driver)
             chain.move_to_element_with_offset(
-                    body, self.element.left + 5,
-                    self.element.top + 5).click().perform()
+                body, self.element.left + 5, self.element.top + 5
+            ).click().perform()
             return
-        result = driver.execute_script(
-                'return core.elementClick({});'.format(self._ref))
+        result = driver.execute_script(f"return core.elementClick({self._ref});")
         if result is not True:
             if self._fail_hard:
-                raise RuntimeError('{} failed: {}'.format(self, result))
+                raise RuntimeError(f"{self} failed: {result}")
             else:
-                logging.warning('%s failed: %s', self, result)
+                logging.warning("%s failed: %s", self, result)
 
     @property
     def ref(self):
@@ -139,7 +142,8 @@ class MiniWoBElementClick(MiniWoBAction):
         return self._element
 
     def __str__(self):
-        return "click({})".format(self.element)
+        return f"click({self.element})"
+
     __repr__ = __str__
 
     def __eq__(self, other):
@@ -153,9 +157,9 @@ class MiniWoBElementClick(MiniWoBAction):
 
     def to_dict(self):
         return {
-            'type': 'ElementClick',
-            'element': self.element.to_dict(),
-            }
+            "type": "ElementClick",
+            "element": self.element.to_dict(),
+        }
 
 
 class MiniWoBType(MiniWoBAction):
@@ -169,6 +173,7 @@ class MiniWoBType(MiniWoBAction):
             selenium.webdriver.common.keys.Keys can also be used to send
             special keys (arrows, backspace, etc.)
     """
+
     def __init__(self, text):
         self._text = text
 
@@ -182,7 +187,8 @@ class MiniWoBType(MiniWoBAction):
         return self._text
 
     def __str__(self):
-        return "Type({})".format(repr(self._text))
+        return f"Type({repr(self._text)})"
+
     __repr__ = __str__
 
     def __eq__(self, other):
@@ -194,7 +200,7 @@ class MiniWoBType(MiniWoBAction):
         return hash((self.__class__.__name__, self.text))
 
     def to_dict(self):
-        return {'type': 'Type', 'text': self.text}
+        return {"type": "Type", "text": self.text}
 
 
 class MiniWoBFocusAndType(MiniWoBAction):
@@ -209,6 +215,7 @@ class MiniWoBFocusAndType(MiniWoBAction):
             - ref (int) of the DOMElement object to click
         text (str or list[str]): Things to type.
     """
+
     def __init__(self, element, text):
         self._click = MiniWoBElementClick(element)
         self._type = MiniWoBType(text)
@@ -230,7 +237,8 @@ class MiniWoBFocusAndType(MiniWoBAction):
         return self._type.text
 
     def __str__(self):
-        return "type({}, {})".format(self._click.element, repr(self._type.text))
+        return f"type({self._click.element}, {repr(self._type.text)})"
+
     __repr__ = __str__
 
     def __eq__(self, other):
@@ -243,7 +251,7 @@ class MiniWoBFocusAndType(MiniWoBAction):
 
     def to_dict(self):
         return {
-            'type': 'ElementClick',
-            'element': self.element.to_dict(),
-            'text': self.text,
-            }
+            "type": "ElementClick",
+            "element": self.element.to_dict(),
+            "text": self.text,
+        }
