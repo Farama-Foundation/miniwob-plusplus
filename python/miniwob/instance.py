@@ -1,23 +1,21 @@
 import json
 import logging
-from queue import Queue
 import time
 import traceback
 import urllib.parse
+from queue import Queue
 from threading import Thread
 
 import numpy as np
-
+from miniwob.fields import Fields, get_field_extractor
+from miniwob.reward import get_original_reward
+from miniwob.screenshot import get_screenshot
+from miniwob.state import MiniWoBState
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
-from miniwob.fields import Fields, get_field_extractor
-from miniwob.state import MiniWoBState
-from miniwob.reward import get_original_reward
-from miniwob.screenshot import get_screenshot
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class MiniWoBInstance(Thread):
@@ -25,7 +23,7 @@ class MiniWoBInstance(Thread):
     Manages a single instance.
     """
 
-    DEFAULT_BASE_URL = 'http://localhost:8000/'
+    DEFAULT_BASE_URL = "http://localhost:8000/"
 
     # Added some space for title bar
     WINDOW_WIDTH = 500
@@ -37,11 +35,22 @@ class MiniWoBInstance(Thread):
     FLIGHT_WINDOW_HEIGHT = 700
     FLIGHT_TASK_WIDTH = 375
     FLIGHT_TASK_HEIGHT = 667
-    
-    def __init__(self, index, subdomain, seed, headless=False,
-            base_url=None, cache_state=False, threading=True,
-            reward_processor=None, wait_ms=0., block_on_reset=True,
-            refresh_freq=0, initial_mode='train'):
+
+    def __init__(
+        self,
+        index,
+        subdomain,
+        seed,
+        headless=False,
+        base_url=None,
+        cache_state=False,
+        threading=True,
+        reward_processor=None,
+        wait_ms=0.0,
+        block_on_reset=True,
+        refresh_freq=0,
+        initial_mode="train",
+    ):
         """Starts a new Selenium WebDriver session.
 
         Args:
@@ -64,7 +73,7 @@ class MiniWoBInstance(Thread):
                 *** Must specify `seeds` at each reset call.
             initial_mode (str): Initial data mode (e.g., "train", "test")
         """
-        super(MiniWoBInstance, self).__init__()
+        super().__init__()
         # Overrides Thread.daemon: Kill this thread when the parent is killed
         self.daemon = True
         self.died = False
@@ -72,19 +81,20 @@ class MiniWoBInstance(Thread):
         self.init_seed = repr(seed)
         self.headless = headless
         base_url = base_url or self.DEFAULT_BASE_URL
-        if subdomain.startswith('flight.'):
-            assert not base_url.startswith('file://'),\
-                    ('For {} domain, MINIWOB_BASE_URL cannot be file://. '
-                     ' See "Run a simple server" in README').format(subdomain)
-            self.url = urllib.parse.urljoin(base_url,
-                    subdomain.replace('.', '/') + '/wrapper.html')
+        if subdomain.startswith("flight."):
+            assert not base_url.startswith("file://"), (
+                "For {} domain, MINIWOB_BASE_URL cannot be file://. "
+                ' See "Run a simple server" in README'
+            ).format(subdomain)
+            self.url = urllib.parse.urljoin(
+                base_url, subdomain.replace(".", "/") + "/wrapper.html"
+            )
             self.window_width = self.FLIGHT_WINDOW_WIDTH
             self.window_height = self.FLIGHT_WINDOW_HEIGHT
             self.task_width = self.FLIGHT_TASK_WIDTH
             self.task_height = self.FLIGHT_TASK_HEIGHT
         else:
-            self.url = urllib.parse.urljoin(base_url,
-                    'miniwob/{}.html'.format(subdomain))
+            self.url = urllib.parse.urljoin(base_url, f"miniwob/{subdomain}.html")
             self.window_width = self.WINDOW_WIDTH
             self.window_height = self.WINDOW_HEIGHT
             self.task_width = self.TASK_WIDTH
@@ -101,8 +111,8 @@ class MiniWoBInstance(Thread):
         self.record_screenshots = False
         if reward_processor is None:
             # Use the original reward
-            self.reward_processor = get_original_reward 
-        self.start_time = float('inf')
+            self.reward_processor = get_original_reward
+        self.start_time = float("inf")
         self.task_queue = Queue()
         if not threading:
             # Hack: override the start method of Thread
@@ -117,8 +127,8 @@ class MiniWoBInstance(Thread):
                 func, args = self.task_queue.get()
                 try:
                     func(*args)
-                except Exception as e:
-                    logging.error('Error in instance %d', self.index)
+                except Exception:
+                    logging.error("Error in instance %d", self.index)
                     traceback.print_exc()
                     self.died = True
                 self.task_queue.task_done()
@@ -126,7 +136,7 @@ class MiniWoBInstance(Thread):
                     break
         finally:
             self.close()
-            logging.info('Closed instance %d', self.index)
+            logging.info("Closed instance %d", self.index)
 
     def call(self, func, *args):
         if self.threading:
@@ -143,31 +153,37 @@ class MiniWoBInstance(Thread):
 
     def create_driver(self):
         """Create a driver"""
-        assert not hasattr(self, 'driver'), \
-                'Instance {} already has a driver'.format(self.index)
+        assert not hasattr(self, "driver"), "Instance {} already has a driver".format(
+            self.index
+        )
         options = webdriver.ChromeOptions()
         if self.headless:
-            options.add_argument('headless')
-            options.add_argument('disable-gpu')
-            options.add_argument('no-sandbox')
+            options.add_argument("headless")
+            options.add_argument("disable-gpu")
+            options.add_argument("no-sandbox")
         else:
-            options.add_argument('app=' + self.url)
-            options.add_argument('window-size={},{}'
-                    .format(self.window_width, self.window_height))
-            options.add_argument('window-position={},{}'
-                    .format(9000, 30 + self.index * (self.window_height + 30)))
+            options.add_argument("app=" + self.url)
+            options.add_argument(
+                f"window-size={self.window_width},{self.window_height}"
+            )
+            options.add_argument(
+                "window-position={},{}".format(
+                    9000, 30 + self.index * (self.window_height + 30)
+                )
+            )
         self.driver = webdriver.Chrome(options=options)
         self.driver.implicitly_wait(5)
         if self.headless:
             self.driver.get(self.url)
         try:
             WebDriverWait(self.driver, 5).until(
-                    EC.element_to_be_clickable((By.ID, self.SYNC_SCREEN_ID)))
+                EC.element_to_be_clickable((By.ID, self.SYNC_SCREEN_ID))
+            )
         except TimeoutException as e:
-            logging.error('Page did not load properly. Wrong MINIWOB_BASE_URL?')
+            logging.error("Page did not load properly. Wrong MINIWOB_BASE_URL?")
             raise e
         # Seed the seed
-        self.driver.execute_script('Math.seedrandom({});'.format(self.init_seed))
+        self.driver.execute_script(f"Math.seedrandom({self.init_seed});")
 
     def close(self):
         """Tear down the WebDriver."""
@@ -175,8 +191,8 @@ class MiniWoBInstance(Thread):
         # quit() closes everything, so it is probably cleaner
         try:
             self.driver.quit()
-        except Exception as e:
-            logging.error('Error closing the driver of instance %d', self.index)
+        except Exception:
+            logging.error("Error closing the driver of instance %d", self.index)
             traceback.print_exc()
         self.died = True
 
@@ -190,7 +206,9 @@ class MiniWoBInstance(Thread):
             seed (object): Seed to set for the next episode
         """
         if self.refresh_freq:
-            assert seed is not None, 'reset() must specify seed if refresh_freq is specified'
+            assert (
+                seed is not None
+            ), "reset() must specify seed if refresh_freq is specified"
         i = self.index
         self.force_stop()
         self.begin_task(seed=seed)
@@ -214,25 +232,25 @@ class MiniWoBInstance(Thread):
         self.perform(action)
         metadata = self.get_metadata()
         rewards[i] = self.reward_processor(metadata)
-        dones[i] = metadata['done']
-        if not metadata['done']:
+        dones[i] = metadata["done"]
+        if not metadata["done"]:
             if not self.cache_state:
                 states[i] = self.get_state()
             else:
                 states[i] = self.initial_state
-        metadata['elapsed'] = max(0., time.time() - self.start_time)
+        metadata["elapsed"] = max(0.0, time.time() - self.start_time)
         info_n[i] = metadata
 
     ################################
     # Primitive actions
 
-    SYNC_SCREEN_ID = 'sync-task-cover'
-    RESET_BLOCK_SLEEP_TIME = 0.05    # 50ms
-    RESET_BLOCK_MAX_ATTEMPT = 20     # up to 1s
+    SYNC_SCREEN_ID = "sync-task-cover"
+    RESET_BLOCK_SLEEP_TIME = 0.05  # 50ms
+    RESET_BLOCK_MAX_ATTEMPT = 20  # up to 1s
 
     def force_stop(self):
         """Force stop the task and go back to the sync screen."""
-        self.driver.execute_script('return core.endEpisode(0);')
+        self.driver.execute_script("return core.endEpisode(0);")
 
     def begin_task(self, seed=None):
         """Start the task. Only available when done is True.
@@ -247,16 +265,16 @@ class MiniWoBInstance(Thread):
         if seed is not None:
             self.set_seed(seed)
         self.set_mode(self.mode)
-        self.driver.execute_script('core.startEpisodeReal();')
+        self.driver.execute_script("core.startEpisodeReal();")
         if self.block_on_reset:
             for _ in range(self.RESET_BLOCK_MAX_ATTEMPT):
-                if self.driver.execute_script('return WOB_TASK_READY;'):
+                if self.driver.execute_script("return WOB_TASK_READY;"):
                     break
                 time.sleep(self.RESET_BLOCK_SLEEP_TIME)
             else:
-                raise RuntimeError('Instance {} does not load properly'.format(self.index))
+                raise RuntimeError(f"Instance {self.index} does not load properly")
         elif self.wait_ms:
-            time.sleep(self.wait_ms / 1000.)
+            time.sleep(self.wait_ms / 1000.0)
         self.start_time = time.time()
 
     def perform(self, action):
@@ -269,40 +287,43 @@ class MiniWoBInstance(Thread):
                 issue a warning if the instance is done
         """
         if action is not None:
-            if self.get_metadata()['done']:
-                logging.warning('Cannot call %s on instance %d, which is already done',
-                        action, self.index)
+            if self.get_metadata()["done"]:
+                logging.warning(
+                    "Cannot call %s on instance %d, which is already done",
+                    action,
+                    self.index,
+                )
             else:
                 action(self.driver)
         if self.wait_ms:
-            time.sleep(self.wait_ms / 1000.)
-    
+            time.sleep(self.wait_ms / 1000.0)
+
     def get_state(self):
         """Get the current state.
-        
+
         Returns:
             MiniWoBState
         """
         # Get the utterance
-        response = self.driver.execute_script('return core.getUtterance();')
+        response = self.driver.execute_script("return core.getUtterance();")
         if isinstance(response, dict):
-            utterance = response['utterance']
-            fields = Fields(response['fields'])
+            utterance = response["utterance"]
+            fields = Fields(response["fields"])
         else:
             utterance = response
             fields = self.field_extractor(utterance)
         # Get the DOM
-        dom_info = self.driver.execute_script('return core.getDOMInfo();')
+        dom_info = self.driver.execute_script("return core.getDOMInfo();")
         state = MiniWoBState(utterance, fields, dom_info)
         # Get screenshot if requested
         if self.record_screenshots:
             img = get_screenshot(self.driver, self.task_width, self.task_height)
             state.set_screenshot(img)
         return state
-    
+
     def get_metadata(self):
         """Get other metadata.
-        
+
         Returns:
             dict with the following keys:
             - done (bool)
@@ -314,12 +335,13 @@ class MiniWoBInstance(Thread):
                 will likely be None if done is False
         """
         return self.driver.execute_script(
-                'return {'
-                '"done": WOB_DONE_GLOBAL,'
-                '"env_reward": WOB_REWARD_GLOBAL,'
-                '"raw_reward": WOB_RAW_REWARD_GLOBAL,'
-                '"reason": WOB_REWARD_REASON,'
-                '};')
+            "return {"
+            '"done": WOB_DONE_GLOBAL,'
+            '"env_reward": WOB_REWARD_GLOBAL,'
+            '"raw_reward": WOB_RAW_REWARD_GLOBAL,'
+            '"reason": WOB_REWARD_REASON,'
+            "};"
+        )
 
     def visualize_attention(self, attention):
         """Sends the attention weights to be visualized.
@@ -337,7 +359,7 @@ class MiniWoBInstance(Thread):
             attention = attention.tolist()
         encoded = json.dumps(attention)
         # Send to the driver
-        self.driver.execute_script('core.visualizeAttention({});'.format(encoded))
+        self.driver.execute_script(f"core.visualizeAttention({encoded});")
 
     def set_seed(self, seed):
         """Set the seed to a new value.
@@ -345,7 +367,7 @@ class MiniWoBInstance(Thread):
         Args:
             seed (object)
         """
-        self.driver.execute_script('Math.seedrandom({});'.format(repr(seed)))
+        self.driver.execute_script(f"Math.seedrandom({repr(seed)});")
 
     def set_mode(self, mode):
         """Set the task generation mode (e.g., "train" or "test") to a new value.
@@ -353,4 +375,4 @@ class MiniWoBInstance(Thread):
         Args:
             mode (str)
         """
-        self.driver.execute_script('core.setDataMode("{}");'.format(mode))
+        self.driver.execute_script(f'core.setDataMode("{mode}");')

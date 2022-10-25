@@ -1,11 +1,11 @@
+import logging
 import os
 import sys
-import logging
 
 from miniwob.instance import MiniWoBInstance
 
 
-class MiniWoBEnvironment(object):
+class MiniWoBEnvironment:
     """MiniWoB environment."""
 
     def __init__(self, subdomain):
@@ -50,16 +50,15 @@ class MiniWoBEnvironment(object):
                 *** Must specify `seeds` at each reset call.
             initial_mode (str): Initial data mode (e.g., "train", "test")
         """
-        assert seeds is not None, 'seeds must be specified'
-        assert len(seeds) == num_instances, 'len(seeds) must be equal to num_instances'
+        assert seeds is not None, "seeds must be specified"
+        assert len(seeds) == num_instances, "len(seeds) must be equal to num_instances"
         self.configure_kwargs = kwargs
         for instance in self.instances:
             instance.close()
         self.instances = []
         for index in range(num_instances):
-            logging.info('Starting WebDriver Instance %d', index)
-            instance = MiniWoBInstance(
-                    index, self.subdomain, seeds[index], **kwargs)
+            logging.info("Starting WebDriver Instance %d", index)
+            instance = MiniWoBInstance(index, self.subdomain, seeds[index], **kwargs)
             instance.start()
             self.instances.append(instance)
         for instance in self.instances:
@@ -80,13 +79,15 @@ class MiniWoBEnvironment(object):
         """
         # If an instance died, call configure
         if any(instance.died for instance in self.instances):
-            logging.warning('An instance died. Reset instance ...')
+            logging.warning("An instance died. Reset instance ...")
             self.configure(len(self.instances), seeds, **self.configure_kwargs)
         # Parse arguments
         if seeds is None:
             seeds = [None] * len(self.instances)
         else:
-            assert isinstance(seeds, (list, tuple)) and len(seeds) == len(self.instances)
+            assert isinstance(seeds, (list, tuple)) and len(seeds) == len(
+                self.instances
+            )
         if mode is not None:
             self.set_mode(mode)
         self.set_record_screenshots(record_screenshots)
@@ -114,18 +115,19 @@ class MiniWoBEnvironment(object):
                 Global debug information is directly in the root level
                 Local information for instance i is in info['n'][i]
         """
-        assert len(actions) == len(self.instances), \
-                'len(action) is {} but there are {} instances'.format(
-                        len(actions), len(self.instances))
+        assert len(actions) == len(
+            self.instances
+        ), "len(action) is {} but there are {} instances".format(
+            len(actions), len(self.instances)
+        )
         # Initialize with reasonable values
         states = [None] * len(self.instances)
-        rewards = [-1.] * len(self.instances)
+        rewards = [-1.0] * len(self.instances)
         dones = [True] * len(self.instances)
-        info = {'n': [{} for _ in self.instances]}
+        info = {"n": [{} for _ in self.instances]}
         # Have the instances replace the values
         for i, instance in enumerate(self.instances):
-            instance.call(instance.step,
-                    actions[i], states, rewards, dones, info['n'])
+            instance.call(instance.step, actions[i], states, rewards, dones, info["n"])
         for instance in self.instances:
             instance.wait()
         self.died = any(instance.died for instance in self.instances)
@@ -176,14 +178,15 @@ def test_environment():
     try:
         task_name = sys.argv[1]
     except IndexError:
-        print('Usage: python {} TASK_NAME'.format(sys.argv[0]))
+        print(f"Usage: python {sys.argv[0]} TASK_NAME")
         exit(1)
     env = MiniWoBEnvironment(task_name)
-    base_url = os.environ.get('MINIWOB_BASE_URL')
+    base_url = os.environ.get("MINIWOB_BASE_URL")
     env.configure(num_instances=1, seeds=[0], base_url=base_url)
     states = env.reset()
     print(states[0].dom.visualize())
     env.close()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test_environment()
