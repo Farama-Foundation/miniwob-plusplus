@@ -1,6 +1,7 @@
 import os
 
 import pytest
+
 from miniwob.action import (
     MiniWoBCoordClick,
     MiniWoBElementClick,
@@ -22,19 +23,30 @@ class RepeatedTester:
 
     @pytest.fixture
     def env(self):
-        env = MiniWoBEnvironment(self.TASK_NAME)
         base_url = os.environ.get("MINIWOB_BASE_URL")
         print("BASE URL:", base_url)
         if self.FRAGILE is True:
-            env.configure(base_url=base_url, num_instances=1, seeds=[1], wait_ms=300)
+            env = MiniWoBEnvironment(
+                subdomain=self.TASK_NAME,
+                base_url=base_url,
+                num_instances=1,
+                wait_ms=300,
+            )
         elif self.FRAGILE == "instance":
-            env.configure(base_url=base_url, num_instances=1, seeds=[1])
+            env = MiniWoBEnvironment(
+                subdomain=self.TASK_NAME, base_url=base_url, num_instances=1
+            )
         elif self.FRAGILE == "delay":
-            env.configure(
-                base_url=base_url, num_instances=3, seeds=list(range(3)), wait_ms=1000
+            env = MiniWoBEnvironment(
+                subdomain=self.TASK_NAME,
+                base_url=base_url,
+                num_instances=3,
+                wait_ms=1000,
             )
         else:
-            env.configure(base_url=base_url, num_instances=3, seeds=list(range(3)))
+            env = MiniWoBEnvironment(
+                subdomain=self.TASK_NAME, base_url=base_url, num_instances=3
+            )
         yield env
         env.close()
 

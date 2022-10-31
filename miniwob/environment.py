@@ -2,34 +2,37 @@ import logging
 import os
 import sys
 
+import gymnasium as gym
+
 from miniwob.instance import MiniWoBInstance
 
 
-class MiniWoBEnvironment:
+class MiniWoBEnvironment(gym.Env):
     """MiniWoB environment."""
 
-    def __init__(self, subdomain):
+    metadata = {"render_modes": ["human"]}
+
+    def __init__(
+        self,
+        render_mode=None,
+        subdomain=None,
+        num_instances=1,
+        headless=False,
+        base_url=None,
+        cache_state=False,
+        threading=True,
+        reward_processor=None,
+        wait_ms=0.0,
+        block_on_reset=True,
+        refresh_freq=0,
+        data_mode="train",
+    ):
         """Creates a new MiniWoBEnvironment with no instances.
         Must call configure() to set up instances.
 
         Args:
             subdomain (str): MiniWoB task name (e.g., "click-test")
-        """
-        self.subdomain = subdomain
-        self.instances = []
-        self.died = False
-
-    @property
-    def num_instances(self):
-        return len(self.instances)
-
-    def configure(self, num_instances=1, seeds=None, **kwargs):
-        """Creates the required number of MiniWoBInstance.
-
-        Args:
             num_instances (int): Number of instances
-
-        kwargs are passed into the constructor of MiniWoBInstance:
             headless (bool): Whether to render GUI
             base_url (str): Base URL, which is usually one of the following
                 - http://localhost:8000/     (served by http-serve)
@@ -39,8 +42,6 @@ class MiniWoBEnvironment:
             threading (bool): Whether to run the instances in separate threads
             reward_processor (callable; optional): A function that takes
                 the metadata and return a reward (see miniwob.reward)
-            seeds (list[object]): Random seeds to set for each instance;
-                len(seeds) must be equal to num_instances.
             wait_ms (float): Pause the instance after each action for this
                 amount of time (in milliseconds).
             block_on_reset (bool): On reset, block until the page loads.
@@ -48,49 +49,70 @@ class MiniWoBEnvironment:
                 refresh the page at the beginning of the next episode.
                 Takes time but cleans up any lingering states and memory leaks.
                 *** Must specify `seeds` at each reset call.
-            initial_mode (str): Initial data mode (e.g., "train", "test")
+            data_mode (str): Data mode (e.g., "train", "test").
         """
-        assert seeds is not None, "seeds must be specified"
-        assert len(seeds) == num_instances, "len(seeds) must be equal to num_instances"
-        self.configure_kwargs = kwargs
+        if render_mode and render_mode not in self.metadata["render_modes"]:
+            raise ValueError(f"Invalid render mode: {render_mode}")
+        self.render_mode = render_mode
+        self.num_instances = num_instances
+        # self.instances will be initialized in reset()
+        self.instances = []
+        self.died = False
+        self.instance_kwargs = {
+            "subdomain": subdomain,
+            "headless": headless,
+            "base_url": base_url,
+            "cache_state": cache_state,
+            "threading": threading,
+            "reward_processor": reward_processor,
+            "wait_ms": wait_ms,
+            "block_on_reset": block_on_reset,
+            "refresh_freq": refresh_freq,
+            "data_mode": data_mode,
+        }
+
+    def _hard_reset_instances(self):
+        """Creates the required number of MiniWoBInstance after closing existing ones."""
         for instance in self.instances:
             instance.close()
         self.instances = []
-        for index in range(num_instances):
+        for index in range(self.num_instances):
             logging.info("Starting WebDriver Instance %d", index)
-            instance = MiniWoBInstance(index, self.subdomain, seeds[index], **kwargs)
+            instance = MiniWoBInstance(index, **self.instance_kwargs)
             instance.start()
             self.instances.append(instance)
         for instance in self.instances:
             instance.wait()
 
-    def reset(self, seeds=None, mode=None, record_screenshots=False):
+    def reset(self, seed=None, options=None):
         """Forces stop and start all instances.
 
         Args:
-            seeds (list[object]): Random seeds to set for each instance;
-                If specified, len(seeds) must be equal to the number of instances.
-                A None entry in the list = do not set a new seed.
-            mode (str): If specified, set the data mode to this value before
-                starting new episodes.
-            record_screenshots (bool): Whether to record screenshots of the states.
+            seed (optional int): Random seed. The same seed is used for all instances.
+            options (optional dict): An option dict with the following allowed keys:
+                - data_mode (str): set the data mode to this value.
+                - custom_seeds (list of ints): set the seed of each instance individually.
+                - record_screenshots (bool): Whether to record screenshots of the states.
         Returns:
             states (list[MiniWoBState])
         """
-        # If an instance died, call configure
-        if any(instance.died for instance in self.instances):
-            logging.warning("An instance died. Reset instance ...")
-            self.configure(len(self.instances), seeds, **self.configure_kwargs)
-        # Parse arguments
-        if seeds is None:
-            seeds = [None] * len(self.instances)
-        else:
-            assert isinstance(seeds, (list, tuple)) and len(seeds) == len(
-                self.instances
-            )
-        if mode is not None:
-            self.set_mode(mode)
-        self.set_record_screenshots(record_screenshots)
+        # TODO: Make the return type compatible with gym.Env
+        # The seed in Env is actually not used
+        super().reset(seed=seed)
+        # Hard reset the instances if needed
+        if not self.instances or any(instance.died for instance in self.instances):
+            logging.warning("Hard-resetting instances ...")
+            self._hard_reset_instances()
+        # Process the options
+        options = options or {}
+        seeds = [seed] * self.num_instances
+        if "custom_seeds" in options:
+            seeds = options["custom_seeds"]
+            assert len(seeds) == self.num_instances
+        if "data_mode" in options:
+            self.set_data_mode(options["data_mode"])
+        if "record_screenshots" in options:
+            self.set_record_screenshots(options["record_screenshots"])
         # The ith entry in `states` will be set by the ith instance
         states = [None] * len(self.instances)
         for i, instance in enumerate(self.instances):
@@ -115,6 +137,7 @@ class MiniWoBEnvironment:
                 Global debug information is directly in the root level
                 Local information for instance i is in info['n'][i]
         """
+        # TODO: Make the return type compatible with gym.Env
         assert len(actions) == len(
             self.instances
         ), "len(action) is {} but there are {} instances".format(
@@ -133,7 +156,7 @@ class MiniWoBEnvironment:
         self.died = any(instance.died for instance in self.instances)
         return states, rewards, dones, info
 
-    def set_mode(self, mode):
+    def set_data_mode(self, mode):
         """Set the data mode ("train", "test", etc.) of all instances.
         Will have effect starting from the next episode.
 

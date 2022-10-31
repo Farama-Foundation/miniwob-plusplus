@@ -7,15 +7,16 @@ from queue import Queue
 from threading import Thread
 
 import numpy as np
-from miniwob.fields import Fields, get_field_extractor
-from miniwob.reward import get_original_reward
-from miniwob.screenshot import get_screenshot
-from miniwob.state import MiniWoBState
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+
+from miniwob.fields import Fields, get_field_extractor
+from miniwob.reward import get_original_reward
+from miniwob.screenshot import get_screenshot
+from miniwob.state import MiniWoBState
 
 
 class MiniWoBInstance(Thread):
@@ -39,8 +40,7 @@ class MiniWoBInstance(Thread):
     def __init__(
         self,
         index,
-        subdomain,
-        seed,
+        subdomain=None,
         headless=False,
         base_url=None,
         cache_state=False,
@@ -49,14 +49,13 @@ class MiniWoBInstance(Thread):
         wait_ms=0.0,
         block_on_reset=True,
         refresh_freq=0,
-        initial_mode="train",
+        data_mode="train",
     ):
         """Starts a new Selenium WebDriver session.
 
         Args:
             index (int): Instance index
             subdomain (str): MiniWoB task name (e.g., "click-test")
-            seed (object): Random seed
             headless (bool): Whether to render GUI
             base_url (str): Base URL (default to localhost at port 8000)
             cache_state (bool): Whether to cache and return the initial
@@ -71,14 +70,13 @@ class MiniWoBInstance(Thread):
                 refresh the page at the beginning of the next episode.
                 Takes time but cleans up any lingering states and memory leaks.
                 *** Must specify `seeds` at each reset call.
-            initial_mode (str): Initial data mode (e.g., "train", "test")
+            data_mode (str): Data mode (e.g., "train", "test")
         """
         super().__init__()
         # Overrides Thread.daemon: Kill this thread when the parent is killed
         self.daemon = True
         self.died = False
         self.index = index
-        self.init_seed = repr(seed)
         self.headless = headless
         base_url = base_url or self.DEFAULT_BASE_URL
         if subdomain.startswith("flight."):
@@ -107,7 +105,7 @@ class MiniWoBInstance(Thread):
         self.block_on_reset = block_on_reset
         self.refresh_freq = refresh_freq
         self.num_episodes = 0
-        self.mode = initial_mode
+        self.mode = data_mode
         self.record_screenshots = False
         if reward_processor is None:
             # Use the original reward
@@ -182,8 +180,6 @@ class MiniWoBInstance(Thread):
         except TimeoutException as e:
             logging.error("Page did not load properly. Wrong MINIWOB_BASE_URL?")
             raise e
-        # Seed the seed
-        self.driver.execute_script(f"Math.seedrandom({self.init_seed});")
 
     def close(self):
         """Tear down the WebDriver."""

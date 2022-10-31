@@ -3,6 +3,7 @@ import time
 
 import numpy as np
 import pytest
+
 from miniwob.action import MiniWoBCoordClick, MiniWoBElementClick, MiniWoBTerminate
 from miniwob.environment import MiniWoBEnvironment
 
@@ -13,10 +14,11 @@ class MiniWoBTester:
 
     @pytest.fixture
     def env(self):
-        env = MiniWoBEnvironment(self.TASK_NAME)
         base_url = os.environ.get("MINIWOB_BASE_URL")
         print("BASE URL:", base_url)
-        env.configure(num_instances=3, seeds=[1, 2, "hello"], base_url=base_url)
+        env = MiniWoBEnvironment(
+            subdomain=self.TASK_NAME, num_instances=3, base_url=base_url
+        )
         yield env
         env.close()
 
@@ -53,6 +55,7 @@ class TestMiniWoBEnvironment(MiniWoBTester):
 
     def test_do_nothing(self, env):
         """Test the ability to start up multiple instances."""
+        env.reset()
         assert len(env.instances) == 3
 
     def test_run(self, env):
@@ -192,48 +195,29 @@ class TestMiniWoBSeed(MiniWoBTester):
                 return action
         raise ValueError(f"Cannot find button: {str(state.dom_elements)}")
 
-    def get_input_click(self, state):
-        """Get the action that clicks an input element."""
-        for element in state.dom_elements:
-            if element.tag == "input_text":
-                action = MiniWoBElementClick(element, fail_hard=True)
-                print(f"Clicking with {action}")
-                return action
-        raise ValueError(f"Cannot find input: {str(state.dom_elements)}")
-
     def test_seed(self, env):
         print("=" * 40)
-        states = env.reset(seeds=["hello", "itsme", "hello"])
+        states = env.reset(seed=0, options={"custom_seeds": [0, 1, 0]})
         print(states[0].dom.visualize())
         # Check that everything is the same for instances 0 and 2
-        utt_hello = states[0].utterance
-        utt_itsme = states[1].utterance
-        assert utt_hello == states[2].utterance != utt_itsme
-        ref_to_text_hello = {x.ref: x.text for x in states[0].dom_elements}
-        ref_to_text_itsme = {x.ref: x.text for x in states[1].dom_elements}
-        assert ref_to_text_hello == {x.ref: x.text for x in states[2].dom_elements}
-        # Test clicking an input (no effect)
-        actions_input = [self.get_input_click(state) for state in states]
+        utt_0 = states[0].utterance
+        utt_1 = states[1].utterance
+        assert utt_0 == states[2].utterance != utt_1
+        ref_to_text_0 = {x.ref: x.text for x in states[0].dom_elements}
+        ref_to_text_1 = {x.ref: x.text for x in states[1].dom_elements}
+        assert ref_to_text_0 == {x.ref: x.text for x in states[2].dom_elements}
+        # Test clicking the correct buttons
         actions_button = [self.get_button_click(state) for state in states]
-        states, rewards, dones, info = env.step(actions_input)
-        assert dones == [False, False, False]
-        assert ref_to_text_hello == {x.ref: x.text for x in states[0].dom_elements}
-        assert ref_to_text_itsme == {x.ref: x.text for x in states[1].dom_elements}
-        assert ref_to_text_hello == {x.ref: x.text for x in states[2].dom_elements}
-        # Now click the correct button using the actions computed before
         states, rewards, dones, info = env.step(actions_button)
         assert dones == [True, True, True]
         # Now run everything again but with shuffled seeds
-        states = env.reset(seeds=["hello", "hello", "itsme"])
-        assert states[0].utterance == states[1].utterance == utt_hello
-        assert states[2].utterance == utt_itsme
-        assert ref_to_text_hello == {x.ref: x.text for x in states[0].dom_elements}
-        assert ref_to_text_hello == {x.ref: x.text for x in states[1].dom_elements}
-        assert ref_to_text_itsme == {x.ref: x.text for x in states[2].dom_elements}
+        states = env.reset(seed=0, options={"custom_seeds": [0, 0, 1]})
+        assert states[0].utterance == states[1].utterance == utt_0
+        assert states[2].utterance == utt_1
+        assert ref_to_text_0 == {x.ref: x.text for x in states[0].dom_elements}
+        assert ref_to_text_0 == {x.ref: x.text for x in states[1].dom_elements}
+        assert ref_to_text_1 == {x.ref: x.text for x in states[2].dom_elements}
         # Test clicking with the old action objects
-        actions_input = [actions_input[2], actions_input[0], actions_input[1]]
-        states, rewards, dones, info = env.step(actions_input)
-        assert dones == [False, False, False]
         actions_button = [actions_button[2], actions_button[0], actions_button[1]]
         states, rewards, dones, info = env.step(actions_button)
         assert dones == [True, True, True]
@@ -268,7 +252,7 @@ class TestMiniWoBMode(MiniWoBTester):
         assert dones == [True, True, True]
         assert rewards[0] > 0 and rewards[1] < 0 and rewards[2] > 0
         # Test time
-        env.set_mode("test")
+        env.set_data_mode("test")
         states = env.reset()
         actions = []
         for state, target in zip(states, targets):
@@ -286,8 +270,8 @@ class TestMiniWoBMode(MiniWoBTester):
         states, rewards, dones, info = env.step(actions)
         assert dones == [True, True, True]
         assert rewards[0] < 0 and rewards[1] > 0 and rewards[2] < 0
-        # Training time again: set mode with reset(mode=...)
-        states = env.reset(mode="train")
+        # Training time again: set mode with reset()
+        states = env.reset(options={"data_mode": "train"})
         actions = []
         for state, target in zip(states, targets):
             assert state.utterance == "Click button ONE."
@@ -315,14 +299,14 @@ class TestMiniWoBFields(MiniWoBTester):
             assert state.fields["by"] in state.utterance
             assert state.fields["to"] in state.utterance
         # Test time
-        states = env.reset(mode="test")
+        states = env.reset(options={"data_mode": "test"})
         for state in states:
             print(state.utterance)
             print(state.fields)
             assert state.fields.keys == ["dummy"]
             assert state.utterance
         # Training time
-        states = env.reset(mode="train")
+        states = env.reset(options={"data_mode": "train"})
         for state in states:
             print(state.utterance)
             print(state.fields)
