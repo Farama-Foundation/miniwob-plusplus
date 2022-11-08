@@ -11,11 +11,12 @@ class MiniWoBEnvironment(gym.Env):
     """MiniWoB environment."""
 
     metadata = {"render_modes": ["human"]}
+    reward_range = (-1, 1)
 
     def __init__(
         self,
+        subdomain,
         render_mode=None,
-        subdomain=None,
         num_instances=1,
         headless=False,
         base_url=None,
@@ -37,6 +38,7 @@ class MiniWoBEnvironment(gym.Env):
             base_url (str): Base URL, which is usually one of the following
                 - http://localhost:8000/     (served by http-serve)
                 - file:///path/to/miniwob-plusplus/html/
+                If None, infers the file:// path from this module's location.
             cache_state (bool): Whether to cache and return the initial
                 state; only make sense if the task interface never changes
             threading (bool): Whether to run the instances in separate threads
@@ -155,6 +157,10 @@ class MiniWoBEnvironment(gym.Env):
             instance.wait()
         self.died = any(instance.died for instance in self.instances)
         return states, rewards, dones, info
+
+    def render(self):
+        # The currently supported render modes do not require computing the render.
+        return None
 
     def set_data_mode(self, mode):
         """Set the data mode ("train", "test", etc.) of all instances.

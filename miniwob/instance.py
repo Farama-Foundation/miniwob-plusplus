@@ -1,5 +1,6 @@
 import json
 import logging
+import pathlib
 import time
 import traceback
 import urllib.parse
@@ -18,13 +19,14 @@ from miniwob.reward import get_original_reward
 from miniwob.screenshot import get_screenshot
 from miniwob.state import MiniWoBState
 
+DEFAULT_BASE_URL = "file://" + str(pathlib.Path(__file__).parent.parent) + "/html/"
+print(DEFAULT_BASE_URL)
+
 
 class MiniWoBInstance(Thread):
     """Interface between Python and Chrome driver via Selenium.
     Manages a single instance.
     """
-
-    DEFAULT_BASE_URL = "http://localhost:8000/"
 
     # Added some space for title bar
     WINDOW_WIDTH = 500
@@ -57,7 +59,10 @@ class MiniWoBInstance(Thread):
             index (int): Instance index
             subdomain (str): MiniWoB task name (e.g., "click-test")
             headless (bool): Whether to render GUI
-            base_url (str): Base URL (default to localhost at port 8000)
+            base_url (str): Base URL, which is usually one of the following
+                - http://localhost:8000/     (served by http-serve)
+                - file:///path/to/miniwob-plusplus/html/
+                If None, infers the file:// path from this module's location.
             cache_state (bool): Whether to cache and return the initial
                 state; only make sense if the task interface never changes
             threading (bool): Whether to run this instance as a Thread
@@ -78,7 +83,7 @@ class MiniWoBInstance(Thread):
         self.died = False
         self.index = index
         self.headless = headless
-        base_url = base_url or self.DEFAULT_BASE_URL
+        base_url = base_url or DEFAULT_BASE_URL
         if subdomain.startswith("flight."):
             assert not base_url.startswith("file://"), (
                 "For {} domain, MINIWOB_BASE_URL cannot be file://. "
