@@ -4,7 +4,9 @@ import sys
 
 import gymnasium as gym
 
+from miniwob.action import MiniWoBActionSpace
 from miniwob.instance import MiniWoBInstance
+from miniwob.state import MiniWoBStateSpace
 
 
 class MiniWoBEnvironment(gym.Env):
@@ -72,6 +74,8 @@ class MiniWoBEnvironment(gym.Env):
             "refresh_freq": refresh_freq,
             "data_mode": data_mode,
         }
+        self.action_space = MiniWoBActionSpace(num_instances=num_instances)
+        self.observation_space = MiniWoBStateSpace(num_instances=num_instances)
 
     def _hard_reset_instances(self):
         """Creates the required number of MiniWoBInstance after closing existing ones."""
@@ -96,7 +100,8 @@ class MiniWoBEnvironment(gym.Env):
                 - custom_seeds (list of ints): set the seed of each instance individually.
                 - record_screenshots (bool): Whether to record screenshots of the states.
         Returns:
-            states (list[MiniWoBState])
+            observation (list[MiniWoBState])
+            info (dict)
         """
         # TODO: Make the return type compatible with gym.Env
         # The seed in Env is actually not used
@@ -122,7 +127,7 @@ class MiniWoBEnvironment(gym.Env):
         for instance in self.instances:
             instance.wait()
         self.died = any(instance.died for instance in self.instances)
-        return states
+        return (states, {})
 
     def step(self, actions):
         """Applies an action on each instance and returns the results.

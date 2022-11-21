@@ -19,8 +19,8 @@ from miniwob.reward import get_original_reward
 from miniwob.screenshot import get_screenshot
 from miniwob.state import MiniWoBState
 
-DEFAULT_BASE_URL = "file://" + str(pathlib.Path(__file__).parent.parent) + "/html/"
-print(DEFAULT_BASE_URL)
+HTML_DIR = pathlib.Path(__file__).parent.parent / "html"
+DEFAULT_BASE_URL = f"file://{HTML_DIR}/"
 
 
 class MiniWoBInstance(Thread):
