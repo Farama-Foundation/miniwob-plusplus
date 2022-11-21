@@ -136,10 +136,10 @@ class MiniWoBEnvironment(gym.Env):
             actions (list[MiniWoBAction or None])
 
         Returns:
-            tuple (states, rewards, dones, info)
-            states (list[MiniWoBState])
-            rewards (list[float])
-            dones (list[bool])
+            observation (list[MiniWoBState])
+            reward (list[float])
+            terminated (list[bool])
+            truncated (list[bool])
             info (dict): additional debug information.
                 Global debug information is directly in the root level
                 Local information for instance i is in info['n'][i]
@@ -154,6 +154,7 @@ class MiniWoBEnvironment(gym.Env):
         states = [None] * len(self.instances)
         rewards = [-1.0] * len(self.instances)
         dones = [True] * len(self.instances)
+        truncated = [False] * len(self.instances)
         info = {"n": [{} for _ in self.instances]}
         # Have the instances replace the values
         for i, instance in enumerate(self.instances):
@@ -161,7 +162,7 @@ class MiniWoBEnvironment(gym.Env):
         for instance in self.instances:
             instance.wait()
         self.died = any(instance.died for instance in self.instances)
-        return states, rewards, dones, info
+        return states, rewards, dones, truncated, info
 
     def render(self):
         # The currently supported render modes do not require computing the render.
