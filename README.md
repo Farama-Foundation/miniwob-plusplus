@@ -50,6 +50,9 @@ There are 2 ways to access the tasks:
 
 # Python Environment
 
+The Python environment implements the
+[Gymnasium](https://github.com/Farama-Foundation/Gymnasium/) interface.
+
 ## Setup
 
 - Python dependencies
@@ -71,9 +74,10 @@ There are 2 ways to access the tasks:
     conda install -c conda-forge selenium
     ```
 
-- Environment variable:
-  The tests depend on the variable `MINIWOB_BASE_URL` to point to the base URL
-  of the benchmark. Please see the main README on how to set up the tasks.
+- Environment variable (optional):
+  One can set the shell variable `MINIWOB_BASE_URL` to point to the base URL
+  of the benchmark. If the variable is not specified, the `file://` URL will be
+  inferred from the module path.
   - For the server setup:
     ```
     export MINIWOB_BASE_URL=http://localhost:8080/
@@ -89,13 +93,14 @@ There are 2 ways to access the tasks:
 pytest
 ```
 
-The tests in the `tests` directory also illustrate how the code can be used.
+The tests in the `miniwob/tests/` directory also illustrate how the code can be used.
 
 ---
 
 # JavaScript Utilities
 
-This version of MiniWoB incorporates a few additional JavaScript utilities.
+This version of MiniWoB environments incorporates a few JavaScript utilities,
+many of which are used by the Python interface.
 
 ## `Math.seedrandom([seed])`
 
