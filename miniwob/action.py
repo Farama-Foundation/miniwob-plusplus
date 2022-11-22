@@ -24,32 +24,6 @@ class MiniWoBAction(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
 
-class MiniWoBActionSpace(spaces.Space):
-    """MiniWoB action space."""
-
-    def __init__(self, num_instances):
-        """Initialize the action space.
-
-        Args:
-            num_instances (int): Number of instances.
-        """
-        self._num_instances = num_instances
-
-    def contains(self, x):
-        """Return boolean specifying if x is a valid member of this space."""
-        if not isinstance(x, list) or len(x) != self._num_instances:
-            return False
-        for item in x:
-            if item is not None and not isinstance(item, MiniWoBAction):
-                return False
-        return True
-
-    def sample(self, mask=None):
-        """Sample an action from the space."""
-        # TODO: Actually sample a random action
-        return [None] * self._num_instances
-
-
 class MiniWoBTerminate(MiniWoBAction):
     """Immediately fails the task.
 
@@ -282,3 +256,16 @@ class MiniWoBFocusAndType(MiniWoBAction):
             "element": self.element.to_dict(),
             "text": self.text,
         }
+
+
+class MiniWoBActionSpace(spaces.Space):
+    """MiniWoB action space."""
+
+    def contains(self, x):
+        """Return boolean specifying if x is a valid member of this space."""
+        return x is None or isinstance(x, MiniWoBAction)
+
+    def sample(self, mask=None):
+        """Sample an action from the space."""
+        # TODO: Actually sample a random action
+        return MiniWoBCoordClick(0, 0)

@@ -61,7 +61,7 @@ class TestMiniWoBEnvironment(MiniWoBTester):
     def test_run(self, env):
         """Test reset and step."""
         print("=" * 40)
-        states = env.reset()
+        states, infos = env.reset()
         print([x.utterance for x in states])
         assert all(x.utterance == "Click the button." for x in states)
         print([x.fields for x in states])
@@ -71,19 +71,19 @@ class TestMiniWoBEnvironment(MiniWoBTester):
         print(states[0].dom.visualize())
         ################################
         print("=" * 40)
-        states, rewards, dones, info = env.step([None, None, None])
+        states, rewards, dones, truncs, infos = env.step([None, None, None])
         print([x.utterance for x in states])
         print([x.dom for x in states])
         print(rewards)
         assert rewards == [0, 0, 0]
         print(dones)
         assert dones == [False, False, False]
-        print(info)
+        print(infos)
         ################################
         # Test clicking
         print("=" * 40)
         action = self.get_click(states[1])
-        states, rewards, dones, info = env.step([None, action, None])
+        states, rewards, dones, truncs, infos = env.step([None, action, None])
         assert states[1] is None
         states = [states[0], states[2]]
         print([x.utterance for x in states])
@@ -92,46 +92,46 @@ class TestMiniWoBEnvironment(MiniWoBTester):
         assert rewards[0] == 0 and rewards[1] > 0 and rewards[2] == 0
         print(dones)
         assert dones == [False, True, False]
-        print(info)
+        print(infos)
         ################################
         # Wait for timeout
         print("=" * 40)
         for i in range(1, 13):
             print(f"Sleeping ... ({i})")
             time.sleep(1)
-        states, rewards, dones, info = env.step([None, None, None])
+        states, rewards, dones, truncs, infos = env.step([None, None, None])
         assert states == [None, None, None]
         print(rewards)
         assert rewards[0] < 0 and rewards[1] > 0 and rewards[2] < 0
         print(dones)
         assert dones == [True, True, True]
-        print(info)
+        print(infos)
         ################################
         # Start again
         print("=" * 40)
-        states = env.reset()
+        states, infos = env.reset()
         print([x.utterance for x in states])
         print([x.dom for x in states])
         ################################
         print("=" * 40)
-        states, rewards, dones, info = env.step([None, None, None])
+        states, rewards, dones, truncs, infos = env.step([None, None, None])
         print([x.utterance for x in states])
         print([x.dom for x in states])
         print(rewards)
         assert rewards == [0, 0, 0]
         print(dones)
         assert dones == [False, False, False]
-        print(info)
+        print(infos)
 
     def test_speed(self, env):
-        states = env.reset()
+        states, infos = env.reset()
         start_time = time.time()
         elapsed = []
         N = 50
         for i in range(1, N + 1):
             print("Iteration", i, "/", N)
             actions = [None] * len(states)
-            states, rewards, dones, info = env.step(actions)
+            states, rewards, dones, truncs, infos = env.step(actions)
             elapsed.append(time.time() - start_time)
             start_time = time.time()
         mean = sum(elapsed) / len(elapsed)
@@ -140,27 +140,27 @@ class TestMiniWoBEnvironment(MiniWoBTester):
 
     def test_reset(self, env):
         print("=" * 40)
-        states = env.reset()
+        states, infos = env.reset()
         # Test clicking
         action = self.get_click(states[1])
-        states, rewards, dones, info = env.step([None, action, None])
+        states, rewards, dones, truncs, infos = env.step([None, action, None])
         assert dones == [False, True, False]
-        print(info)
+        print(infos)
         # Should issue a warning on the second instance
-        states, rewards, dones, info = env.step([None, action, None])
+        states, rewards, dones, truncs, infos = env.step([None, action, None])
         assert dones == [False, True, False]
-        print(info)
+        print(infos)
         # Hard reset
-        states = env.reset()
-        states, rewards, dones, info = env.step([None, None, None])
+        states, infos = env.reset()
+        states, rewards, dones, truncs, infos = env.step([None, None, None])
         assert dones == [False, False, False]
-        print(info)
+        print(infos)
         # Now click the first and second
         action_0 = self.get_click(states[0])
         action_1 = self.get_click(states[1])
-        states, rewards, dones, info = env.step([action_0, action_1, None])
+        states, rewards, dones, truncs, infos = env.step([action_0, action_1, None])
         assert dones == [True, True, False]
-        print(info)
+        print(infos)
 
     def test_attention(self, env):
         print("=" * 40)
@@ -173,9 +173,9 @@ class TestMiniWoBEnvironment(MiniWoBTester):
 
     def test_suicide(self, env):
         print("=" * 40)
-        states = env.reset()
+        states, infos = env.reset()
         action = MiniWoBTerminate()
-        states, rewards, dones, info = env.step([None, action, None])
+        states, rewards, dones, truncs, infos = env.step([None, action, None])
         assert dones == [False, True, False]
         assert rewards[1] == -1
 
@@ -197,7 +197,7 @@ class TestMiniWoBSeed(MiniWoBTester):
 
     def test_seed(self, env):
         print("=" * 40)
-        states = env.reset(seed=0, options={"custom_seeds": [0, 1, 0]})
+        states, infos = env.reset(seed=0, options={"custom_seeds": [0, 1, 0]})
         print(states[0].dom.visualize())
         # Check that everything is the same for instances 0 and 2
         utt_0 = states[0].utterance
@@ -208,10 +208,10 @@ class TestMiniWoBSeed(MiniWoBTester):
         assert ref_to_text_0 == {x.ref: x.text for x in states[2].dom_elements}
         # Test clicking the correct buttons
         actions_button = [self.get_button_click(state) for state in states]
-        states, rewards, dones, info = env.step(actions_button)
+        states, rewards, dones, truncs, infos = env.step(actions_button)
         assert dones == [True, True, True]
         # Now run everything again but with shuffled seeds
-        states = env.reset(seed=0, options={"custom_seeds": [0, 0, 1]})
+        states, infos = env.reset(seed=0, options={"custom_seeds": [0, 0, 1]})
         assert states[0].utterance == states[1].utterance == utt_0
         assert states[2].utterance == utt_1
         assert ref_to_text_0 == {x.ref: x.text for x in states[0].dom_elements}
@@ -219,7 +219,7 @@ class TestMiniWoBSeed(MiniWoBTester):
         assert ref_to_text_1 == {x.ref: x.text for x in states[2].dom_elements}
         # Test clicking with the old action objects
         actions_button = [actions_button[2], actions_button[0], actions_button[1]]
-        states, rewards, dones, info = env.step(actions_button)
+        states, rewards, dones, truncs, infos = env.step(actions_button)
         assert dones == [True, True, True]
 
 
@@ -242,41 +242,41 @@ class TestMiniWoBMode(MiniWoBTester):
         """
         print("=" * 40)
         # Training time
-        states = env.reset()
+        states, infos = env.reset()
         targets = ["ONE", "TWO", "ONE"]
         actions = []
         for state, target in zip(states, targets):
             assert state.utterance == "Click button ONE."
             actions.append(self.get_button_click(state, target))
-        states, rewards, dones, info = env.step(actions)
+        states, rewards, dones, truncs, infos = env.step(actions)
         assert dones == [True, True, True]
         assert rewards[0] > 0 and rewards[1] < 0 and rewards[2] > 0
         # Test time
         env.set_data_mode("test")
-        states = env.reset()
+        states, infos = env.reset()
         actions = []
         for state, target in zip(states, targets):
             assert state.utterance == "Click button TWO."
             actions.append(self.get_button_click(state, target))
-        states, rewards, dones, info = env.step(actions)
+        states, rewards, dones, truncs, infos = env.step(actions)
         assert dones == [True, True, True]
         assert rewards[0] < 0 and rewards[1] > 0 and rewards[2] < 0
         # Test time again; mode should be persistent
-        states = env.reset()
+        states, infos = env.reset()
         actions = []
         for state, target in zip(states, targets):
             assert state.utterance == "Click button TWO."
             actions.append(self.get_button_click(state, target))
-        states, rewards, dones, info = env.step(actions)
+        states, rewards, dones, truncs, infos = env.step(actions)
         assert dones == [True, True, True]
         assert rewards[0] < 0 and rewards[1] > 0 and rewards[2] < 0
         # Training time again: set mode with reset()
-        states = env.reset(options={"data_mode": "train"})
+        states, infos = env.reset(options={"data_mode": "train"})
         actions = []
         for state, target in zip(states, targets):
             assert state.utterance == "Click button ONE."
             actions.append(self.get_button_click(state, target))
-        states, rewards, dones, info = env.step(actions)
+        states, rewards, dones, truncs, infos = env.step(actions)
         assert dones == [True, True, True]
         assert rewards[0] > 0 and rewards[1] < 0 and rewards[2] > 0
 
@@ -290,7 +290,7 @@ class TestMiniWoBFields(MiniWoBTester):
     def test_fields(self, env):
         print("=" * 40)
         # Training time
-        states = env.reset()
+        states, infos = env.reset()
         for state in states:
             print(state.utterance)
             print(state.fields)
@@ -299,14 +299,14 @@ class TestMiniWoBFields(MiniWoBTester):
             assert state.fields["by"] in state.utterance
             assert state.fields["to"] in state.utterance
         # Test time
-        states = env.reset(options={"data_mode": "test"})
+        states, infos = env.reset(options={"data_mode": "test"})
         for state in states:
             print(state.utterance)
             print(state.fields)
             assert state.fields.keys == ["dummy"]
             assert state.utterance
         # Training time
-        states = env.reset(options={"data_mode": "train"})
+        states, infos = env.reset(options={"data_mode": "train"})
         for state in states:
             print(state.utterance)
             print(state.fields)

@@ -53,13 +53,13 @@ class RepeatedTester:
     def test_run(self, env):
         for i in range(self.N):
             print(f"Iteration {i + 1} / {self.N}")
-            states = env.reset()
+            states, infos = env.reset()
             for j, state in enumerate(states):
                 print(f"Fields {j}: {state.fields}")
             for s in range(self.MAX_STEPS):
                 print(f"Step {s + 1} / {self.MAX_STEPS}")
                 actions = [self.get_action(x, s) for x in states]
-                states, rewards, dones, info = env.step(actions)
+                states, rewards, dones, truncs, infos = env.step(actions)
                 if all(x for x in dones):
                     break
                 assert all(x >= 0 for x in rewards)

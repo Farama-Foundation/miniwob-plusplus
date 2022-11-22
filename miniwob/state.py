@@ -128,27 +128,6 @@ class MiniWoBState:
         return self._screenshot
 
 
-class MiniWoBStateSpace(spaces.Space):
-    """MiniWoB state space."""
-
-    def __init__(self, num_instances):
-        """Initialize the state space.
-
-        Args:
-            num_instances (int): Number of instances.
-        """
-        self._num_instances = num_instances
-
-    def contains(self, x):
-        """Return boolean specifying if x is a valid member of this space."""
-        if not isinstance(x, list) or len(x) != self._num_instances:
-            return False
-        for item in x:
-            if item is not None and not isinstance(item, MiniWoBState):
-                return False
-        return True
-
-
 class DOMElement:
     """Encapsulate the DOM element."""
 
@@ -534,3 +513,11 @@ class DOMElement:
             float(m.group(3)) / 255,
             a,
         )
+
+
+class MiniWoBStateSpace(spaces.Space):
+    """MiniWoB state space."""
+
+    def contains(self, x):
+        """Return boolean specifying if x is a valid member of this space."""
+        return x is None or isinstance(x, MiniWoBState)

@@ -197,13 +197,14 @@ class MiniWoBInstance(Thread):
             traceback.print_exc()
         self.died = True
 
-    def reset(self, states, seed):
+    def reset(self, states, infos, seed):
         """Forces stop and start this instance.
         Also sets states[i] to be the initial state
         (where i = self.index).
 
         Args:
             states (list)
+            infos (list)
             seed (object): Seed to set for the next episode
         """
         if self.refresh_freq:
@@ -216,10 +217,12 @@ class MiniWoBInstance(Thread):
         states[i] = self.get_state()
         if self.cache_state:
             self.initial_state = states[i]
+        metadata = self.get_metadata()
+        infos[i] = metadata
 
-    def step(self, action, states, rewards, dones, info_n):
+    def step(self, action, states, rewards, dones, infos):
         """Applies an action on this instance.
-        Also sets states[i], rewards[i], dones[i], and info['n'][i]
+        Also sets states[i], rewards[i], dones[i], and infos[i]
         (where i = self.index).
 
         Args:
@@ -227,7 +230,7 @@ class MiniWoBInstance(Thread):
             states (list)
             rewards (list)
             dones (list)
-            info_n (list)
+            infos (list)
         """
         i = self.index
         self.perform(action)
@@ -240,7 +243,7 @@ class MiniWoBInstance(Thread):
             else:
                 states[i] = self.initial_state
         metadata["elapsed"] = max(0.0, time.time() - self.start_time)
-        info_n[i] = metadata
+        infos[i] = metadata
 
     ################################
     # Primitive actions
