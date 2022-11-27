@@ -11,5 +11,10 @@ setup(
         "selenium>=4.5.0",
         "numpy>=1.18.0",
     ],
-    extras_require={"testing": ["pytest>=7.0.0"]},
+    extras_require={
+        "testing": [
+            "pytest>=7.0.0",
+            "pytest-timeout>=2.1.0",
+        ]
+    },
 )

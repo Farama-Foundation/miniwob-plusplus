@@ -17,4 +17,4 @@ jobs:
              --build-arg PYTHON_VERSION=${{ matrix.python-version }} \
              --tag miniwob-plusplus-docker .
       - name: Run tests
-        run: docker run miniwob-plusplus-docker pytest
+        run: docker run miniwob-plusplus-docker pytest --timeout=30
