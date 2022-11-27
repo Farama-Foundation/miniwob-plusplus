@@ -1,6 +1,5 @@
-import os
-
 import pytest
+
 from miniwob.action import (
     MiniWoBCoordClick,
     MiniWoBElementClick,
@@ -14,7 +13,7 @@ class RepeatedTester:
     # Task name; subclasses should set this field
     TASK_NAME = None
     # Number of times to run the test
-    N = 20
+    N = 10
     # Maximum number of steps for each episode
     MAX_STEPS = 1
     # Fragile tasks need longer wait time and single instance
@@ -23,18 +22,16 @@ class RepeatedTester:
     @pytest.fixture
     def env(self):
         env = MiniWoBEnvironment(self.TASK_NAME)
-        base_url = os.environ.get("MINIWOB_BASE_URL")
-        print("BASE URL:", base_url)
         if self.FRAGILE is True:
-            env.configure(base_url=base_url, num_instances=1, seeds=[1], wait_ms=300)
+            env.configure(headless=True, num_instances=1, seeds=[1], wait_ms=300)
         elif self.FRAGILE == "instance":
-            env.configure(base_url=base_url, num_instances=1, seeds=[1])
+            env.configure(headless=True, num_instances=1, seeds=[1])
         elif self.FRAGILE == "delay":
             env.configure(
-                base_url=base_url, num_instances=3, seeds=list(range(3)), wait_ms=1000
+                headless=True, num_instances=3, seeds=list(range(3)), wait_ms=1000
             )
         else:
-            env.configure(base_url=base_url, num_instances=3, seeds=list(range(3)))
+            env.configure(headless=True, num_instances=3, seeds=list(range(3)))
         yield env
         env.close()
 

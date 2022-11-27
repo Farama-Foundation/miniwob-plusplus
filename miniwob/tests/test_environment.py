@@ -1,8 +1,8 @@
-import os
 import time
 
 import numpy as np
 import pytest
+
 from miniwob.action import MiniWoBCoordClick, MiniWoBElementClick, MiniWoBTerminate
 from miniwob.environment import MiniWoBEnvironment
 
@@ -14,9 +14,7 @@ class MiniWoBTester:
     @pytest.fixture
     def env(self):
         env = MiniWoBEnvironment(self.TASK_NAME)
-        base_url = os.environ.get("MINIWOB_BASE_URL")
-        print("BASE URL:", base_url)
-        env.configure(num_instances=3, seeds=[1, 2, "hello"], base_url=base_url)
+        env.configure(num_instances=3, seeds=[1, 2, "hello"], headless=True)
         yield env
         env.close()
 

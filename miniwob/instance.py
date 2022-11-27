@@ -1,5 +1,6 @@
 import json
 import logging
+import pathlib
 import time
 import traceback
 import urllib.parse
@@ -7,23 +8,25 @@ from queue import Queue
 from threading import Thread
 
 import numpy as np
-from miniwob.fields import Fields, get_field_extractor
-from miniwob.reward import get_original_reward
-from miniwob.screenshot import get_screenshot
-from miniwob.state import MiniWoBState
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+from miniwob.fields import Fields, get_field_extractor
+from miniwob.reward import get_original_reward
+from miniwob.screenshot import get_screenshot
+from miniwob.state import MiniWoBState
+
+HTML_DIR = pathlib.Path(__file__).parent.parent / "html"
+DEFAULT_BASE_URL = f"file://{HTML_DIR}/"
+
 
 class MiniWoBInstance(Thread):
     """Interface between Python and Chrome driver via Selenium.
     Manages a single instance.
     """
-
-    DEFAULT_BASE_URL = "http://localhost:8000/"
 
     # Added some space for title bar
     WINDOW_WIDTH = 500
@@ -80,7 +83,7 @@ class MiniWoBInstance(Thread):
         self.index = index
         self.init_seed = repr(seed)
         self.headless = headless
-        base_url = base_url or self.DEFAULT_BASE_URL
+        base_url = base_url or DEFAULT_BASE_URL
         if subdomain.startswith("flight."):
             assert not base_url.startswith("file://"), (
                 "For {} domain, MINIWOB_BASE_URL cannot be file://. "
