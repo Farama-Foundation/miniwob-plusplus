@@ -4,6 +4,7 @@ setup(
     name="miniwob_plusplus",
     version="0.0.1",
     python_requires=">=3.7, <3.11",
+    packages=["miniwob"],
     install_requires=[
         "Gymnasium==0.26.3",
         "Pillow>=9.0.0",
