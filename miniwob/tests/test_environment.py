@@ -1,4 +1,3 @@
-import os
 import time
 
 import numpy as np
@@ -14,10 +13,9 @@ class MiniWoBTester:
 
     @pytest.fixture
     def env(self):
-        base_url = os.environ.get("MINIWOB_BASE_URL")
-        print("BASE URL:", base_url)
         env = MiniWoBEnvironment(
-            subdomain=self.TASK_NAME, num_instances=3, base_url=base_url
+            subdomain=self.TASK_NAME,
+            num_instances=3,
         )
         yield env
         env.close()
