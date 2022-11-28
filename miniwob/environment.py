@@ -1,6 +1,4 @@
 import logging
-import os
-import sys
 
 import gymnasium as gym
 
@@ -12,6 +10,8 @@ from miniwob.state import MiniWoBStateSpace
 class MiniWoBEnvironment(gym.Env):
     """MiniWoB environment."""
 
+    # render_mode = None: Headless Chrome (default)
+    # render_mode = "human": Show the Chrome screen
     metadata = {"render_modes": ["human"]}
     reward_range = (-1, 1)
 
@@ -222,21 +222,3 @@ class MiniWoBEnvironment(gym.Env):
             instance.call(instance.close)
         for instance in self.instances:
             instance.wait()
-
-
-def test_environment():
-    try:
-        task_name = sys.argv[1]
-    except IndexError:
-        print(f"Usage: python {sys.argv[0]} TASK_NAME")
-        exit(1)
-    env = MiniWoBEnvironment(task_name)
-    base_url = os.environ.get("MINIWOB_BASE_URL")
-    env.configure(num_instances=1, seeds=[0], base_url=base_url)
-    states = env.reset()
-    print(states[0].dom.visualize())
-    env.close()
-
-
-if __name__ == "__main__":
-    test_environment()
