@@ -14,6 +14,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+from miniwob.action import to_action_object
 from miniwob.fields import Fields, get_field_extractor
 from miniwob.reward import get_original_reward
 from miniwob.screenshot import get_screenshot
@@ -298,7 +299,7 @@ class MiniWoBInstance(Thread):
                     self.index,
                 )
             else:
-                action(self.driver)
+                to_action_object(action)(self.driver)
         if self.wait_ms:
             time.sleep(self.wait_ms / 1000.0)
 

@@ -1,6 +1,7 @@
 # MiniWoB actions
 import abc
 import logging
+from enum import IntEnum
 
 from gymnasium import spaces
 from selenium.webdriver.common.action_chains import ActionChains
@@ -22,6 +23,27 @@ class MiniWoBAction(metaclass=abc.ABCMeta):
     def to_dict(self):
         """Dict representation for JSON serialization."""
         raise NotImplementedError()
+
+
+class MiniWoBNoOp(MiniWoBAction):
+    """Do nothing."""
+
+    def __call__(self, driver):
+        pass
+
+    def __str__(self):
+        return "MiniWoBNoOp"
+
+    __repr__ = __str__
+
+    def __eq__(self, other):
+        return isinstance(other, MiniWoBNoOp)
+
+    def __hash__(self):
+        return hash(self.__class__.__name__)
+
+    def to_dict(self):
+        return {"type": "NoOp"}
 
 
 class MiniWoBTerminate(MiniWoBAction):
@@ -112,21 +134,24 @@ class MiniWoBElementClick(MiniWoBAction):
     """
 
     def __init__(self, element, fail_hard=False):
-        self._element = element
-        self._ref = element.ref
-        if self._ref is None:
-            raise RuntimeError(f"Cannot click on {element} with _ref = None")
+        if isinstance(element, int):
+            self._ref = element
+        else:
+            self._ref = element._ref
+            if self._ref is None:
+                raise RuntimeError(f"Cannot click on {element} with _ref = None")
         self._fail_hard = fail_hard
 
     def __call__(self, driver):
-        if self.element.tag == "select":
-            # SPECIAL CASE: <select>
-            body = driver.find_element(By.TAG_NAME, "body")
-            chain = ActionChains(driver)
-            chain.move_to_element_with_offset(
-                body, self.element.left + 5, self.element.top + 5
-            ).click().perform()
-            return
+        # TODO: Handle <select> correctly.
+        # if self.element.tag == "select":
+        #     # SPECIAL CASE: <select>
+        #     body = driver.find_element(By.TAG_NAME, "body")
+        #     chain = ActionChains(driver)
+        #     chain.move_to_element_with_offset(
+        #         body, self.element.left + 5, self.element.top + 5
+        #     ).click().perform()
+        #     return
         result = driver.execute_script(f"return core.elementClick({self._ref});")
         if result is not True:
             if self._fail_hard:
@@ -138,12 +163,8 @@ class MiniWoBElementClick(MiniWoBAction):
     def ref(self):
         return self._ref
 
-    @property
-    def element(self):
-        return self._element
-
     def __str__(self):
-        return f"click({self.element})"
+        return f"click({self.ref})"
 
     __repr__ = __str__
 
@@ -159,7 +180,7 @@ class MiniWoBElementClick(MiniWoBAction):
     def to_dict(self):
         return {
             "type": "ElementClick",
-            "element": self.element.to_dict(),
+            "element": self.ref,
         }
 
 
@@ -230,15 +251,11 @@ class MiniWoBFocusAndType(MiniWoBAction):
         return self._click.ref
 
     @property
-    def element(self):
-        return self._click.element
-
-    @property
     def text(self):
         return self._type.text
 
     def __str__(self):
-        return f"type({self._click.element}, {repr(self._type.text)})"
+        return f"type({self.ref}, {repr(self.text)})"
 
     __repr__ = __str__
 
@@ -253,19 +270,66 @@ class MiniWoBFocusAndType(MiniWoBAction):
     def to_dict(self):
         return {
             "type": "ElementClick",
-            "element": self.element.to_dict(),
+            "element": self.ref,
             "text": self.text,
         }
 
 
-class MiniWoBActionSpace(spaces.Space):
-    """MiniWoB action space."""
+################################################
+# Serialized actions for Gymnasium
 
-    def contains(self, x):
-        """Return boolean specifying if x is a valid member of this space."""
-        return x is None or isinstance(x, MiniWoBAction)
 
-    def sample(self, mask=None):
-        """Sample an action from the space."""
-        # TODO: Actually sample a random action
-        return MiniWoBCoordClick(0, 0)
+class ActionTypes(IntEnum):
+    NONE = 0
+    COORD_CLICK = 1
+    ELEMENT_CLICK = 2
+    TYPE = 3
+    FOCUS_AND_TYPE = 4
+
+
+ASCII_CHARSET = frozenset(chr(x) for x in range(32, 128))
+
+
+def get_action_space(
+    screen_height, screen_width, typing_max_length=32, typing_charset=ASCII_CHARSET
+):
+    """Return the space of serialized actions."""
+    space = spaces.Dict(
+        {
+            "action_type": spaces.Discrete(len(ActionTypes)),
+            # clicked_top and clicked_left are only used for COORD_CLICK
+            "clicked_top": spaces.Box(0.0, screen_height, dtype=float),
+            "clicked_left": spaces.Box(0.0, screen_width, dtype=float),
+            # clicked_element is only used for ELEMENT_CLICK and FOCUS_AND_TYPE
+            "clicked_element": spaces.Box(1, float("inf"), dtype=int),
+            # typed_text is only used for TYPE and FOCUS_AND_TYPE
+            "typed_text": spaces.Text(typing_max_length, charset=typing_charset),
+        }
+    )
+    return space
+
+
+def to_action_object(action):
+    """Converts the serialized action into a MiniWoBAction object."""
+    if isinstance(action, MiniWoBAction):
+        # Already a MiniWoBAction
+        return action
+    action_type = action["action_type"]
+    if action_type == ActionTypes.NONE:
+        return MiniWoBNoOp()
+    elif action_type == ActionTypes.COORD_CLICK:
+        top = float(action["clicked_top"])
+        left = float(action["clicked_left"])
+        return MiniWoBCoordClick(top=top, left=left)
+    elif action_type == ActionTypes.ELEMENT_CLICK:
+        ref = int(action["clicked_element"])
+        return MiniWoBElementClick(ref)
+    elif action_type == ActionTypes.TYPE:
+        text = action["typed_text"]
+        return MiniWoBType(text)
+    elif action_type == ActionTypes.FOCUS_AND_TYPE:
+        ref = int(action["clicked_element"])
+        text = action["typed_text"]
+        return MiniWoBFocusAndType(ref, text)
+    else:
+        raise ValueError(f"Unknown action type: {action_type}")

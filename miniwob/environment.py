@@ -2,7 +2,7 @@ import logging
 
 import gymnasium as gym
 
-from miniwob.action import MiniWoBActionSpace
+from miniwob.action import get_action_space
 from miniwob.instance import MiniWoBInstance
 from miniwob.state import MiniWoBStateSpace
 
@@ -55,8 +55,6 @@ class MiniWoBEnvironment(gym.Env):
         if render_mode and render_mode not in self.metadata["render_modes"]:
             raise ValueError(f"Invalid render mode: {render_mode}")
         self.render_mode = render_mode
-        # self.instance will be initialized in reset()
-        self.instance = None
         self.instance_kwargs = {
             "subdomain": subdomain,
             "headless": (render_mode is None),
@@ -69,7 +67,11 @@ class MiniWoBEnvironment(gym.Env):
             "refresh_freq": refresh_freq,
             "data_mode": data_mode,
         }
-        self.action_space = MiniWoBActionSpace()
+        self.instance = None
+        self._hard_reset_instance()
+        self.action_space = get_action_space(
+            self.instance.task_height, self.instance.task_width
+        )
         self.observation_space = MiniWoBStateSpace()
 
     def _hard_reset_instance(self):
