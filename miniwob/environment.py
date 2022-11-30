@@ -1,10 +1,11 @@
+"""MiniWoB environment."""
 import logging
 
 import gymnasium as gym
 
 from miniwob.action import get_action_space
 from miniwob.instance import MiniWoBInstance
-from miniwob.state import MiniWoBStateSpace
+from miniwob.observation import get_observation_space
 
 
 class MiniWoBEnvironment(gym.Env):
@@ -20,7 +21,6 @@ class MiniWoBEnvironment(gym.Env):
         subdomain,
         render_mode=None,
         base_url=None,
-        cache_state=False,
         threading=True,
         reward_processor=None,
         wait_ms=0.0,
@@ -37,8 +37,6 @@ class MiniWoBEnvironment(gym.Env):
                 - http://localhost:8000/     (served by http-serve)
                 - file:///path/to/miniwob-plusplus/html/
                 If None, infers the file:// path from this module's location.
-            cache_state (bool): Whether to cache and return the initial
-                state; only make sense if the task interface never changes
             threading (bool): Whether to run the instances in separate threads
             reward_processor (callable; optional): A function that takes
                 the metadata and return a reward (see miniwob.reward)
@@ -59,7 +57,6 @@ class MiniWoBEnvironment(gym.Env):
             "subdomain": subdomain,
             "headless": (render_mode is None),
             "base_url": base_url,
-            "cache_state": cache_state,
             "threading": threading,
             "reward_processor": reward_processor,
             "wait_ms": wait_ms,
@@ -70,9 +67,13 @@ class MiniWoBEnvironment(gym.Env):
         self.instance = None
         self._hard_reset_instance()
         self.action_space = get_action_space(
-            self.instance.task_height, self.instance.task_width
+            screen_width=self.instance.task_width,
+            screen_height=self.instance.task_height,
         )
-        self.observation_space = MiniWoBStateSpace()
+        self.observation_space = get_observation_space(
+            screen_width=self.instance.task_width,
+            screen_height=self.instance.task_height,
+        )
 
     def _hard_reset_instance(self):
         """Closes the current MiniWoBInstance (if exists) and starts a new one."""
@@ -108,11 +109,11 @@ class MiniWoBEnvironment(gym.Env):
         if "record_screenshots" in options:
             self.set_record_screenshots(options["record_screenshots"])
         # We pass lists for the instance to modify in-place.
-        states = [None]
+        obs = [None]
         infos = [None]
-        self.instance.call(self.instance.reset, states, infos, seed)
+        self.instance.call(self.instance.reset, obs, infos, seed)
         self.instance.wait()
-        return states[0], infos[0]
+        return obs[0], infos[0]
 
     def step(self, action):
         """Applies an action on the instance and returns the result.
@@ -125,17 +126,17 @@ class MiniWoBEnvironment(gym.Env):
             reward (float)
             terminated (bool)
             truncated (bool)
-            infos (dict): additional debug information.
+            info (dict): additional debug information.
         """
         # We pass lists for the instance to modify in-place.
-        states = [None]
+        obs = [None]
         rewards = [-1.0]
         dones = [True]
         truncs = [False]
         infos = [None]
-        self.instance.call(self.instance.step, action, states, rewards, dones, infos)
+        self.instance.call(self.instance.step, action, obs, rewards, dones, infos)
         self.instance.wait()
-        return states[0], rewards[0], dones[0], truncs[0], infos[0]
+        return obs[0], rewards[0], dones[0], truncs[0], infos[0]
 
     def render(self):
         # The currently supported render modes do not require computing the render.
@@ -151,7 +152,7 @@ class MiniWoBEnvironment(gym.Env):
         self.instance.mode = mode
 
     def set_record_screenshots(self, record_screenshots):
-        """Adjust whether the record the screenshots of the states.
+        """Adjust whether the record the screenshots.
 
         Args:
             record_screenshots (bool)

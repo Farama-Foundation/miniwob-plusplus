@@ -1,8 +1,7 @@
+"""Task-specific key-value pairs extracted from the task instructions."""
 import collections
 import json
-import os
 import re
-import sys
 
 # Mapping from task_name to field extractor
 # Each extractor is a function that takes the utterance string and
@@ -1122,29 +1121,3 @@ FIELD_EXTRACTORS["flight.Alaska-auto"] = extract_flight_subtasks
 FIELD_EXTRACTORS["flight.Delta"] = extract_flight_subtasks
 FIELD_EXTRACTORS["flight.JetBlue"] = extract_flight_subtasks
 FIELD_EXTRACTORS["flight.United"] = extract_flight_subtasks
-
-################################################################
-# Script for printing out the utterances for a particular task
-
-
-def extract_utterances():
-    try:
-        task_name = sys.argv[1]
-    except IndexError:
-        print(f"Usage: {sys.argv[0]} task_name", file=sys.stderr)
-        exit(1)
-    FIELD_EXTRACTORS[task_name] = lambda utt: Fields({})
-    from miniwob.environment import MiniWoBEnvironment
-
-    env = MiniWoBEnvironment(task_name)
-    base_url = os.environ.get("MINIWOB_BASE_URL")
-    env.configure(num_instances=4, seeds=list(range(4)), base_url=base_url)
-    for i in range(25):
-        states = env.reset()
-        for state in states:
-            print("UTT:\t{}".format(state.utterance.replace("\n", " ")))
-    env.close()
-
-
-if __name__ == "__main__":
-    extract_utterances()

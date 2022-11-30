@@ -1,3 +1,4 @@
+"""Gymnasium environment registration."""
 from gymnasium.envs.registration import register
 
 MINIWOB_TASKS = [

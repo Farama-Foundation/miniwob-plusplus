@@ -1,4 +1,4 @@
-# Dealing with screenshots
+"""Screenshot utilities."""
 import json
 import sys
 from io import StringIO
@@ -32,7 +32,7 @@ def pil_to_numpy_array(pil_image):
         numpy array of shape (height, width, 3)
         where 3 is the number of channels (RGB).
     """
-    return np.array(pil_image).astype(np.float32)
+    return np.array(pil_image).astype(np.uint8)
 
 
 def create_gif(path_prefix):

@@ -1,3 +1,4 @@
+"""Generic utilities."""
 import re
 
 
