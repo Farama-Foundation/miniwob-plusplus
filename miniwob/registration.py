@@ -120,15 +120,13 @@ def register_miniwob_envs():
     """Register MiniWoB and FlightWoB environments."""
     for name in MINIWOB_TASKS:
         register(
-            id=f"miniwob/{name}-v0",
+            id=f"miniwob/{name}-v1",
             entry_point="miniwob.environment:MiniWoBEnvironment",
-            nondeterministic=True,  # TODO: Remove this
             kwargs={"subdomain": name},
         )
     for name in FLIGHTWOB_TASKS:
         register(
-            id=f"miniwob/flight.{name}-v0",
+            id=f"miniwob/flight.{name}-v1",
             entry_point="miniwob.environment:MiniWoBEnvironment",
-            nondeterministic=True,  # TODO: Remove this
             kwargs={"subdomain": f"flight.{name}"},
         )
