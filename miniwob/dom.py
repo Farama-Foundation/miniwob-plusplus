@@ -1,142 +1,16 @@
+"""Encapsulation of the DOM element tree."""
 import re
-
-from miniwob.utils import Phrase
-
-
-class MiniWoBState:
-    """MiniWoB state.
-
-    Warning: The return types might be changed in the future!!!
-    """
-
-    # Task dimensions
-    HEIGHT = ROWS = 210
-    WIDTH = COLS = 160
-    PROMPT_HEIGHT = PROMPT_ROWS = 50
-
-    def __init__(self, utterance, fields, dom_info):
-        """Initialize a MiniWoBState.
-
-        Args:
-            utterance (unicode)
-            fields (Fields)
-            dom_info (dict)
-        """
-        ################
-        # Parse utterance
-        assert isinstance(utterance, str)
-        self._phrase = Phrase(utterance)
-        self._fields = fields
-        ################
-        # Store DOM
-        self._dom_elements = []
-        self._root_dom = DOMElement(
-            dom_info, parent=None, dom_elements=self._dom_elements
-        )
-        ################
-        # Screenshot (None by default)
-        self._screenshot = None
-
-    @property
-    def utterance(self):
-        """Task utterance.
-
-        Returns:
-            unicode
-        """
-        return self._phrase.text
-
-    @property
-    def phrase(self):
-        """The Phrase object of the utterance.
-
-        Returns:
-            Phrase
-        """
-        return self._phrase
-
-    @property
-    def tokens(self):
-        """Tokens.
-
-        Returns
-            list[unicode]
-        """
-        return list(self._phrase.tokens)
-
-    def detokenize(self, start, end):
-        """Return the substring of the original string that corresponds
-        to tokens[start:end].
-
-        Args:
-            start (int)
-            end (int)
-        Returns:
-            unicode
-        """
-        return self._phrase.detokenize(start, end)
-
-    @property
-    def fields(self):
-        """Key-value fields extracted from the utterance.
-
-        Returns:
-            Fields
-        """
-        return self._fields
-
-    @property
-    def dom(self):
-        """The root DOM structure.
-
-        Returns:
-            DOMElement
-        """
-        return self._root_dom
-
-    @property
-    def dom_elements(self):
-        """List of all DOM elements, flattened.
-
-        Returns:
-            list[DOMElement]
-        """
-        return self._dom_elements
-
-    def __str__(self):
-        return f"MiniWoBState(utterance: {repr(self.utterance)})"
-
-    __repr__ = __str__
-
-    def set_screenshot(self, pil_image):
-        """Add screenshot to the state.
-
-        Args:
-            pil_image (PIL Image)
-        """
-        self._screenshot = pil_image
-
-    @property
-    def screenshot(self):
-        """Return screenshot, or None if not exist.
-
-        Returns:
-            PIL Image or None
-        """
-        return self._screenshot
 
 
 class DOMElement:
     """Encapsulate the DOM element."""
 
-    def __init__(self, raw_dom, parent=None, dom_elements=None):
+    def __init__(self, raw_dom, parent=None):
         """Create a new DOMElement based on the data from getDOMInfo in JavaScript.
 
         Args:
             raw_dom (dict): A dict with values from getDOMInfo in JavaScript.
             parent (DOMElement|None): the parent DOMElement, or None
-            dom_elements (list|None): If specified, append this DOMElement
-                object to the list
         """
         self._parent = parent
         self._tag = raw_dom["tag"].lower()
@@ -167,17 +41,12 @@ class DOMElement:
         # Recurse on the children
         self._children = []
         for raw_child in raw_dom["children"]:
-            self._children.append(
-                DOMElement(raw_child, parent=self, dom_elements=dom_elements)
-            )
+            self._children.append(DOMElement(raw_child, parent=self))
         # Fix a bug where sometimes children are created even though all children are <t>
         # (which will incorrectly make this element a non-leaf and thus unclickable)
         if self._children and all(child.tag == "t" for child in self._children):
             self._text = " ".join(child.text for child in self._children)
             self._children = []
-        # Add to the collection
-        if dom_elements is not None:
-            dom_elements.append(self)
 
     def __eq__(self, other):
         if not isinstance(other, DOMElement):
@@ -312,6 +181,14 @@ class DOMElement:
     def children(self):
         """Return the list of children (list[DOMElement])."""
         return self._children
+
+    @property
+    def subtree_elements(self):
+        """Return the list of elements in the subtree, including self (list[DOMElement])."""
+        elements = [self]
+        for child in self.children:
+            elements += child.subtree_elements
+        return elements
 
     @property
     def parent(self):

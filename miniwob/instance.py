@@ -1,3 +1,4 @@
+"""Low-level interface with ChromDriver via Selenium."""
 import json
 import logging
 import pathlib
@@ -14,19 +15,23 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+from miniwob.action import execute_action
+from miniwob.dom import DOMElement
 from miniwob.fields import Fields, get_field_extractor
+from miniwob.observation import (
+    create_empty_observation,
+    create_empty_screenshot,
+    create_observation,
+)
 from miniwob.reward import get_original_reward
-from miniwob.screenshot import get_screenshot
-from miniwob.state import MiniWoBState
+from miniwob.screenshot import get_screenshot, pil_to_numpy_array
 
 HTML_DIR = pathlib.Path(__file__).parent.parent / "html"
 DEFAULT_BASE_URL = f"file://{HTML_DIR}/"
 
 
 class MiniWoBInstance(Thread):
-    """Interface between Python and Chrome driver via Selenium.
-    Manages a single instance.
-    """
+    """Interface between Python and ChromeDriver via Selenium."""
 
     # Added some space for title bar
     WINDOW_WIDTH = 500
@@ -42,28 +47,26 @@ class MiniWoBInstance(Thread):
     def __init__(
         self,
         index,
-        subdomain,
-        seed,
+        subdomain=None,
         headless=False,
         base_url=None,
-        cache_state=False,
         threading=True,
         reward_processor=None,
         wait_ms=0.0,
         block_on_reset=True,
         refresh_freq=0,
-        initial_mode="train",
+        data_mode="train",
     ):
         """Starts a new Selenium WebDriver session.
 
         Args:
             index (int): Instance index
             subdomain (str): MiniWoB task name (e.g., "click-test")
-            seed (object): Random seed
             headless (bool): Whether to render GUI
-            base_url (str): Base URL (default to localhost at port 8000)
-            cache_state (bool): Whether to cache and return the initial
-                state; only make sense if the task interface never changes
+            base_url (str): Base URL, which is usually one of the following
+                - http://localhost:8000/     (served by http-serve)
+                - file:///path/to/miniwob-plusplus/html/
+                If None, infers the file:// path from this module's location.
             threading (bool): Whether to run this instance as a Thread
             reward_processor (callable; optional): A function that takes
                 the metadata and return a reward (see miniwob.reward)
@@ -74,14 +77,13 @@ class MiniWoBInstance(Thread):
                 refresh the page at the beginning of the next episode.
                 Takes time but cleans up any lingering states and memory leaks.
                 *** Must specify `seeds` at each reset call.
-            initial_mode (str): Initial data mode (e.g., "train", "test")
+            data_mode (str): Data mode (e.g., "train", "test")
         """
         super().__init__()
         # Overrides Thread.daemon: Kill this thread when the parent is killed
         self.daemon = True
         self.died = False
         self.index = index
-        self.init_seed = repr(seed)
         self.headless = headless
         base_url = base_url or DEFAULT_BASE_URL
         if subdomain.startswith("flight."):
@@ -103,14 +105,13 @@ class MiniWoBInstance(Thread):
             self.task_width = self.TASK_WIDTH
             self.task_height = self.TASK_HEIGHT
         self.field_extractor = get_field_extractor(subdomain)
-        self.cache_state = cache_state
         self.threading = threading
         self.reward_processor = reward_processor
         self.wait_ms = wait_ms
         self.block_on_reset = block_on_reset
         self.refresh_freq = refresh_freq
         self.num_episodes = 0
-        self.mode = initial_mode
+        self.mode = data_mode
         self.record_screenshots = False
         if reward_processor is None:
             # Use the original reward
@@ -185,8 +186,6 @@ class MiniWoBInstance(Thread):
         except TimeoutException as e:
             logging.error("Page did not load properly. Wrong MINIWOB_BASE_URL?")
             raise e
-        # Seed the seed
-        self.driver.execute_script(f"Math.seedrandom({self.init_seed});")
 
     def close(self):
         """Tear down the WebDriver."""
@@ -199,13 +198,14 @@ class MiniWoBInstance(Thread):
             traceback.print_exc()
         self.died = True
 
-    def reset(self, states, seed):
+    def reset(self, obs, infos, seed):
         """Forces stop and start this instance.
-        Also sets states[i] to be the initial state
+        Also sets obs[i] to be the initial observation
         (where i = self.index).
 
         Args:
-            states (list)
+            obs (list)
+            infos (list)
             seed (object): Seed to set for the next episode
         """
         if self.refresh_freq:
@@ -215,34 +215,36 @@ class MiniWoBInstance(Thread):
         i = self.index
         self.force_stop()
         self.begin_task(seed=seed)
-        states[i] = self.get_state()
-        if self.cache_state:
-            self.initial_state = states[i]
+        obs[i], extra_metadata = self.get_observation()
+        metadata = self.get_metadata()
+        metadata.update(extra_metadata)
+        infos[i] = metadata
 
-    def step(self, action, states, rewards, dones, info_n):
+    def step(self, action, obs, rewards, dones, infos):
         """Applies an action on this instance.
-        Also sets states[i], rewards[i], dones[i], and info['n'][i]
+        Also sets obs[i], rewards[i], dones[i], and infos[i]
         (where i = self.index).
 
         Args:
             action (MiniWoBAction)
-            states (list)
+            obs (list)
             rewards (list)
             dones (list)
-            info_n (list)
+            infos (list)
         """
         i = self.index
         self.perform(action)
         metadata = self.get_metadata()
         rewards[i] = self.reward_processor(metadata)
         dones[i] = metadata["done"]
-        if not metadata["done"]:
-            if not self.cache_state:
-                states[i] = self.get_state()
-            else:
-                states[i] = self.initial_state
+        if metadata["done"]:
+            obs[i] = self.get_empty_observation()
+            extra_metadata = {}
+        else:
+            obs[i], extra_metadata = self.get_observation()
         metadata["elapsed"] = max(0.0, time.time() - self.start_time)
-        info_n[i] = metadata
+        metadata.update(extra_metadata)
+        infos[i] = metadata
 
     ################################
     # Primitive actions
@@ -297,15 +299,24 @@ class MiniWoBInstance(Thread):
                     self.index,
                 )
             else:
-                action(self.driver)
+                execute_action(action, self.driver)
         if self.wait_ms:
             time.sleep(self.wait_ms / 1000.0)
 
-    def get_state(self):
-        """Get the current state.
+    def get_empty_observation(self):
+        """Get an empty observation for a terminated session."""
+        return create_empty_observation(self.task_width, self.task_height)
+
+    def get_observation(self):
+        """Get the current observation.
 
         Returns:
-            MiniWoBState
+            a tuple (observation, extra_metadata).
+            observation: Observation object from the observation space.
+            extra_metadata: A dict containing the following extra information:
+                - root_dom: DOMElement object for the root DOM element.
+                - fields: Fields object storing task-specific key-value pairs
+                    extracted from the instruction.
         """
         # Get the utterance
         response = self.driver.execute_script("return core.getUtterance();")
@@ -317,12 +328,15 @@ class MiniWoBInstance(Thread):
             fields = self.field_extractor(utterance)
         # Get the DOM
         dom_info = self.driver.execute_script("return core.getDOMInfo();")
-        state = MiniWoBState(utterance, fields, dom_info)
+        root_dom = DOMElement(dom_info)
         # Get screenshot if requested
         if self.record_screenshots:
             img = get_screenshot(self.driver, self.task_width, self.task_height)
-            state.set_screenshot(img)
-        return state
+            img = pil_to_numpy_array(img)
+        else:
+            img = create_empty_screenshot(self.task_width, self.task_height)
+        observation = create_observation(utterance, root_dom, img)
+        return observation, {"root_dom": root_dom, "fields": fields}
 
     def get_metadata(self):
         """Get other metadata.

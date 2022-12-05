@@ -1,46 +1,45 @@
+"""MiniWoB environment."""
 import logging
-import os
-import sys
 
+import gymnasium as gym
+
+from miniwob.action import get_action_space
 from miniwob.instance import MiniWoBInstance
+from miniwob.observation import get_observation_space
 
 
-class MiniWoBEnvironment:
+class MiniWoBEnvironment(gym.Env):
     """MiniWoB environment."""
 
-    def __init__(self, subdomain):
-        """Creates a new MiniWoBEnvironment with no instances.
-        Must call configure() to set up instances.
+    # render_mode = None: Headless Chrome (default)
+    # render_mode = "human": Show the Chrome screen
+    metadata = {"render_modes": ["human"]}
+    reward_range = (-1, 1)
+
+    def __init__(
+        self,
+        subdomain,
+        render_mode=None,
+        base_url=None,
+        threading=True,
+        reward_processor=None,
+        wait_ms=0.0,
+        block_on_reset=True,
+        refresh_freq=0,
+        data_mode="train",
+    ):
+        """Creates a new MiniWoBEnvironment.
 
         Args:
             subdomain (str): MiniWoB task name (e.g., "click-test")
-        """
-        self.subdomain = subdomain
-        self.instances = []
-        self.died = False
-
-    @property
-    def num_instances(self):
-        return len(self.instances)
-
-    def configure(self, num_instances=1, seeds=None, **kwargs):
-        """Creates the required number of MiniWoBInstance.
-
-        Args:
-            num_instances (int): Number of instances
-
-        kwargs are passed into the constructor of MiniWoBInstance:
-            headless (bool): Whether to render GUI
+            render_mode (str): Render mode
             base_url (str): Base URL, which is usually one of the following
                 - http://localhost:8000/     (served by http-serve)
                 - file:///path/to/miniwob-plusplus/html/
-            cache_state (bool): Whether to cache and return the initial
-                state; only make sense if the task interface never changes
+                If None, infers the file:// path from this module's location.
             threading (bool): Whether to run the instances in separate threads
             reward_processor (callable; optional): A function that takes
                 the metadata and return a reward (see miniwob.reward)
-            seeds (list[object]): Random seeds to set for each instance;
-                len(seeds) must be equal to num_instances.
             wait_ms (float): Pause the instance after each action for this
                 amount of time (in milliseconds).
             block_on_reset (bool): On reset, block until the page loads.
@@ -48,145 +47,130 @@ class MiniWoBEnvironment:
                 refresh the page at the beginning of the next episode.
                 Takes time but cleans up any lingering states and memory leaks.
                 *** Must specify `seeds` at each reset call.
-            initial_mode (str): Initial data mode (e.g., "train", "test")
+            data_mode (str): Data mode (e.g., "train", "test"). Used in some
+                subdomains.
         """
-        assert seeds is not None, "seeds must be specified"
-        assert len(seeds) == num_instances, "len(seeds) must be equal to num_instances"
-        self.configure_kwargs = kwargs
-        for instance in self.instances:
-            instance.close()
-        self.instances = []
-        for index in range(num_instances):
-            logging.info("Starting WebDriver Instance %d", index)
-            instance = MiniWoBInstance(index, self.subdomain, seeds[index], **kwargs)
-            instance.start()
-            self.instances.append(instance)
-        for instance in self.instances:
-            instance.wait()
-
-    def reset(self, seeds=None, mode=None, record_screenshots=False):
-        """Forces stop and start all instances.
-
-        Args:
-            seeds (list[object]): Random seeds to set for each instance;
-                If specified, len(seeds) must be equal to the number of instances.
-                A None entry in the list = do not set a new seed.
-            mode (str): If specified, set the data mode to this value before
-                starting new episodes.
-            record_screenshots (bool): Whether to record screenshots of the states.
-        Returns:
-            states (list[MiniWoBState])
-        """
-        # If an instance died, call configure
-        if any(instance.died for instance in self.instances):
-            logging.warning("An instance died. Reset instance ...")
-            self.configure(len(self.instances), seeds, **self.configure_kwargs)
-        # Parse arguments
-        if seeds is None:
-            seeds = [None] * len(self.instances)
-        else:
-            assert isinstance(seeds, (list, tuple)) and len(seeds) == len(
-                self.instances
-            )
-        if mode is not None:
-            self.set_mode(mode)
-        self.set_record_screenshots(record_screenshots)
-        # The ith entry in `states` will be set by the ith instance
-        states = [None] * len(self.instances)
-        for i, instance in enumerate(self.instances):
-            instance.call(instance.reset, states, seeds[i])
-        for instance in self.instances:
-            instance.wait()
-        self.died = any(instance.died for instance in self.instances)
-        return states
-
-    def step(self, actions):
-        """Applies an action on each instance and returns the results.
-
-        Args:
-            actions (list[MiniWoBAction or None])
-
-        Returns:
-            tuple (states, rewards, dones, info)
-            states (list[MiniWoBState])
-            rewards (list[float])
-            dones (list[bool])
-            info (dict): additional debug information.
-                Global debug information is directly in the root level
-                Local information for instance i is in info['n'][i]
-        """
-        assert len(actions) == len(
-            self.instances
-        ), "len(action) is {} but there are {} instances".format(
-            len(actions), len(self.instances)
+        if render_mode and render_mode not in self.metadata["render_modes"]:
+            raise ValueError(f"Invalid render mode: {render_mode}")
+        self.render_mode = render_mode
+        self.instance_kwargs = {
+            "subdomain": subdomain,
+            "headless": (render_mode is None),
+            "base_url": base_url,
+            "threading": threading,
+            "reward_processor": reward_processor,
+            "wait_ms": wait_ms,
+            "block_on_reset": block_on_reset,
+            "refresh_freq": refresh_freq,
+            "data_mode": data_mode,
+        }
+        self.instance = None
+        self._hard_reset_instance()
+        self.action_space = get_action_space(
+            screen_width=self.instance.task_width,
+            screen_height=self.instance.task_height,
         )
-        # Initialize with reasonable values
-        states = [None] * len(self.instances)
-        rewards = [-1.0] * len(self.instances)
-        dones = [True] * len(self.instances)
-        info = {"n": [{} for _ in self.instances]}
-        # Have the instances replace the values
-        for i, instance in enumerate(self.instances):
-            instance.call(instance.step, actions[i], states, rewards, dones, info["n"])
-        for instance in self.instances:
-            instance.wait()
-        self.died = any(instance.died for instance in self.instances)
-        return states, rewards, dones, info
+        self.observation_space = get_observation_space(
+            screen_width=self.instance.task_width,
+            screen_height=self.instance.task_height,
+        )
 
-    def set_mode(self, mode):
-        """Set the data mode ("train", "test", etc.) of all instances.
+    def _hard_reset_instance(self):
+        """Closes the current MiniWoBInstance (if exists) and starts a new one."""
+        if self.instance:
+            self.instance.close()
+        logging.info("Starting WebDriver Instance")
+        self.instance = MiniWoBInstance(index=0, **self.instance_kwargs)
+        self.instance.start()
+        self.instance.wait()
+
+    def reset(self, seed=None, options=None):
+        """Reset the instance.
+
+        Args:
+            seed (optional int): Random seed.
+            options (optional dict): An option dict with the following allowed keys:
+                - data_mode (str): set the data mode to this value.
+                - record_screenshots (bool): Whether to record screenshots.
+        Returns:
+            observation (MiniWoBState)
+            info (dict)
+        """
+        # The seed in Env is actually not used
+        super().reset(seed=seed)
+        # Hard reset the instances if needed
+        if not self.instance or self.instance.died:
+            logging.warning("Hard-resetting the instance ...")
+            self._hard_reset_instance()
+        # Process the options
+        options = options or {}
+        if "data_mode" in options:
+            self.set_data_mode(options["data_mode"])
+        if "record_screenshots" in options:
+            self.set_record_screenshots(options["record_screenshots"])
+        # We pass lists for the instance to modify in-place.
+        obs = [None]
+        infos = [None]
+        self.instance.call(self.instance.reset, obs, infos, seed)
+        self.instance.wait()
+        return obs[0], infos[0]
+
+    def step(self, action):
+        """Applies an action on the instance and returns the result.
+
+        Args:
+            action (MiniWoBAction)
+
+        Returns:
+            observation (MiniWoBState)
+            reward (float)
+            terminated (bool)
+            truncated (bool)
+            info (dict): additional debug information.
+        """
+        # We pass lists for the instance to modify in-place.
+        obs = [None]
+        rewards = [-1.0]
+        dones = [True]
+        truncs = [False]
+        infos = [None]
+        self.instance.call(self.instance.step, action, obs, rewards, dones, infos)
+        self.instance.wait()
+        return obs[0], rewards[0], dones[0], truncs[0], infos[0]
+
+    def render(self):
+        # The currently supported render modes do not require computing the render.
+        return None
+
+    def set_data_mode(self, mode):
+        """Set the data mode ("train", "test", etc.) of the instance.
         Will have effect starting from the next episode.
 
         Args:
             mode (str)
         """
-        for instance in self.instances:
-            instance.mode = mode
+        self.instance.mode = mode
 
     def set_record_screenshots(self, record_screenshots):
-        """Adjust whether the record the screenshots of the states.
+        """Adjust whether the record the screenshots.
 
         Args:
             record_screenshots (bool)
         """
-        for instance in self.instances:
-            instance.record_screenshots = record_screenshots
+        self.instance.record_screenshots = record_screenshots
 
     def visualize_attention(self, attentions):
         """Sends the attention weights to be visualized.
 
         Args:
-            attentions (list[*]): attention weight for each instance.
-                Each list element is one of:
+            attentions: attention weights, which is one of:
                 - None: Do not do anything
                 - np.array or 2d list of shape (num_grid_rows, num_grid_cols)
                 - np.array or 2d list of shape (0, 0): Clear the visualization
         """
-        for i, instance in enumerate(self.instances):
-            instance.call(instance.visualize_attention, attentions[i])
-        for instance in self.instances:
-            instance.wait()
+        self.instance.call(self.instance.visualize_attention, attentions)
+        self.instance.wait()
 
     def close(self):
-        for instance in self.instances:
-            instance.call(instance.close)
-        for instance in self.instances:
-            instance.wait()
-
-
-def test_environment():
-    try:
-        task_name = sys.argv[1]
-    except IndexError:
-        print(f"Usage: python {sys.argv[0]} TASK_NAME")
-        exit(1)
-    env = MiniWoBEnvironment(task_name)
-    base_url = os.environ.get("MINIWOB_BASE_URL")
-    env.configure(num_instances=1, seeds=[0], base_url=base_url)
-    states = env.reset()
-    print(states[0].dom.visualize())
-    env.close()
-
-
-if __name__ == "__main__":
-    test_environment()
+        self.instance.call(self.instance.close)
+        self.instance.wait()
