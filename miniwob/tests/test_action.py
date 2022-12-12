@@ -1,3 +1,6 @@
+"""Test action execution."""
+from typing import Mapping, Tuple
+
 import pytest
 
 from miniwob.action import (
@@ -10,8 +13,10 @@ from miniwob.environment import MiniWoBEnvironment
 
 
 class RepeatedTester:
+    """Base class for repeated testing on a single task."""
+
     # Task name; subclasses should set this field
-    TASK_NAME = None
+    TASK_NAME = ""
     # Number of times to run the test
     N = 10
     # Maximum number of steps for each episode
@@ -21,6 +26,7 @@ class RepeatedTester:
 
     @pytest.fixture
     def env(self):
+        """Yield an environment for the task."""
         if self.FRAGILE:
             env = MiniWoBEnvironment(subdomain=self.TASK_NAME, wait_ms=300)
         else:
@@ -29,12 +35,13 @@ class RepeatedTester:
         env.close()
 
     def test_run(self, env):
+        """Run the test N times on the environment."""
         for i in range(self.N):
             print(f"Iteration {i + 1} / {self.N}")
             obs, info = env.reset()
             reward = -1
             for step in range(self.MAX_STEPS):
-                action = self.get_action(obs, info, step)
+                action = self._get_action(obs, info, step)
                 obs, reward, terminated, _, _ = env.step(action)
                 assert reward >= 0
                 if terminated:
@@ -43,8 +50,8 @@ class RepeatedTester:
                 assert False, f"Number of steps exceeded {self.MAX_STEPS}"
             assert reward >= 0
 
-    def get_action(self, obs, info, step):
-        """Returns a MiniWoBAction that clicks the right thing."""
+    def _get_action(self, obs, info, step):
+        """Return a MiniWoBAction that clicks the right thing."""
         raise NotImplementedError
 
     def click_button(self, obs, text):
@@ -55,6 +62,7 @@ class RepeatedTester:
         assert False, "Submit button not found"
 
     def create_coord_click_action(self, element):
+        """Create an action that clicks on the element using CoordClick."""
         left, top = element["pos"].tolist()
         width, height = element["size"].tolist()
         action = create_coord_click_action(left + (width / 2), top + (height / 2))
@@ -66,9 +74,11 @@ class RepeatedTester:
 
 
 class TestClickTest2(RepeatedTester):
+    """Tests for task click-test-2."""
+
     TASK_NAME = "click-test-2"
 
-    def get_action(self, obs, info, step):
+    def _get_action(self, obs, info, step):
         for element in obs["dom_elements"]:
             if element["tag"] == "button" and element["text"] == "ONE":
                 return create_element_click_action(element["ref"])
@@ -77,9 +87,11 @@ class TestClickTest2(RepeatedTester):
 
 
 class TestClickButton(RepeatedTester):
+    """Tests for task click-button."""
+
     TASK_NAME = "click-button"
 
-    def get_action(self, obs, info, step):
+    def _get_action(self, obs, info, step):
         target = info["fields"]["target"]
         for element in obs["dom_elements"]:
             if element["tag"] == "button" and element["text"] == target:
@@ -89,9 +101,11 @@ class TestClickButton(RepeatedTester):
 
 
 class TestFocusText(RepeatedTester):
+    """Tests for task focus-text."""
+
     TASK_NAME = "focus-text"
 
-    def get_action(self, obs, info, step):
+    def _get_action(self, obs, info, step):
         for element in obs["dom_elements"]:
             if element["tag"] == "input_text":
                 return self.create_coord_click_action(element)
@@ -100,9 +114,11 @@ class TestFocusText(RepeatedTester):
 
 
 class TestIdentifyShape(RepeatedTester):
+    """Tests for task identify-shape."""
+
     TASK_NAME = "identify-shape"
 
-    def get_action(self, obs, info, step):
+    def _get_action(self, obs, info, step):
         shape = self._identify_shape(obs)
         for element in obs["dom_elements"]:
             if element["tag"] == "button" and element["text"] == shape:
@@ -130,9 +146,11 @@ class TestIdentifyShape(RepeatedTester):
 
 
 class TestClickDialog2(RepeatedTester):
+    """Tests for task click-dialog-2."""
+
     TASK_NAME = "click-dialog-2"
 
-    def get_action(self, obs, info, step):
+    def _get_action(self, obs, info, step):
         target = info["fields"]["target"]
         if target == "x":
             target = ""
@@ -148,10 +166,12 @@ class TestClickDialog2(RepeatedTester):
 
 
 class TestEnterText(RepeatedTester):
+    """Tests for task enter-text."""
+
     TASK_NAME = "enter-text"
     MAX_STEPS = 3
 
-    def get_action(self, obs, info, step):
+    def _get_action(self, obs, info, step):
         if step == 0:
             # Click on the textbox
             for element in obs["dom_elements"]:
@@ -179,10 +199,12 @@ class TestEnterText(RepeatedTester):
 
 
 class TestEnterTextFocusAndType(RepeatedTester):
+    """Tests for task enter-text, using FocusAndType actions."""
+
     TASK_NAME = "enter-text"
     MAX_STEPS = 2
 
-    def get_action(self, obs, info, step):
+    def _get_action(self, obs, info, step):
         if step == 0:
             # Type into the textbox
             target = info["fields"]["target"]
@@ -196,10 +218,12 @@ class TestEnterTextFocusAndType(RepeatedTester):
 
 
 class TestClickCheckboxes(RepeatedTester):
+    """Tests for task click-checkboxes."""
+
     TASK_NAME = "click-checkboxes"
     MAX_STEPS = 7
 
-    def get_action(self, obs, info, step):
+    def _get_action(self, obs, info, step):
         if not obs:
             return
         # print obs.dom.visualize()
@@ -223,11 +247,13 @@ class TestClickCheckboxes(RepeatedTester):
 
 
 class TestChooseDateEasy(RepeatedTester):
+    """Tests for task choose-date-easy."""
+
     TASK_NAME = "choose-date-easy"
     MAX_STEPS = 3
     FRAGILE = True
 
-    def get_action(self, obs, info, step):
+    def _get_action(self, obs, info, step):
         if step == 0:
             for element in obs["dom_elements"]:
                 if element["tag"] == "input_text":
@@ -244,11 +270,13 @@ class TestChooseDateEasy(RepeatedTester):
 
 
 class TestUseAutocomplete(RepeatedTester):
+    """Tests for task use-autocomplete."""
+
     TASK_NAME = "use-autocomplete"
     MAX_STEPS = 3
     FRAGILE = True
 
-    def check(self, element, fields):
+    def _check(self, element, fields):
         t = element["text"]
         if t is None:
             return False
@@ -257,7 +285,7 @@ class TestUseAutocomplete(RepeatedTester):
         else:
             return t.startswith(fields["start"])
 
-    def get_action(self, obs, info, step):
+    def _get_action(self, obs, info, step):
         if step == 0:
             for element in obs["dom_elements"]:
                 if element["tag"] == "input_text":
@@ -268,7 +296,7 @@ class TestUseAutocomplete(RepeatedTester):
         elif step == 1:
             # print obs.dom.visualize()
             for element in obs["dom_elements"]:
-                if element["tag"] == "div" and self.check(element, info["fields"]):
+                if element["tag"] == "div" and self._check(element, info["fields"]):
                     return create_element_click_action(element["ref"])
             assert False, "Correct entry not found"
         elif step == 2:
@@ -276,11 +304,13 @@ class TestUseAutocomplete(RepeatedTester):
 
 
 class TestUseAutocompleteNoDelay(RepeatedTester):
+    """Tests for task use-autocomplete-nodelay."""
+
     TASK_NAME = "use-autocomplete-nodelay"
     MAX_STEPS = 3
     FRAGILE = "instance"
 
-    def check(self, element, fields):
+    def _check(self, element, fields):
         t = element["text"]
         if t is None:
             return False
@@ -289,7 +319,7 @@ class TestUseAutocompleteNoDelay(RepeatedTester):
         else:
             return t.startswith(fields["start"])
 
-    def get_action(self, obs, info, step):
+    def _get_action(self, obs, info, step):
         if step == 0:
             for element in obs["dom_elements"]:
                 if element["tag"] == "input_text":
@@ -300,7 +330,7 @@ class TestUseAutocompleteNoDelay(RepeatedTester):
         elif step == 1:
             # print obs.dom.visualize()
             for element in obs["dom_elements"]:
-                if element["tag"] == "div" and self.check(element, info["fields"]):
+                if element["tag"] == "div" and self._check(element, info["fields"]):
                     return create_element_click_action(element["ref"])
             assert False, "Correct entry not found"
         elif step == 2:
@@ -308,8 +338,10 @@ class TestUseAutocompleteNoDelay(RepeatedTester):
 
 
 class TestClickColor(RepeatedTester):
+    """Tests for task click-color."""
+
     TASK_NAME = "click-color"
-    COLORS = {
+    COLORS: Mapping[Tuple[int, int, int], str] = {
         (0, 0, 0): "black",
         (255, 0, 0): "red",
         (0, 255, 0): "lime",
@@ -325,7 +357,7 @@ class TestClickColor(RepeatedTester):
         (255, 192, 203): "pink",
     }
 
-    def get_action(self, obs, info, step):
+    def _get_action(self, obs, info, step):
         for element in obs["dom_elements"]:
             if "color" in element["classes"]:
                 r, g, b, a = element["bg_color"].tolist()
@@ -336,10 +368,12 @@ class TestClickColor(RepeatedTester):
 
 
 class TestEnterTime(RepeatedTester):
+    """Tests for task enter-time."""
+
     TASK_NAME = "enter-time"
     MAX_STEPS = 2
 
-    def get_action(self, obs, info, step):
+    def _get_action(self, obs, info, step):
         if step == 0:
             target = info["fields"]["target"]
             if target.startswith("1:"):
@@ -353,16 +387,19 @@ class TestEnterTime(RepeatedTester):
 
 
 class TestClickPie(RepeatedTester):
+    """Tests for task click-pie-nodelay."""
+
     TASK_NAME = "click-pie-nodelay"
     MAX_STEPS = 2
 
-    def get_action(self, obs, info, step):
+    def _get_action(self, obs, info, step):
         if step == 0:
             path = None
             for element in obs["dom_elements"]:
                 if element["tag"] == "path":
                     path = element
                 elif element["text"] == "+":
+                    assert path is not None
                     return create_element_click_action(path["ref"])
             assert False, "Select not found"
         elif step == 1:
@@ -371,5 +408,6 @@ class TestClickPie(RepeatedTester):
                 if element["tag"] == "path":
                     path = element
                 elif element["text"] == info["fields"]["target"]:
+                    assert path is not None
                     return create_element_click_action(path["ref"])
             assert False, "Correct entry not found"

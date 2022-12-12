@@ -7,23 +7,35 @@ import traceback
 import urllib.parse
 from queue import Queue
 from threading import Thread
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.wait import WebDriverWait
 
-from miniwob.action import execute_action
+from miniwob.action import Action, execute_action
+from miniwob.constants import (
+    FLIGHT_TASK_HEIGHT,
+    FLIGHT_TASK_WIDTH,
+    FLIGHT_WINDOW_HEIGHT,
+    FLIGHT_WINDOW_WIDTH,
+    TASK_HEIGHT,
+    TASK_WIDTH,
+    WINDOW_HEIGHT,
+    WINDOW_WIDTH,
+)
 from miniwob.dom import DOMElement
 from miniwob.fields import Fields, get_field_extractor
 from miniwob.observation import (
+    Observation,
     create_empty_observation,
     create_empty_screenshot,
     create_observation,
 )
-from miniwob.reward import get_original_reward
+from miniwob.reward import RewardPreprocessor, get_original_reward
 from miniwob.screenshot import get_screenshot, pil_to_numpy_array
 
 HTML_DIR = pathlib.Path(__file__).parent.parent / "html"
@@ -33,51 +45,40 @@ DEFAULT_BASE_URL = f"file://{HTML_DIR}/"
 class MiniWoBInstance(Thread):
     """Interface between Python and ChromeDriver via Selenium."""
 
-    # Added some space for title bar
-    WINDOW_WIDTH = 500
-    WINDOW_HEIGHT = 240
-    TASK_WIDTH = 160
-    TASK_HEIGHT = 210
-
-    FLIGHT_WINDOW_WIDTH = 600
-    FLIGHT_WINDOW_HEIGHT = 700
-    FLIGHT_TASK_WIDTH = 375
-    FLIGHT_TASK_HEIGHT = 667
-
     def __init__(
         self,
-        index,
-        subdomain=None,
-        headless=False,
-        base_url=None,
-        threading=True,
-        reward_processor=None,
-        wait_ms=0.0,
-        block_on_reset=True,
-        refresh_freq=0,
-        data_mode="train",
+        index: int,
+        subdomain: str,
+        headless: bool = False,
+        base_url: Optional[str] = None,
+        threading: bool = True,
+        reward_processor: Optional[RewardPreprocessor] = None,
+        wait_ms: float = 0.0,
+        block_on_reset: bool = True,
+        refresh_freq: int = 0,
+        data_mode: str = "train",
     ):
         """Starts a new Selenium WebDriver session.
 
         Args:
-            index (int): Instance index
-            subdomain (str): MiniWoB task name (e.g., "click-test")
-            headless (bool): Whether to render GUI
-            base_url (str): Base URL, which is usually one of the following
+            index: Instance index
+            subdomain: MiniWoB task name (e.g., "click-test")
+            headless: Whether to render GUI
+            base_url: Base URL, which is usually one of the following
                 - http://localhost:8000/     (served by http-serve)
                 - file:///path/to/miniwob-plusplus/html/
                 If None, infers the file:// path from this module's location.
-            threading (bool): Whether to run this instance as a Thread
-            reward_processor (callable; optional): A function that takes
-                the metadata and return a reward (see miniwob.reward)
-            wait_ms (float): Pause the instance after each action for this
-                amount of time (in milliseconds).
-            block_on_reset (bool): On reset, block until the page loads.
-            refresh_freq (int): Every this number of episodes,
-                refresh the page at the beginning of the next episode.
-                Takes time but cleans up any lingering states and memory leaks.
+            threading: Whether to run this instance as a Thread
+            reward_processor: A function that takes the metadata and return
+                a reward (see miniwob.reward)
+            wait_ms: Pause the instance after each action for this amount
+                of time (in milliseconds).
+            block_on_reset: On reset, block until the page loads.
+            refresh_freq: Every this number of episodes, refresh the page at
+                the beginning of the next episode. Takes time but cleans up
+                any lingering states and memory leaks.
                 *** Must specify `seeds` at each reset call.
-            data_mode (str): Data mode (e.g., "train", "test")
+            data_mode: Data mode (e.g., "train", "test")
         """
         super().__init__()
         # Overrides Thread.daemon: Kill this thread when the parent is killed
@@ -94,28 +95,28 @@ class MiniWoBInstance(Thread):
             self.url = urllib.parse.urljoin(
                 base_url, subdomain.replace(".", "/") + "/wrapper.html"
             )
-            self.window_width = self.FLIGHT_WINDOW_WIDTH
-            self.window_height = self.FLIGHT_WINDOW_HEIGHT
-            self.task_width = self.FLIGHT_TASK_WIDTH
-            self.task_height = self.FLIGHT_TASK_HEIGHT
+            self.window_width = FLIGHT_WINDOW_WIDTH
+            self.window_height = FLIGHT_WINDOW_HEIGHT
+            self.task_width = FLIGHT_TASK_WIDTH
+            self.task_height = FLIGHT_TASK_HEIGHT
         else:
             self.url = urllib.parse.urljoin(base_url, f"miniwob/{subdomain}.html")
-            self.window_width = self.WINDOW_WIDTH
-            self.window_height = self.WINDOW_HEIGHT
-            self.task_width = self.TASK_WIDTH
-            self.task_height = self.TASK_HEIGHT
+            self.window_width = WINDOW_WIDTH
+            self.window_height = WINDOW_HEIGHT
+            self.task_width = TASK_WIDTH
+            self.task_height = TASK_HEIGHT
         self.field_extractor = get_field_extractor(subdomain)
         self.threading = threading
-        self.reward_processor = reward_processor
+        if not reward_processor:
+            self.reward_processor = get_original_reward
+        else:
+            self.reward_processor = reward_processor
         self.wait_ms = wait_ms
         self.block_on_reset = block_on_reset
         self.refresh_freq = refresh_freq
         self.num_episodes = 0
         self.mode = data_mode
         self.record_screenshots = False
-        if reward_processor is None:
-            # Use the original reward
-            self.reward_processor = get_original_reward
         self.start_time = float("inf")
         self.task_queue = Queue()
         if not threading:
@@ -123,7 +124,7 @@ class MiniWoBInstance(Thread):
             self.start = self.create_driver
 
     def run(self):
-        """Overrides `Thread.run`"""
+        """Overrides `Thread.run`."""
         try:
             self.create_driver()
             # Wait for command
@@ -143,12 +144,18 @@ class MiniWoBInstance(Thread):
             logging.info("Closed instance %d", self.index)
 
     def call(self, func, *args):
+        """Call the given function with the given argument.
+
+        If threading is enabled, the function execution is added to the
+        task queue, making the call non-blocking.
+        """
         if self.threading:
             self.task_queue.put((func, args))
         else:
             func(*args)
 
     def wait(self):
+        """Wait until all tasks in the queue is finished."""
         if self.threading:
             self.task_queue.join()
 
@@ -156,7 +163,7 @@ class MiniWoBInstance(Thread):
     # Possible Functions
 
     def create_driver(self):
-        """Create a driver"""
+        """Create a WebDriver."""
         assert not hasattr(self, "driver"), "Instance {} already has a driver".format(
             self.index
         )
@@ -198,15 +205,15 @@ class MiniWoBInstance(Thread):
             traceback.print_exc()
         self.died = True
 
-    def reset(self, obs, infos, seed):
-        """Forces stop and start this instance.
-        Also sets obs[i] to be the initial observation
-        (where i = self.index).
+    def reset(self, obs: List[Any], infos: List[Any], seed: Any):
+        """Force stop and start this instance.
+
+        Also sets obs[i] to be the initial observation (where i = self.index).
 
         Args:
-            obs (list)
-            infos (list)
-            seed (object): Seed to set for the next episode
+            obs: A list to store observations. The entry obs[i] will be modified.
+            infos: A list to store info dicts. The entry infos[i] will be modified.
+            seed: Seed to set for the next episode
         """
         if self.refresh_freq:
             assert (
@@ -220,17 +227,24 @@ class MiniWoBInstance(Thread):
         metadata.update(extra_metadata)
         infos[i] = metadata
 
-    def step(self, action, obs, rewards, dones, infos):
-        """Applies an action on this instance.
-        Also sets obs[i], rewards[i], dones[i], and infos[i]
-        (where i = self.index).
+    def step(
+        self,
+        action: Optional[Action],
+        obs: List[Any],
+        rewards: List[Any],
+        dones: List[Any],
+        infos: List[Any],
+    ):
+        """Apply an action on this instance.
+
+        Also sets obs[i], rewards[i], dones[i], and infos[i] (where i = self.index).
 
         Args:
-            action (MiniWoBAction)
-            obs (list)
-            rewards (list)
-            dones (list)
-            infos (list)
+            action: The action to execute from the action space, or None (do nothing).
+            obs: A list to store observations. The entry obs[i] will be modified.
+            rewards: A list to store rewards. The entry rewards[i] will be modified.
+            dones: A list to store termination statuses. The entry dones[i] will be modified.
+            infos: A list to store info dicts. The entry infos[i] will be modified.
         """
         i = self.index
         self.perform(action)
@@ -257,8 +271,9 @@ class MiniWoBInstance(Thread):
         """Force stop the task and go back to the sync screen."""
         self.driver.execute_script("return core.endEpisode(0);")
 
-    def begin_task(self, seed=None):
+    def begin_task(self, seed: Any = None):
         """Start the task. Only available when done is True.
+
         The sync screen will disappear and the countdown timer will start.
 
         Args:
@@ -282,14 +297,11 @@ class MiniWoBInstance(Thread):
             time.sleep(self.wait_ms / 1000.0)
         self.start_time = time.time()
 
-    def perform(self, action):
+    def perform(self, action: Optional[Action]):
         """Perform an action.
 
         Args:
-            action: One of the following
-            - None: Do nothing
-            - a callable f(driver) that takes a Selenium driver as an argument;
-                issue a warning if the instance is done
+            action: The action to execute from the action space, or None (do nothing).
         """
         if action is not None:
             if self.get_metadata()["done"]:
@@ -303,11 +315,11 @@ class MiniWoBInstance(Thread):
         if self.wait_ms:
             time.sleep(self.wait_ms / 1000.0)
 
-    def get_empty_observation(self):
+    def get_empty_observation(self) -> Observation:
         """Get an empty observation for a terminated session."""
         return create_empty_observation(self.task_width, self.task_height)
 
-    def get_observation(self):
+    def get_observation(self) -> Tuple[Observation, Dict[str, Any]]:
         """Get the current observation.
 
         Returns:
@@ -338,7 +350,7 @@ class MiniWoBInstance(Thread):
         observation = create_observation(utterance, root_dom, img)
         return observation, {"root_dom": root_dom, "fields": fields}
 
-    def get_metadata(self):
+    def get_metadata(self) -> Dict[str, Any]:
         """Get other metadata.
 
         Returns:
@@ -360,11 +372,11 @@ class MiniWoBInstance(Thread):
             "};"
         )
 
-    def visualize_attention(self, attention):
+    def visualize_attention(self, attention: Optional[np.ndarray]):
         """Sends the attention weights to be visualized.
 
         Args:
-            attentions: one of the following:
+            attention: one of the following:
                 - None: Do not do anything
                 - np.array or 2d list of shape (num_grid_rows, num_grid_cols)
                 - np.array or 2d list of shape (0, 0): Clear the visualization
@@ -378,18 +390,18 @@ class MiniWoBInstance(Thread):
         # Send to the driver
         self.driver.execute_script(f"core.visualizeAttention({encoded});")
 
-    def set_seed(self, seed):
+    def set_seed(self, seed: Any):
         """Set the seed to a new value.
 
         Args:
-            seed (object)
+            seed: The new seed.
         """
         self.driver.execute_script(f"Math.seedrandom({repr(seed)});")
 
-    def set_mode(self, mode):
+    def set_mode(self, mode: str):
         """Set the task generation mode (e.g., "train" or "test") to a new value.
 
         Args:
-            mode (str)
+            mode: The new mode
         """
         self.driver.execute_script(f'core.setDataMode("{mode}");')

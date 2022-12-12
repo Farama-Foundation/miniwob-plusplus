@@ -2,30 +2,7 @@
 import collections
 import json
 import re
-
-# Mapping from task_name to field extractor
-# Each extractor is a function that takes the utterance string and
-# returns a key-value dict
-FIELD_EXTRACTORS = {}
-
-
-def get_field_extractor(task_name):
-    try:
-        return FIELD_EXTRACTORS[task_name]
-    except KeyError:
-
-        def extractor(utterance):
-            raise ValueError(f"{task_name} does not have a field extractor.")
-
-        return extractor
-
-
-def _add(task_name, regex, keys):
-    def extractor(utterance):
-        match = re.match(regex, utterance)
-        return Fields(dict(zip(keys, match.groups())))
-
-    FIELD_EXTRACTORS[task_name] = extractor
+from typing import Callable, Dict, Sequence
 
 
 class Fields:
@@ -36,29 +13,67 @@ class Fields:
     """
 
     def __init__(self, d):
+        """Initialize a Field from the given dict d."""
         self._d = collections.OrderedDict(sorted(d.items()))
         if not self._d:
-            # Ensure at least one key to prevent the type prob. from being ignored
+            # Ensure at least one key to prevent the typing action from being ignored.
             self._d["dummy"] = "dummy"
 
     def __getitem__(self, key):
+        """Return the value for the given key."""
         return self._d[key]
 
     def __len__(self):
+        """Return the number of entries."""
         return len(self._d)
 
     @property
     def keys(self):
+        """Return the sorted list of keys."""
         return list(self._d.keys())
 
     @property
     def values(self):
+        """Return the list of values sorted by keys."""
         return list(self._d.values())
 
     def __repr__(self):
+        """Return the string representation of Fields."""
         return "\n".join(f"{k}: {repr(v)}" for k, v in self._d.items())
 
     __str__ = __repr__
+
+
+# A callable taking the instruction from the environment and returning Fields.
+FieldExtractor = Callable[[str], Fields]
+
+
+# The global registry mapping task_name to FieldExtractor.
+FIELD_EXTRACTORS: Dict[str, FieldExtractor] = {}
+
+
+def get_field_extractor(task_name: str) -> FieldExtractor:
+    """Return the field extractor for the given task."""
+    try:
+        return FIELD_EXTRACTORS[task_name]
+    except KeyError:
+
+        def extractor(utterance):
+            raise ValueError(f"{task_name} does not have a field extractor.")
+
+        return extractor
+
+
+def _add(task_name: str, regex: str, keys: Sequence[str]):
+    def extractor(utterance):
+        match = re.match(regex, utterance)
+        if not match:
+            raise ValueError(
+                f"Failed extracting fields (regex={regex}, utterance={utterance})"
+            )
+        return Fields(dict(zip(keys, match.groups())))
+
+    FIELD_EXTRACTORS[task_name] = extractor
 
 
 _add(
@@ -149,8 +164,11 @@ _add("click-button-sequence", r"Click button ONE, then click button TWO\.", [])
 # Select resemble,padres,brooklyn,miller and click Submit.
 
 
-def extract_click_checkboxes(utterance):
-    targets = re.match(r"Select (.*) and click Submit\.", utterance).group(1)
+def _extract_click_checkboxes(utterance):
+    match = re.match(r"Select (.*) and click Submit\.", utterance)
+    if not match:
+        raise ValueError(f"Invalid utterance: {utterance}")
+    targets = match.group(1)
     if targets == "nothing":
         targets = []
     else:
@@ -160,9 +178,9 @@ def extract_click_checkboxes(utterance):
     return Fields(fields)
 
 
-FIELD_EXTRACTORS["click-checkboxes"] = extract_click_checkboxes
-FIELD_EXTRACTORS["click-checkboxes-large"] = extract_click_checkboxes
-FIELD_EXTRACTORS["click-checkboxes-transfer"] = extract_click_checkboxes
+FIELD_EXTRACTORS["click-checkboxes"] = _extract_click_checkboxes
+FIELD_EXTRACTORS["click-checkboxes-large"] = _extract_click_checkboxes
+FIELD_EXTRACTORS["click-checkboxes-transfer"] = _extract_click_checkboxes
 
 # Select words similar to humorous, rabbit, home, slice and click Submit.
 # Select words similar to furious, petite and click Submit.
@@ -177,17 +195,18 @@ FIELD_EXTRACTORS["click-checkboxes-transfer"] = extract_click_checkboxes
 # Select words similar to fires and click Submit.
 
 
-def extract_click_checkboxes_soft(utterance):
-    targets = re.match(
-        r"Select words similar to (.*) and click Submit\.", utterance
-    ).group(1)
+def _extract_click_checkboxes_soft(utterance):
+    match = re.match(r"Select words similar to (.*) and click Submit\.", utterance)
+    if not match:
+        raise ValueError(f"Invalid utterance: {utterance}")
+    targets = match.group(1)
     targets = re.split(", ?", targets)
     fields = dict(zip([f"target {i}" for i in range(len(targets))], targets))
     fields["button"] = "submit"
     return Fields(fields)
 
 
-FIELD_EXTRACTORS["click-checkboxes-soft"] = extract_click_checkboxes_soft
+FIELD_EXTRACTORS["click-checkboxes-soft"] = _extract_click_checkboxes_soft
 
 _add("click-collapsible", r"Expand the section below and click submit\.", [])
 FIELD_EXTRACTORS["click-collapsible-nodelay"] = FIELD_EXTRACTORS["click-collapsible"]
@@ -350,7 +369,7 @@ _add("click-shades", r"Select all the shades of (.*) and press Submit\.", ["targ
 # Click on a small red p
 
 
-def parse_shape_desc(words):
+def _parse_shape_desc(words):
     fields = {}
     for word in words:
         if word in ("large", "small"):
@@ -364,12 +383,15 @@ def parse_shape_desc(words):
     return fields
 
 
-def extract_click_shape(utterance):
-    words = re.match(r"Click on a (.*)", utterance).group(1).split()
-    return Fields(parse_shape_desc(words))
+def _extract_click_shape(utterance):
+    match = re.match(r"Click on a (.*)", utterance)
+    if not match:
+        raise ValueError(f"Invalid utterance: {utterance}")
+    words = match.group(1).split()
+    return Fields(_parse_shape_desc(words))
 
 
-FIELD_EXTRACTORS["click-shape"] = extract_click_shape
+FIELD_EXTRACTORS["click-shape"] = _extract_click_shape
 
 # Click on Tab #2.
 # Click on Tab #2.
@@ -454,12 +476,15 @@ _add(
 # How many small yellow items are there?
 
 
-def extract_count_shape(utterance):
-    words = re.match(r"How many (.*)s are there\?", utterance).group(1).split()
-    return Fields(parse_shape_desc(words))
+def _extract_count_shape(utterance):
+    match = re.match(r"How many (.*)s are there\?", utterance)
+    if not match:
+        raise ValueError(f"Invalid utterance: {utterance}")
+    words = match.group(1).split()
+    return Fields(_parse_shape_desc(words))
 
 
-FIELD_EXTRACTORS["count-shape"] = extract_count_shape
+FIELD_EXTRACTORS["count-shape"] = _extract_count_shape
 
 _add(
     "count-sides",
@@ -579,7 +604,7 @@ EMAIL_INBOX_PATTERNS = [
 ]
 
 
-def extract_email_inbox(utterance):
+def _extract_email_inbox(utterance):
     for task, regex, keys in EMAIL_INBOX_PATTERNS:
         match = re.match(regex, utterance)
         if match:
@@ -591,17 +616,17 @@ for task, regex, keys in EMAIL_INBOX_PATTERNS:
     _add("email-inbox-" + task, regex, keys)
 FIELD_EXTRACTORS["email-inbox-star-reply"] = FIELD_EXTRACTORS[
     "email-inbox"
-] = FIELD_EXTRACTORS["email-inbox-noscroll"] = extract_email_inbox
+] = FIELD_EXTRACTORS["email-inbox-noscroll"] = _extract_email_inbox
 
 
-def extract_email_inbox_nl(utterance):
+def _extract_email_inbox_nl(utterance):
     # Natural language version: no fields at test time
     return Fields({})
 
 
 FIELD_EXTRACTORS["email-inbox-forward-nl"] = FIELD_EXTRACTORS[
     "email-inbox-forward-nl-turk"
-] = FIELD_EXTRACTORS["email-inbox-nl-turk"] = extract_email_inbox_nl
+] = FIELD_EXTRACTORS["email-inbox-nl-turk"] = _extract_email_inbox_nl
 
 # Enter 01/02/2014 as the date and hit submit.
 # Enter 05/01/2011 as the date and hit submit.
@@ -687,12 +712,15 @@ _add(
 # Enter 12:25 AM as the time and press submit.
 
 
-def extract_enter_time(utterance):
-    target = re.match(r"Enter (.*) as the time and press submit\.", utterance).group(1)
+def _extract_enter_time(utterance):
+    match = re.match(r"Enter (.*) as the time and press submit\.", utterance)
+    if not match:
+        raise ValueError(f"Invalid utterance: {utterance}")
+    target = match.group(1)
     return Fields({"target": target.replace(" ", "")})
 
 
-FIELD_EXTRACTORS["enter-time"] = extract_enter_time
+FIELD_EXTRACTORS["enter-time"] = _extract_enter_time
 
 _add(
     "find-midpoint",
@@ -1028,7 +1056,7 @@ _add("unicode-test", r'Click on the "(.*)" button\.', ["target"])
 # Enter an item that starts with "Tanz" and ends with "ia".
 
 
-def extract_use_autocomplete(utterance):
+def _extract_use_autocomplete(utterance):
     match = re.match(
         r'Enter an item that starts with "([^"]*)" and ends with "([^"]*)"\.', utterance
     )
@@ -1036,11 +1064,13 @@ def extract_use_autocomplete(utterance):
         return Fields({"start": match.group(1), "end": match.group(2)})
     else:
         match = re.match(r'Enter an item that starts with "([^"]*)"', utterance)
+        if not match:
+            raise ValueError(f"Invalid utterance: {utterance}")
         return Fields({"start": match.group(1)})
 
 
-FIELD_EXTRACTORS["use-autocomplete"] = extract_use_autocomplete
-FIELD_EXTRACTORS["use-autocomplete-nodelay"] = extract_use_autocomplete
+FIELD_EXTRACTORS["use-autocomplete"] = _extract_use_autocomplete
+FIELD_EXTRACTORS["use-autocomplete-nodelay"] = _extract_use_autocomplete
 
 # Select gray with the color picker and hit Submit.
 # Select white with the color picker and hit Submit.
@@ -1109,15 +1139,15 @@ _add(
 )
 
 
-def extract_flight_subtasks(utterance):
+def _extract_flight_subtasks(utterance):
     fields = json.loads(utterance)
     return Fields({str(x): str(y) for (x, y) in fields.items()})
 
 
-FIELD_EXTRACTORS["flight.AA"] = extract_flight_subtasks
-FIELD_EXTRACTORS["flight.Alaska"] = extract_flight_subtasks
-FIELD_EXTRACTORS["flight.Alaska-auto-medium"] = extract_flight_subtasks
-FIELD_EXTRACTORS["flight.Alaska-auto"] = extract_flight_subtasks
-FIELD_EXTRACTORS["flight.Delta"] = extract_flight_subtasks
-FIELD_EXTRACTORS["flight.JetBlue"] = extract_flight_subtasks
-FIELD_EXTRACTORS["flight.United"] = extract_flight_subtasks
+FIELD_EXTRACTORS["flight.AA"] = _extract_flight_subtasks
+FIELD_EXTRACTORS["flight.Alaska"] = _extract_flight_subtasks
+FIELD_EXTRACTORS["flight.Alaska-auto-medium"] = _extract_flight_subtasks
+FIELD_EXTRACTORS["flight.Alaska-auto"] = _extract_flight_subtasks
+FIELD_EXTRACTORS["flight.Delta"] = _extract_flight_subtasks
+FIELD_EXTRACTORS["flight.JetBlue"] = _extract_flight_subtasks
+FIELD_EXTRACTORS["flight.United"] = _extract_flight_subtasks

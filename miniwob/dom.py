@@ -1,16 +1,17 @@
 """Encapsulation of the DOM element tree."""
 import re
+from typing import Any, Collection, Dict, Optional, Sequence, Tuple, Union
 
 
 class DOMElement:
     """Encapsulate the DOM element."""
 
-    def __init__(self, raw_dom, parent=None):
+    def __init__(self, raw_dom: Dict[str, Any], parent: Optional["DOMElement"] = None):
         """Create a new DOMElement based on the data from getDOMInfo in JavaScript.
 
         Args:
-            raw_dom (dict): A dict with values from getDOMInfo in JavaScript.
-            parent (DOMElement|None): the parent DOMElement, or None
+            raw_dom: A dict with values from getDOMInfo in JavaScript.
+            parent: the parent DOMElement, or None
         """
         self._parent = parent
         self._tag = raw_dom["tag"].lower()
@@ -18,20 +19,16 @@ class DOMElement:
         self._top = raw_dom["top"]
         self._width = raw_dom["width"]
         self._height = raw_dom["height"]
-        self._ref = raw_dom.get("ref")
-        if self.tag == "t":
-            self._ref = None  # ignore refs for text, since they are unreliable
+        self._ref = raw_dom["ref"]
         if "text" in raw_dom:
             self._text = str(raw_dom["text"])
         else:
             self._text = None
         self._value = raw_dom.get("value")
-        self._id = raw_dom.get("id")
-        classes = raw_dom.get("classes", "TEXT_CLASS")
+        self._id = raw_dom.get("id", "")
+        classes = raw_dom.get("classes", "")
         if isinstance(classes, dict):
             classes = "SVG_CLASS"
-        elif classes == "":
-            classes = "NO_CLASS"
         self._classes = classes
         self._bg_color = self._rgba_str_to_floats(raw_dom.get("bgColor"))
         self._fg_color = self._rgba_str_to_floats(raw_dom.get("fgColor"))
@@ -48,30 +45,23 @@ class DOMElement:
             self._text = " ".join(child.text for child in self._children)
             self._children = []
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
+        """Check if `self` and `other` refer to the same element.
+
+        The reference ID is used for comparison. Elements are considered the same
+        even when their attributes change (e.g., the position or text changes).
+        """
         if not isinstance(other, DOMElement):
             return False
         return self.ref == other.ref
 
-    def __ne__(self, other):
+    def __ne__(self, other: Any) -> bool:
+        """Check if `self` and `other` do not refer to the same element."""
         return not self.__eq__(other)
 
-    def to_dict(self):
-        return {
-            "tag": self.tag,
-            "left": self.left,
-            "top": self.top,
-            "width": self.width,
-            "height": self.height,
-            "text": self.text,
-            "value": self.value,
-            "id": self.id,
-            "classes": self.classes,
-        }
-
     @property
-    def tag(self):
-        """lowercased tag name (str).
+    def tag(self) -> str:
+        """Return the lowercased tag name.
 
         For <input> tag, also append the input type (e.g., "input_checkbox").
         For Text node, the tag is "t".
@@ -79,38 +69,39 @@ class DOMElement:
         return self._tag
 
     @property
-    def left(self):
-        """Left coordinate (float)."""
+    def left(self) -> float:
+        """Return the left coordinate."""
         return self._left
 
     @property
-    def top(self):
-        """Top coordinate (float)."""
+    def top(self) -> float:
+        """Return the top coordinate."""
         return self._top
 
     @property
-    def width(self):
-        """Width of the element (float)."""
+    def width(self) -> float:
+        """Return the width of the element."""
         return self._width
 
     @property
-    def height(self):
-        """Height of the element (float)."""
+    def height(self) -> float:
+        """Return the height of the element."""
         return self._height
 
     @property
-    def right(self):
-        """Right coordinate (float)."""
+    def right(self) -> float:
+        """Return the right coordinate (left + width)."""
         return self._left + self._width
 
     @property
-    def bottom(self):
-        """Bottom coordinate (float)."""
+    def bottom(self) -> float:
+        """Return the bottom coordinate (top + height)."""
         return self._top + self._height
 
     @property
-    def ref(self):
-        """Reference index (int).
+    def ref(self) -> int:
+        """Return the reference index.
+
         The ref is posive for normal elements and negative for text nodes.
         - Within the same episode, the ref of a DOM element remains the same
         - Exception: text nodes get a different ref at every time step
@@ -119,87 +110,86 @@ class DOMElement:
         return self._ref
 
     @property
-    def text(self):
-        """Text content of the element (unicode).
+    def text(self) -> Optional[str]:
+        """Return the text content of the element.
+
         For non-leaf nodes, return None.
         """
         return self._text
 
     @property
-    def value(self):
-        """For input elements, return the value.
-        - For checkbox and radio, return whether the element is selected (bool)
-        - Otherwise, return the text inside the input (unicode)
+    def value(self) -> Union[None, bool, str]:
+        """Return the value of an input element, and None otherwise.
+
+        - For checkbox and radio, return whether the element is selected (bool).
+        - Otherwise, return the text inside the input.
         """
         return self._value
 
     @property
-    def id(self):
-        """Return the DOM id attribute (str), or an empty string."""
+    def id(self) -> str:
+        """Return the DOM id attribute, or an empty string."""
         return self._id
 
     @property
-    def classes(self):
-        """Return the DOM class attribute (str), or an empty string.
+    def classes(self) -> str:
+        """Return the DOM class attribute, or an empty string.
+
         Multiple classes are separated by spaces.
         """
         return self._classes
 
     @property
-    def bg_color(self):
-        """Return the background color rgba (float, float, float, float)."""
+    def bg_color(self) -> Tuple[float, float, float, float]:
+        """Return the background color as RGBA with value range 0.0 to 1.0."""
         return self._bg_color
 
     @property
-    def fg_color(self):
-        """Return the foreground color rgba (float, float, float, float)."""
+    def fg_color(self) -> Tuple[float, float, float, float]:
+        """Return the foreground color as RGBA with value range 0.0 to 1.0."""
         return self._fg_color
 
     @property
-    def focused(self):
-        """Return whether the element is being focused on (bool)."""
+    def focused(self) -> bool:
+        """Return whether the element is being focused on."""
         return self._focused
 
     @property
-    def tampered(self):
-        """Return whether the element has been clicked on in this episode (bool)."""
+    def tampered(self) -> bool:
+        """Return whether the element has been clicked on in this episode."""
         return self._tampered
 
     @property
-    def targeted(self):
-        """In a recorded demonstration, return whether the element is the target
-        of an event (bool).
-        """
+    def targeted(self) -> bool:
+        """In a recorded demonstration, return whether the element is an event target."""
         return self._targeted
 
     @property
-    def is_leaf(self):
-        """Return whether this is a leaf element (bool)."""
+    def is_leaf(self) -> bool:
+        """Return whether this is a leaf element."""
         return self._text is not None
 
     @property
-    def children(self):
-        """Return the list of children (list[DOMElement])."""
+    def children(self) -> Sequence["DOMElement"]:
+        """Return the list of children."""
         return self._children
 
     @property
-    def subtree_elements(self):
-        """Return the list of elements in the subtree, including self (list[DOMElement])."""
+    def subtree_elements(self) -> Collection["DOMElement"]:
+        """Return the list of elements in the subtree, including self."""
         elements = [self]
         for child in self.children:
             elements += child.subtree_elements
         return elements
 
     @property
-    def parent(self):
-        """Return the parent (DOMElement)."""
+    def parent(self) -> Optional["DOMElement"]:
+        """Return the parent, or None if the element is the root."""
         return self._parent
 
     @property
-    def ancestor_path(self):
-        """Returns the path from root to self in a list, starting with root
-        (list[DOMElement]).
-        """
+    def ancestor_path(self) -> Sequence["DOMElement"]:
+        """Returns the path from root to self in a list, starting with root."""
         path = []
         curr = self
         while curr.parent:
@@ -208,11 +198,12 @@ class DOMElement:
         return list(reversed(path))
 
     @property
-    def depth(self):
-        """Depth in the DOM tree (root is 1). (int)"""
+    def depth(self) -> int:
+        """Depth in the DOM tree (root is 1)."""
         return len(self.ancestor_path)
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Return the string representation."""
         if self.text:
             text = self.text
             text = text[:20] + "..." if len(text) > 20 else text
@@ -238,8 +229,15 @@ class DOMElement:
 
     __repr__ = __str__
 
-    def visualize(self, join=True):
-        """Return a string visualizing the tree structure."""
+    def visualize(self, join: bool = True) -> Union[str, Sequence[str]]:
+        """Return a string visualizing the tree structure.
+
+        Args:
+            join: Whether to join the output lines with newlines.
+
+        Returns:
+            a list of string if join is True; a single string otherwise.
+        """
         lines = []
         lines.append(f"- {self}")
         for i, child in enumerate(self.children):
@@ -252,15 +250,11 @@ class DOMElement:
                     lines.append(prefix + line)
         return "\n".join(lines) if join else lines
 
-    def lca(self, other):
-        """Returns the least common ancestor of two DOMElement (the node with
-        greatest depth that is an ancestor of self and other).
+    def lca(self, other: "DOMElement") -> "DOMElement":
+        """Returns the least common ancestor of two DOMElement.
 
-        Args:
-            other (DOMElement)
-
-        Returns:
-            DOMElement
+        The returned node is the node with greatest depth that is an ancestor
+        of both `self` and `other`.
         """
         # One is kth deg grandparent of other
         if self in other.ancestor_path:
@@ -282,8 +276,10 @@ class DOMElement:
             ).format(self, other, self.visualize(), other.visualize())
         )
 
-    def diff(self, other_dom):
-        """Traverses the two DOM trees in the same order and returns all the
+    def diff(self, other_dom: "DOMElement") -> Collection["DOMElement"]:
+        """Compute the diffs with another subtree.
+
+        Traverses the two DOM trees in the same order and returns all the
         elements that differ between the two in any of the following ways:
             - ref
             - text
@@ -295,20 +291,19 @@ class DOMElement:
             - fg_color, bg_color
             - is_leaf
 
+        If two DOMElements have same ref but differ on properties, only ONE
+        of them is added to the list, otherwise, both.
+
+        Elements that do not exist in the other tree count as different.
+
+        The operation is ordered: it compares the first child against first child,
+        second child against second, and so on.
+
         Args:
-            other_dom (DOMElement)
+            other_dom: Root of the tree to compare.
 
         Returns:
-            list[DOMElement]: the elements that differ (elements that do not
-            exist in the other tree count as differing)
-
-        NOTE:
-            If two DOMElements have same ref but differ on properties, only ONE
-            of them is added to the list, otherwise, both.
-
-        NOTE:
-            Compares the first child against first child, second child against
-            second, and so on...
+            The elements that differ.
         """
 
         def element_diff(first, second, l):
@@ -360,27 +355,29 @@ class DOMElement:
         element_diff(self, other_dom, different_elements)
         return different_elements
 
-    def _rgba_str_to_floats(self, rgba):
-        """Takes a string of the form rgb(?, ?, ?) or rgba(?, ?, ?, ?)
+    def _rgba_str_to_floats(
+        self, rgba: Optional[str]
+    ) -> Tuple[float, float, float, float]:
+        """Convert the color string into normalized RGBA values.
+
+        Takes a string of the form rgb(?, ?, ?) or rgba(?, ?, ?, ?)
         and extracts the rgba values normalized between 0 and 1.
 
         NOTE: If rgba is None, returns white (1.0, 1.0, 1.0, 1.0).
-        NOTE: If only rgb is passed, assumes a = 100
-
-        Args:
-            rgba (string)
-
-        Returns:
-            (float, float, float, float): rgba
+        NOTE: If only rgb is passed, assumes a = 100.
         """
         if rgba is None:  # Assume is white
             return 1.0, 1.0, 1.0, 1.0
 
         if "rgba" in rgba:
             m = re.search(r"rgba\(([0-9.]+), ([0-9.]+), ([0-9.]+), ([0-9.]+)\)", rgba)
+            if not m:
+                raise ValueError(f"Invalid color string: {rgba}")
             a = float(m.group(4))
         else:
             m = re.search(r"rgb\(([0-9.]+), ([0-9.]+), ([0-9.]+)\)", rgba)
+            if not m:
+                raise ValueError(f"Invalid color string: {rgba}")
             a = 1.0
         return (
             float(m.group(1)) / 255,

@@ -1,14 +1,22 @@
 """MiniWoB action space."""
 import logging
 from enum import IntEnum
+from typing import Any, Dict
 
 import numpy as np
 from gymnasium import spaces
+from selenium.webdriver import Chrome as ChromeDriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 
+from miniwob.constants import ASCII_CHARSET, MAX_REF, TYPING_MAX_LENGTH
+
+Action = Dict[str, Any]
+
 
 class ActionTypes(IntEnum):
+    """Valid action types for MiniWoB environments."""
+
     NONE = 0
     COORD_CLICK = 1
     ELEMENT_CLICK = 2
@@ -16,12 +24,7 @@ class ActionTypes(IntEnum):
     FOCUS_AND_TYPE = 4
 
 
-TYPING_MAX_LENGTH = 32
-ASCII_CHARSET = frozenset(chr(x) for x in range(32, 128))
-MAX_REF = 1000000
-
-
-def get_action_space(screen_width, screen_height):
+def get_action_space(screen_width: int, screen_height: int) -> spaces.Space:
     """Return the space of serialized actions."""
     space = spaces.Dict(
         {
@@ -40,7 +43,7 @@ def get_action_space(screen_width, screen_height):
     return space
 
 
-def create_none_action():
+def create_none_action() -> Action:
     """Return a valid action object that does nothing."""
     return {
         "action_type": ActionTypes.NONE,
@@ -50,7 +53,7 @@ def create_none_action():
     }
 
 
-def create_coord_click_action(left, top):
+def create_coord_click_action(left: float, top: float) -> Action:
     """Return a valid action object with type COORD_CLICK."""
     action = create_none_action()
     action.update(
@@ -62,7 +65,7 @@ def create_coord_click_action(left, top):
     return action
 
 
-def create_element_click_action(ref):
+def create_element_click_action(ref: int) -> Action:
     """Return a valid action object with type ELEMENT_CLICK."""
     action = create_none_action()
     action.update(
@@ -74,7 +77,7 @@ def create_element_click_action(ref):
     return action
 
 
-def create_type_action(text):
+def create_type_action(text: str) -> Action:
     """Return a valid action object with type TYPE."""
     action = create_none_action()
     action.update(
@@ -86,7 +89,7 @@ def create_type_action(text):
     return action
 
 
-def create_focus_and_type_action(ref, text):
+def create_focus_and_type_action(ref: int, text: str) -> Action:
     """Return a valid action object with type FOCUS_AND_TYPE."""
     action = create_none_action()
     action.update(
@@ -99,7 +102,7 @@ def create_focus_and_type_action(ref, text):
     return action
 
 
-def execute_coord_click(left, top, driver):
+def execute_coord_click(left: float, top: float, driver: ChromeDriver):
     """Click at coordinates (left, top)."""
     body = driver.find_element(By.TAG_NAME, "body")
     # The offset is from the center, not top-left.
@@ -109,7 +112,7 @@ def execute_coord_click(left, top, driver):
     chain.move_to_element_with_offset(body, x, y).click().perform()
 
 
-def execute_element_click(ref, driver):
+def execute_element_click(ref: int, driver: ChromeDriver):
     """Click on the DOM element specified by a ref ID."""
     # TODO: Handle <select> correctly.
     result = driver.execute_script(f"return core.elementClick({ref});")
@@ -117,20 +120,20 @@ def execute_element_click(ref, driver):
         logging.warning("Clicking %s failed: %s", ref, result)
 
 
-def execute_type(text, driver):
+def execute_type(text: str, driver: ChromeDriver):
     """Send keystrokes to the focused element."""
     chain = ActionChains(driver)
     chain.send_keys(text)
     chain.perform()
 
 
-def execute_focus_and_type(ref, text, driver):
+def execute_focus_and_type(ref: int, text: str, driver: ChromeDriver):
     """Click the specified DOM element and then send keystrokes."""
     execute_element_click(ref, driver)
     execute_type(text, driver)
 
 
-def execute_action(action, driver):
+def execute_action(action: Action, driver: ChromeDriver):
     """Execute the action on the ChromeDriver."""
     action_type = action["action_type"]
     if action_type == ActionTypes.NONE:

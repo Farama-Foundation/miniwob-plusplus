@@ -1,16 +1,23 @@
 """MiniWoB observation space."""
+from typing import Any, Dict
+
 import numpy as np
 from gymnasium import spaces
 
-UTTERANCE_MAX_LENGTH = 256
-ATTRIBUTE_MAX_LENGTH = 64
-TEXT_MAX_LENGTH = 256
-ASCII_CHARSET = frozenset(chr(x) for x in range(32, 128))
-MIN_REF = -1000000
-MAX_REF = 1000000
+from miniwob.constants import (
+    ASCII_CHARSET,
+    ATTRIBUTE_MAX_LENGTH,
+    MAX_REF,
+    MIN_REF,
+    TEXT_MAX_LENGTH,
+    UTTERANCE_MAX_LENGTH,
+)
+from miniwob.dom import DOMElement
+
+Observation = Dict[str, Any]
 
 
-def get_observation_space(screen_width, screen_height):
+def get_observation_space(screen_width: int, screen_height: int) -> spaces.Space:
     """Return the space of observations."""
     utterance_space = spaces.Text(
         max_length=UTTERANCE_MAX_LENGTH,
@@ -87,7 +94,7 @@ def get_observation_space(screen_width, screen_height):
     return observation_space
 
 
-def serialize_dom_element(element):
+def serialize_dom_element(element: DOMElement) -> Dict[str, Any]:
     """Serialize the given DOMElement to fit the element space."""
     serialized = {
         "ref": element.ref,
@@ -114,12 +121,12 @@ def serialize_dom_element(element):
     return serialized
 
 
-def create_empty_screenshot(screen_width, screen_height):
+def create_empty_screenshot(screen_width: int, screen_height: int) -> np.ndarray:
     """Returns an all-black screenshot."""
     return np.zeros((screen_height, screen_width, 3), dtype=np.uint8)
 
 
-def create_empty_observation(screen_width, screen_height):
+def create_empty_observation(screen_width: int, screen_height: int) -> Observation:
     """Returns an empty observation for a terminated session."""
     observation = {
         "utterance": "",
@@ -129,13 +136,16 @@ def create_empty_observation(screen_width, screen_height):
     return observation
 
 
-def create_observation(utterance, root_dom, screenshot):
+def create_observation(
+    utterance: str, root_dom: DOMElement, screenshot: np.ndarray
+) -> Observation:
     """Returns an observation that fits in the observation space.
 
     Args:
         utterance: Instruction text extracted from the task.
         root_dom: DOMElement object for the root element.
         screenshot: Screenshot as an RGB array.
+
     Returns:
         the observation object
     """
