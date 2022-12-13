@@ -1,4 +1,4 @@
-"""Reward processors
+"""Reward processors.
 
 Each method takes the metadata with the following keys:
     - env_reward: MiniWoB official reward
@@ -6,21 +6,33 @@ Each method takes the metadata with the following keys:
     - done: Whether the task is done
 Then it returns a reward (float).
 """
+from typing import Any, Callable, Mapping
+
+Metadata = Mapping[str, Any]
+RewardPreprocessor = Callable[[Metadata], float]
 
 
-def get_original_reward(metadata):
+def get_original_reward(metadata: Metadata) -> float:
+    """Return the original reward with time penalty.
+
+    This is the reward as defined in the environment.
+    """
     return float(metadata["env_reward"])
 
 
-def get_raw_reward(metadata):
-    """Get the raw reward without time penalty.
+def get_raw_reward(metadata: Metadata) -> float:
+    """Return the raw reward without time penalty.
+
     This is usually 1 for success and -1 for failure, but not always.
     """
     return float(metadata["raw_reward"])
 
 
-def get_click_checkboxes_hard(metadata):
-    """(click-checkboxes task) Reward without partial credits.
+def get_click_checkboxes_hard(metadata: Metadata) -> float:
+    """Return the reward without partial credits.
+
+    This can be applied when the original environment gives partial credits
+    in addition to the time penalty (e.g., click-checkboxes).
     Give 1 if the raw reward is 1. Otherwise, give -1.
     """
     if not metadata["done"]:
@@ -28,10 +40,10 @@ def get_click_checkboxes_hard(metadata):
     return 1.0 if metadata["raw_reward"] == 1.0 else -1.0
 
 
-def raw_reward_threshold(threshold):
+def raw_reward_threshold(threshold: float) -> RewardPreprocessor:
     """Return a reward processor that cut off at a threshold."""
 
-    def fn(metadata):
+    def fn(metadata: Metadata) -> float:
         if metadata["raw_reward"] > threshold:
             return 1.0
         elif metadata["raw_reward"] > 0:
@@ -39,14 +51,3 @@ def raw_reward_threshold(threshold):
         return metadata["raw_reward"]
 
     return fn
-
-
-def get_reward_processor(config):
-    if config.type == "time_independent":
-        return get_raw_reward
-    elif config.type == "time_discounted":
-        return get_original_reward
-    elif config.type == "click_checkboxes_hard":
-        return get_click_checkboxes_hard
-    else:
-        raise ValueError(f"{config.type} not a valid reward processor type")

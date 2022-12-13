@@ -1,12 +1,15 @@
+"""Test integration with Gymnasium API."""
 import gymnasium
 from gymnasium import spaces
 from gymnasium.utils.env_checker import check_env
-from gymnasium.wrappers import FlattenObservation
+from gymnasium.wrappers.flatten_observation import FlattenObservation
 
 import miniwob  # noqa: F401
 
 
 class TestGymAPI:
+    """Test integration with Gymnasium API."""
+
     def test_click_test_env(self):
         """Check that the click-test environment follows Gym API."""
         env = gymnasium.make("miniwob/click-test-v1")

@@ -1,3 +1,4 @@
+"""Setups the project."""
 from setuptools import setup
 
 setup(

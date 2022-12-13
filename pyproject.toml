@@ -1,0 +1,25 @@
+[tool.pyright]
+
+include = [
+    "miniwob/**",
+]
+
+exclude = [
+    "**/__pycache__",
+]
+
+strict = [
+
+]
+
+typeCheckingMode = "basic"
+pythonVersion = "3.7"
+pythonPlatform = "All"
+typeshedPath = "typeshed"
+enableTypeIgnoreComments = true
+
+# This is required as the CI pre-commit does not download the module
+#    Therefore, we have to ignore missing imports
+reportMissingImports = "none"
+# Some modules are missing type stubs, which is an issue when running pyright locally
+reportMissingTypeStubs = false

@@ -1,3 +1,4 @@
+"""Test environment methods."""
 import time
 
 import numpy as np
@@ -8,17 +9,22 @@ from miniwob.environment import MiniWoBEnvironment
 
 
 class MiniWoBTester:
+    """Base class for testing on a single task."""
+
     # Subclasses should set this field
-    TASK_NAME = None
+    TASK_NAME = ""
 
     @pytest.fixture
     def env(self):
+        """Yield an environment for the task."""
         env = MiniWoBEnvironment(subdomain=self.TASK_NAME)
         yield env
         env.close()
 
 
 class TestMiniWoBEnvironment(MiniWoBTester):
+    """Tests for basic environment functions."""
+
     TASK_NAME = "click-test"
 
     ################################
@@ -127,6 +133,8 @@ class TestMiniWoBEnvironment(MiniWoBTester):
 
 
 class TestMiniWoBSeed(MiniWoBTester):
+    """Tests for seed determinism."""
+
     TASK_NAME = "click-button"
 
     def get_button_click(self, obs, info):
@@ -141,6 +149,7 @@ class TestMiniWoBSeed(MiniWoBTester):
         raise ValueError("Cannot find button.")
 
     def test_seed(self, env):
+        """Test whether the same seed gives the same result."""
         obs_1, info_1 = env.reset(seed=31416)
         obs_2, info_2 = env.reset(seed=227)
         obs_3, info_3 = env.reset(seed=227)
@@ -164,6 +173,8 @@ class TestMiniWoBSeed(MiniWoBTester):
 
 
 class TestMiniWoBMode(MiniWoBTester):
+    """Tests for the data mode (available in some tasks)."""
+
     TASK_NAME = "click-test-transfer"
 
     def get_button_click(self, obs, text):
@@ -176,6 +187,7 @@ class TestMiniWoBMode(MiniWoBTester):
 
     def test_mode(self, env):
         """Test if setting the mode works.
+
         - mode = 'train': click on button ONE
         - mode = 'test':  click on button TWO
         """
@@ -221,9 +233,12 @@ class TestMiniWoBMode(MiniWoBTester):
 
 
 class TestMiniWoBFields(MiniWoBTester):
+    """Tests for field extraction."""
+
     TASK_NAME = "email-inbox-forward-nl"
 
     def test_fields(self, env):
+        """Test field extraction."""
         # Training time
         obs, info = env.reset()
         assert "by" in info["fields"].keys
