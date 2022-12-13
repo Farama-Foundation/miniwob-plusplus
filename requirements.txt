@@ -1,8 +1,0 @@
-Gymnasium==0.26.3
-Pillow>=9.0.0
-selenium>=4.5.0
-numpy>=1.18.0
-
-[test]
-pytest>=7.0.0
-pytest-timeout>=2.1.0
