@@ -20,6 +20,7 @@ Observation = Dict[str, Any]
 def get_observation_space(screen_width: int, screen_height: int) -> spaces.Space:
     """Return the space of observations."""
     utterance_space = spaces.Text(
+        min_length=0,
         max_length=UTTERANCE_MAX_LENGTH,
         charset=ASCII_CHARSET,
     )
