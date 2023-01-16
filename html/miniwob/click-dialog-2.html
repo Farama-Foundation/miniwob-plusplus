@@ -10,6 +10,7 @@
 <script src="../core/d3.v3.min.js"></script>
 <script src="../core/jquery-ui/external/jquery/jquery.js"></script>
 <script src="../core/jquery-ui/jquery-ui.min.js"></script>
+<script src="../core/jquery-ui-hacks.js"></script>
 <script src="../common/ui_utils.js"></script>
 
 <style>
@@ -26,6 +27,7 @@ var BUTTONS = ['Cancel', 'OK', 'x'];
 var resetUI = function(div){
   if(div.html().length > 0) $('#dialog').dialog('destroy');
   div.empty(); // clear previous problem, if any
+  $.resetUniqueId();
 }
 
 // generate the dialog box, the contents inside it, and some

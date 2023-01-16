@@ -10,6 +10,7 @@
 <script src="../core/d3.v3.min.js"></script>
 <script src="../core/jquery-ui/external/jquery/jquery.js"></script>
 <script src="../core/jquery-ui/jquery-ui.min.js"></script>
+<script src="../core/jquery-ui-hacks.js"></script>
 <script src="../common/ui_utils.js"></script>
 
 <style>
@@ -22,8 +23,7 @@
 <script>
 var OLDIX;
 var genProblem = function() {
-  core.shuffle(ui_utils.PEOPLE_NAMES);
-  var ITEMS = ui_utils.PEOPLE_NAMES.slice();
+  var ITEMS = core.shuffle(ui_utils.PEOPLE_NAMES.slice());
 
   // build items with d3js
   var ul = d3.select('#sortable');
@@ -60,6 +60,7 @@ var genProblem = function() {
   d3.select('#query').html('Drag ' + ITEMS[ix-1] + ' ' + target_description);
 
   // make sortable with jqueryui and create a rewarder
+  $.resetUniqueId();
   $('#sortable').sortable({
     start: function(event, ui) { // start dragging
       OLDIX = ui.item.index() + 1; // have to remember this

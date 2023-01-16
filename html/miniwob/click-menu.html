@@ -16,6 +16,7 @@
 <script src="../core/d3.v3.min.js"></script>
 <script src="../core/jquery-ui/external/jquery/jquery.js"></script>
 <script src="../core/jquery-ui/jquery-ui.min.js"></script>
+<script src="../core/jquery-ui-hacks.js"></script>
 <script src="../common/ui_utils.js"></script>
 <script>
 var ITEMS;
@@ -48,10 +49,11 @@ var enterUL = function(div, depth, prefix) {
 var genProblem = function() {
   var div = d3.select('#area');
   div.html('');
+  $.resetUniqueId();
 
   P = 0;
   CANDIDATES = [];
-  ITEMS = ui_utils.PEOPLE_NAMES;
+  ITEMS = ui_utils.PEOPLE_NAMES.slice();
   core.shuffle(ITEMS);
 
   enterUL(div, 0, '');
