@@ -105,8 +105,8 @@ def serialize_dom_element(element: DOMElement) -> Dict[str, Any]:
         "tag": element.tag[:ATTRIBUTE_MAX_LENGTH],
         "text": (element.text or "")[:TEXT_MAX_LENGTH],
         "value": str(element.value or "")[:TEXT_MAX_LENGTH],
-        "id": element.id,
-        "classes": element.classes,
+        "id": element.id[:ATTRIBUTE_MAX_LENGTH],
+        "classes": element.classes[:ATTRIBUTE_MAX_LENGTH],
         "bg_color": np.array(element.bg_color, dtype=np.float32),
         "fg_color": np.array(element.fg_color, dtype=np.float32),
         "flags": np.array(
