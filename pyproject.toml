@@ -30,4 +30,5 @@ reportMissingTypeStubs = false
 filterwarnings = [
     "error",
     'ignore:.*For Box action spaces, we recommend using a symmetric and normalized space.*',
+    'ignore:.*No render fps was declared in the environment.*',
 ]

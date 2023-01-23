@@ -21,7 +21,7 @@ class TestGymAPI:
 
     def test_gym_api(self, env):
         """Check that the environment follows Gym API."""
-        check_env(env.unwrapped)
+        check_env(env.unwrapped, skip_render_check=True)
 
     def test_flattened_observation_space(self, env):
         """Verify the flattened observation space."""

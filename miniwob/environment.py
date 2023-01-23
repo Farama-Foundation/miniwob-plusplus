@@ -14,7 +14,7 @@ from miniwob.reward import RewardPreprocessor
 class MiniWoBEnvironment(gym.Env):
     """MiniWoB environment."""
 
-    metadata = {"render_modes": ["human"]}
+    metadata = {"render_modes": ["human"], "render_fps": None}
     reward_range = (-1, 1)
 
     def __init__(
