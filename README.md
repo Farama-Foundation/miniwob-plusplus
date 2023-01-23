@@ -34,7 +34,7 @@ There are 2 ways to access the tasks:
 
   * **Python:**
     ```
-    python -m SimpleHTTPServer 8080
+    python -m http.server 8080
     ```
     We found this method to be less stable with a large amount of access,
     which is required by reinforcement learning.
@@ -55,10 +55,11 @@ The Python environment implements the
 
 ## Setup
 
-- Python dependencies
-  ```
-  pip install -r requirements.txt
-  ```
+- Install the module
+  - Inside the repository directory, run
+    ```
+    pip install .
+    ```
   - If this gives you problems, try again and add pip's `--ignore-installed` flag.
 
 - Selenium
