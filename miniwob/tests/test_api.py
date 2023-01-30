@@ -6,13 +6,13 @@ from gymnasium.utils.env_checker import check_env
 from gymnasium.wrappers.flatten_observation import FlattenObservation
 
 import miniwob  # noqa: F401
-from miniwob.tests.utils import ALL_TESTABLE_MINIWOB_ENVS
+from miniwob.tests.utils import get_all_registered_miniwob_envs
 
 
 class TestGymAPI:
     """Test integration with Gymnasium API."""
 
-    @pytest.fixture(params=ALL_TESTABLE_MINIWOB_ENVS)
+    @pytest.fixture(params=get_all_registered_miniwob_envs())
     def env(self, request):
         """Yield an environment for the task."""
         env = gymnasium.make(request.param)
