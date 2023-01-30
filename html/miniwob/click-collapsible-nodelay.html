@@ -9,6 +9,7 @@
 <script src="../core/d3.v3.min.js"></script>
 <script src="../core/jquery-ui/external/jquery/jquery.js"></script>
 <script src="../core/jquery-ui/jquery-ui.min.js"></script>
+<script src="../core/jquery-ui-hacks.js"></script>
 <script src="../common/ui_utils.js"></script>
 
 <style>
@@ -33,6 +34,7 @@ var genProblem = function() {
   var div = $('#area');
   if(div.html().length > 0){ $('#area').accordion('destroy'); }
   div.empty(); // clear previous problem, if any
+  $.resetUniqueId();
 
   createCollapsible(div);
 

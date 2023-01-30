@@ -20,6 +20,7 @@ var genProblem = function() {
   div.html('');
 
   var ITEMS = core.randf(0,1) < 0.5 ? ui_utils.PEOPLE_NAMES : ui_utils.COUNTRIES;
+  ITEMS = ITEMS.slice(); // create a copy
   core.shuffle(ITEMS);
 
   var sel = div.append('select').attr('id', 'options').attr('style', 'width:150px;');

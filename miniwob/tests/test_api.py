@@ -1,25 +1,30 @@
 """Test integration with Gymnasium API."""
 import gymnasium
+import pytest
 from gymnasium import spaces
 from gymnasium.utils.env_checker import check_env
 from gymnasium.wrappers.flatten_observation import FlattenObservation
 
 import miniwob  # noqa: F401
+from miniwob.tests.utils import get_all_registered_miniwob_envs
 
 
 class TestGymAPI:
     """Test integration with Gymnasium API."""
 
-    def test_click_test_env(self):
-        """Check that the click-test environment follows Gym API."""
-        env = gymnasium.make("miniwob/click-test-v1")
-        check_env(env.unwrapped)
+    @pytest.fixture(params=get_all_registered_miniwob_envs())
+    def env(self, request):
+        """Yield an environment for the task."""
+        env = gymnasium.make(request.param)
+        yield env
         env.close()
 
-    def test_flattened_observation_space(self):
+    def test_gym_api(self, env):
+        """Check that the environment follows Gym API."""
+        check_env(env.unwrapped, skip_render_check=True)
+
+    def test_flattened_observation_space(self, env):
         """Verify the flattened observation space."""
-        env = gymnasium.make("miniwob/login-user-v1")
-        check_env(env.unwrapped)
         assert isinstance(env.observation_space, spaces.Dict)
         assert set(env.observation_space) == {"utterance", "dom_elements", "screenshot"}
         # dom_elements is a Sequence space and cannot be flattened.
@@ -29,4 +34,3 @@ class TestGymAPI:
         assert isinstance(env.observation_space["utterance"], spaces.Box)
         assert isinstance(env.observation_space["dom_elements"], spaces.Sequence)
         assert isinstance(env.observation_space["screenshot"], spaces.Box)
-        env.close()

@@ -23,3 +23,13 @@ enableTypeIgnoreComments = true
 reportMissingImports = "none"
 # Some modules are missing type stubs, which is an issue when running pyright locally
 reportMissingTypeStubs = false
+
+[tool.pytest.ini_options]
+
+filterwarnings = [
+    # Turn warnings into errors
+    "error",
+    # ... except for the following warnings:
+    'ignore:.*For Box action spaces, we recommend using a symmetric and normalized space.*',
+    'ignore:.*No render fps was declared in the environment.*',
+]

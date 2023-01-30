@@ -5,7 +5,7 @@ MINIWOB_TASKS = [
     "bisect-angle",
     "book-flight",
     "book-flight-nodelay",
-    "chase-circle",
+    # "chase-circle",   # Depends on the clock
     "choose-date",
     "choose-date-easy",
     "choose-date-medium",
@@ -81,7 +81,7 @@ MINIWOB_TASKS = [
     "identify-shape",
     "login-user",
     "login-user-popup",
-    "moving-items",
+    # "moving-items",   # Depends on the clock
     "multi-layouts",
     "multi-orderings",
     "navigate-tree",
@@ -103,7 +103,7 @@ MINIWOB_TASKS = [
     "text-editor",
     "text-transform",
     "tic-tac-toe",
-    "unicode-test",
+    # "unicode-test",   # Not in the canonical task set; contains Unicode
     "use-autocomplete",
     "use-autocomplete-nodelay",
     "use-colorwheel",
@@ -115,6 +115,10 @@ MINIWOB_TASKS = [
 ]
 FLIGHTWOB_TASKS = ["AA", "Alaska", "Alaska-auto", "Alaska-auto-medium"]
 
+NON_DETERMINISTIC_TASKS = [
+    "click-pie",
+]
+
 
 def register_miniwob_envs():
     """Register MiniWoB and FlightWoB environments."""
@@ -123,6 +127,7 @@ def register_miniwob_envs():
             id=f"miniwob/{name}-v1",
             entry_point="miniwob.environment:MiniWoBEnvironment",
             kwargs={"subdomain": name},
+            nondeterministic=(name in NON_DETERMINISTIC_TASKS),
         )
     for name in FLIGHTWOB_TASKS:
         register(

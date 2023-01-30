@@ -4,10 +4,10 @@ from setuptools import setup
 setup(
     name="miniwob_plusplus",
     version="0.0.1",
-    python_requires=">=3.7, <3.11",
+    python_requires=">=3.7, <3.12",
     packages=["miniwob"],
     install_requires=[
-        "Gymnasium==0.26.3",
+        "Gymnasium==0.27.1",
         "Pillow>=9.0.0",
         "selenium>=4.5.0",
         "numpy>=1.18.0",
