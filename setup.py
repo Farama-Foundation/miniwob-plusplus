@@ -4,7 +4,7 @@ from setuptools import setup
 setup(
     name="miniwob_plusplus",
     version="0.0.1",
-    python_requires=">=3.7, <=3.11",
+    python_requires=">=3.7, <3.12",
     packages=["miniwob"],
     install_requires=[
         "Gymnasium==0.27.1",
