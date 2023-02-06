@@ -5,8 +5,7 @@ from gymnasium import spaces
 from gymnasium.utils.env_checker import check_env
 from gymnasium.wrappers.flatten_observation import FlattenObservation
 
-import miniwob  # noqa: F401
-from miniwob.tests.utils import get_all_registered_miniwob_envs
+from tests.utils import get_all_registered_miniwob_envs
 
 
 class TestGymAPI:
