@@ -18,4 +18,7 @@ setup(
             "pytest-timeout>=2.1.0",
         ]
     },
+    entry_points={
+        "gymnasium.envs": ["__root__ = miniwob.registration:register_miniwob_envs"]
+    },
 )
