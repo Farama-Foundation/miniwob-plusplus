@@ -1,22 +1,23 @@
 """Test action execution."""
 from typing import Mapping, Tuple
 
+import gymnasium
 import pytest
 
+import miniwob  # noqa: F401
 from miniwob.action import (
     create_coord_click_action,
     create_element_click_action,
     create_focus_and_type_action,
     create_type_action,
 )
-from miniwob.environment import MiniWoBEnvironment
 
 
 class RepeatedTester:
     """Base class for repeated testing on a single task."""
 
-    # Task name; subclasses should set this field
-    TASK_NAME = ""
+    # Environment name; subclasses should set this field
+    ENV_NAME = ""
     # Number of times to run the test
     N = 10
     # Maximum number of steps for each episode
@@ -28,9 +29,9 @@ class RepeatedTester:
     def env(self):
         """Yield an environment for the task."""
         if self.FRAGILE:
-            env = MiniWoBEnvironment(subdomain=self.TASK_NAME, wait_ms=300)
+            env = gymnasium.make(self.ENV_NAME, wait_ms=300)
         else:
-            env = MiniWoBEnvironment(subdomain=self.TASK_NAME)
+            env = gymnasium.make(self.ENV_NAME)
         yield env
         env.close()
 
@@ -76,7 +77,7 @@ class RepeatedTester:
 class TestClickTest2(RepeatedTester):
     """Tests for task click-test-2."""
 
-    TASK_NAME = "click-test-2"
+    ENV_NAME = "miniwob/click-test-2-v1"
 
     def _get_action(self, obs, info, step):
         for element in obs["dom_elements"]:
@@ -89,7 +90,7 @@ class TestClickTest2(RepeatedTester):
 class TestClickButton(RepeatedTester):
     """Tests for task click-button."""
 
-    TASK_NAME = "click-button"
+    ENV_NAME = "miniwob/click-button-v1"
 
     def _get_action(self, obs, info, step):
         target = info["fields"]["target"]
@@ -103,7 +104,7 @@ class TestClickButton(RepeatedTester):
 class TestFocusText(RepeatedTester):
     """Tests for task focus-text."""
 
-    TASK_NAME = "focus-text"
+    ENV_NAME = "miniwob/focus-text-v1"
 
     def _get_action(self, obs, info, step):
         for element in obs["dom_elements"]:
@@ -116,7 +117,7 @@ class TestFocusText(RepeatedTester):
 class TestIdentifyShape(RepeatedTester):
     """Tests for task identify-shape."""
 
-    TASK_NAME = "identify-shape"
+    ENV_NAME = "miniwob/identify-shape-v1"
 
     def _get_action(self, obs, info, step):
         shape = self._identify_shape(obs)
@@ -148,7 +149,7 @@ class TestIdentifyShape(RepeatedTester):
 class TestClickDialog2(RepeatedTester):
     """Tests for task click-dialog-2."""
 
-    TASK_NAME = "click-dialog-2"
+    ENV_NAME = "miniwob/click-dialog-2-v1"
 
     def _get_action(self, obs, info, step):
         target = info["fields"]["target"]
@@ -168,7 +169,7 @@ class TestClickDialog2(RepeatedTester):
 class TestEnterText(RepeatedTester):
     """Tests for task enter-text."""
 
-    TASK_NAME = "enter-text"
+    ENV_NAME = "miniwob/enter-text-v1"
     MAX_STEPS = 3
 
     def _get_action(self, obs, info, step):
@@ -201,7 +202,7 @@ class TestEnterText(RepeatedTester):
 class TestEnterTextFocusAndType(RepeatedTester):
     """Tests for task enter-text, using FocusAndType actions."""
 
-    TASK_NAME = "enter-text"
+    ENV_NAME = "miniwob/enter-text-v1"
     MAX_STEPS = 2
 
     def _get_action(self, obs, info, step):
@@ -220,7 +221,7 @@ class TestEnterTextFocusAndType(RepeatedTester):
 class TestClickCheckboxes(RepeatedTester):
     """Tests for task click-checkboxes."""
 
-    TASK_NAME = "click-checkboxes"
+    ENV_NAME = "miniwob/click-checkboxes-v1"
     MAX_STEPS = 7
 
     def _get_action(self, obs, info, step):
@@ -249,7 +250,7 @@ class TestClickCheckboxes(RepeatedTester):
 class TestChooseDateEasy(RepeatedTester):
     """Tests for task choose-date-easy."""
 
-    TASK_NAME = "choose-date-easy"
+    ENV_NAME = "miniwob/choose-date-easy-v1"
     MAX_STEPS = 3
     FRAGILE = True
 
@@ -272,7 +273,7 @@ class TestChooseDateEasy(RepeatedTester):
 class TestUseAutocomplete(RepeatedTester):
     """Tests for task use-autocomplete."""
 
-    TASK_NAME = "use-autocomplete"
+    ENV_NAME = "miniwob/use-autocomplete-v1"
     MAX_STEPS = 3
     FRAGILE = True
 
@@ -306,7 +307,7 @@ class TestUseAutocomplete(RepeatedTester):
 class TestUseAutocompleteNoDelay(RepeatedTester):
     """Tests for task use-autocomplete-nodelay."""
 
-    TASK_NAME = "use-autocomplete-nodelay"
+    ENV_NAME = "miniwob/use-autocomplete-nodelay-v1"
     MAX_STEPS = 3
     FRAGILE = "instance"
 
@@ -340,7 +341,7 @@ class TestUseAutocompleteNoDelay(RepeatedTester):
 class TestClickColor(RepeatedTester):
     """Tests for task click-color."""
 
-    TASK_NAME = "click-color"
+    ENV_NAME = "miniwob/click-color-v1"
     COLORS: Mapping[Tuple[int, int, int], str] = {
         (0, 0, 0): "black",
         (255, 0, 0): "red",
@@ -370,7 +371,7 @@ class TestClickColor(RepeatedTester):
 class TestEnterTime(RepeatedTester):
     """Tests for task enter-time."""
 
-    TASK_NAME = "enter-time"
+    ENV_NAME = "miniwob/enter-time-v1"
     MAX_STEPS = 2
 
     def _get_action(self, obs, info, step):
@@ -389,7 +390,7 @@ class TestEnterTime(RepeatedTester):
 class TestClickPie(RepeatedTester):
     """Tests for task click-pie-nodelay."""
 
-    TASK_NAME = "click-pie-nodelay"
+    ENV_NAME = "miniwob/click-pie-nodelay-v1"
     MAX_STEPS = 2
 
     def _get_action(self, obs, info, step):

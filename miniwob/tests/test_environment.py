@@ -1,23 +1,24 @@
 """Test environment methods."""
 import time
 
+import gymnasium
 import numpy as np
 import pytest
 
+import miniwob  # noqa: F401
 from miniwob.action import create_coord_click_action, create_element_click_action
-from miniwob.environment import MiniWoBEnvironment
 
 
 class MiniWoBTester:
     """Base class for testing on a single task."""
 
     # Subclasses should set this field
-    TASK_NAME = ""
+    ENV_NAME = ""
 
     @pytest.fixture
     def env(self):
         """Yield an environment for the task."""
-        env = MiniWoBEnvironment(subdomain=self.TASK_NAME)
+        env = gymnasium.make(self.ENV_NAME)
         yield env
         env.close()
 
@@ -25,7 +26,7 @@ class MiniWoBTester:
 class TestMiniWoBEnvironment(MiniWoBTester):
     """Tests for basic environment functions."""
 
-    TASK_NAME = "click-test"
+    ENV_NAME = "miniwob/click-test-v1"
 
     ################################
     # Helpers
@@ -135,7 +136,7 @@ class TestMiniWoBEnvironment(MiniWoBTester):
 class TestMiniWoBSeed(MiniWoBTester):
     """Tests for seed determinism."""
 
-    TASK_NAME = "click-button"
+    ENV_NAME = "miniwob/click-button-v1"
 
     def get_button_click(self, obs, info):
         """Get the action that clicks the button."""
@@ -175,7 +176,7 @@ class TestMiniWoBSeed(MiniWoBTester):
 class TestMiniWoBMode(MiniWoBTester):
     """Tests for the data mode (available in some tasks)."""
 
-    TASK_NAME = "click-test-transfer"
+    ENV_NAME = "miniwob/click-test-transfer-v1"
 
     def get_button_click(self, obs, text):
         """Get the action that clicks the button."""
@@ -235,7 +236,7 @@ class TestMiniWoBMode(MiniWoBTester):
 class TestMiniWoBFields(MiniWoBTester):
     """Tests for field extraction."""
 
-    TASK_NAME = "email-inbox-forward-nl"
+    ENV_NAME = "miniwob/email-inbox-forward-nl-v1"
 
     def test_fields(self, env):
         """Test field extraction."""
