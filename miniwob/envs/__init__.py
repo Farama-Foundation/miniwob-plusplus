@@ -359,10 +359,6 @@ def register_miniwob_envs():
         entry_point="miniwob.envs.miniwob_envs:SearchEngineEnv",
     )
     register(
-        id="miniwob/simon-says-v1",
-        entry_point="miniwob.envs.miniwob_envs:SimonSaysEnv",
-    )
-    register(
         id="miniwob/simple-algebra-v1",
         entry_point="miniwob.envs.miniwob_envs:SimpleAlgebraEnv",
     )

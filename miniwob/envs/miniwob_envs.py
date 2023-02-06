@@ -1939,28 +1939,6 @@ class SearchEngineEnv(MiniWoBEnvironment):
     subdomain = "search-engine"
 
 
-class SimonSaysEnv(MiniWoBEnvironment):
-    """
-    ## Description
-
-    Push the buttons in the order shown.
-
-    ## Example utterances
-
-    * TODO
-
-    ## Utterance fields
-
-    * TODO
-
-    ## Custom settings
-
-    None
-    """
-
-    subdomain = "simon-says"
-
-
 class SimpleAlgebraEnv(MiniWoBEnvironment):
     """
     ## Description
