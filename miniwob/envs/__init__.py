@@ -187,6 +187,10 @@ def register_miniwob_envs():
         entry_point="miniwob.envs.miniwob_envs:DragBoxEnv",
     )
     register(
+        id="miniwob/drag-circle-v1",
+        entry_point="miniwob.envs.miniwob_envs:DragCircleEnv",
+    )
+    register(
         id="miniwob/drag-cube-v1",
         entry_point="miniwob.envs.miniwob_envs:DragCubeEnv",
     )

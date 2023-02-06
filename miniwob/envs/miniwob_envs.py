@@ -993,6 +993,28 @@ class DragBoxEnv(MiniWoBEnvironment):
     subdomain = "drag-box"
 
 
+class DragCircleEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Drag an item in a specified direction.
+
+    ## Example utterances
+
+    * TODO
+
+    ## Utterance fields
+
+    * TODO
+
+    ## Custom settings
+
+    None
+    """
+
+    subdomain = "drag-circle"
+
+
 class DragCubeEnv(MiniWoBEnvironment):
     """
     ## Description
