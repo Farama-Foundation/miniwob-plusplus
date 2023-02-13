@@ -5,8 +5,6 @@ import pprint
 
 import gymnasium
 
-import miniwob  # noqa: F401
-
 
 def check_obs(obs, env):
     """Check if the observation is in the observation space."""

@@ -498,6 +498,18 @@ _add(
     [],
 )
 
+# Drag the circle up then press Submit.
+# Drag the circle left then press Submit.
+# Drag the circle up then press Submit.
+# Drag the circle up then press Submit.
+# Drag the circle right then press Submit.
+# Drag the circle right then press Submit.
+# Drag the circle left then press Submit.
+# Drag the circle left then press Submit.
+# Drag the circle down then press Submit.
+# Drag the circle up then press Submit.
+_add("drag-circle", r"Drag the circle (.*) then press Submit\.", ["target"])
+
 # Move the cube around so that "2" is the active side facing the user.
 # Move the cube around so that "5" is the active side facing the user.
 # Move the cube around so that "4" is the active side facing the user.
@@ -513,18 +525,6 @@ _add(
     r'Move the cube around so that "(.*)" is the active side facing the user\.',
     ["target"],
 )
-
-# Drag the circle up then press Submit.
-# Drag the circle left then press Submit.
-# Drag the circle up then press Submit.
-# Drag the circle up then press Submit.
-# Drag the circle right then press Submit.
-# Drag the circle right then press Submit.
-# Drag the circle left then press Submit.
-# Drag the circle left then press Submit.
-# Drag the circle down then press Submit.
-# Drag the circle up then press Submit.
-_add("drag-item", r"Drag the circle (.*) then press Submit\.", ["target"])
 
 # Drag Lanna to the 5th position.
 # Drag Blythe up by one position.

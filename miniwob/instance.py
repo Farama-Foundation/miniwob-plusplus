@@ -51,7 +51,7 @@ class MiniWoBInstance(Thread):
         subdomain: str,
         headless: bool = False,
         base_url: Optional[str] = None,
-        threading: bool = True,
+        threading: bool = False,
         reward_processor: Optional[RewardPreprocessor] = None,
         wait_ms: float = 0.0,
         block_on_reset: bool = True,
