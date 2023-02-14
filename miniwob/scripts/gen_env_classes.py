@@ -5,6 +5,7 @@ import re
 from typing import Sequence
 
 import gymnasium
+from gymnasium.envs.registration import parse_env_id
 
 CLASS_TEMPLATE = """
 class {camel_name}Env(MiniWoBEnvironment):
@@ -32,10 +33,8 @@ class {camel_name}Env(MiniWoBEnvironment):
 
 def _raw_env_name(env_id: str) -> str:
     """Convert ID like miniwob/click-test-v1 to click-test."""
-    match = re.search("^miniwob/(.*)-v[0-9.]*$", env_id)
-    if not match:
-        raise ValueError(f"Malformed env_id: {env_id}")
-    return match.group(1)
+    _, env_name, _ = parse_env_id(env_id)
+    return env_name
 
 
 def _camel_case(x: str) -> str:
