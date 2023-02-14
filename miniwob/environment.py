@@ -1,5 +1,6 @@
 """MiniWoB environment."""
 import logging
+from abc import ABC
 from typing import Any, Dict, Mapping, Optional, Tuple
 
 import gymnasium as gym
@@ -11,15 +12,17 @@ from miniwob.observation import Observation, get_observation_space
 from miniwob.reward import RewardPreprocessor
 
 
-class MiniWoBEnvironment(gym.Env):
-    """MiniWoB environment."""
+class MiniWoBEnvironment(gym.Env, ABC):
+    """Abstract class for MiniWoB environments."""
 
     metadata = {"render_modes": ["human"], "render_fps": None}
     reward_range = (-1, 1)
 
+    # MiniWoB task name, which should be specified by the child class.
+    subdomain = None
+
     def __init__(
         self,
-        subdomain: str,
         render_mode: Optional[str] = None,
         base_url: Optional[str] = None,
         reward_processor: Optional[RewardPreprocessor] = None,
@@ -50,11 +53,12 @@ class MiniWoBEnvironment(gym.Env):
                 *** Must specify `seeds` at each reset call.
             data_mode: Data mode (e.g., "train", "test"). Used in some tasks.
         """
+        assert self.subdomain, "`self.subdomain` cannot be empty."
         if render_mode and render_mode not in self.metadata["render_modes"]:
             raise ValueError(f"Invalid render mode: {render_mode}")
         self.render_mode = render_mode
         self.instance_kwargs = {
-            "subdomain": subdomain,
+            "subdomain": self.subdomain,
             "headless": (render_mode is None),
             "base_url": base_url,
             "reward_processor": reward_processor,

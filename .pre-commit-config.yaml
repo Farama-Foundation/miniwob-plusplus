@@ -31,7 +31,7 @@ repos:
     rev: 6.1.1  # pick a git hash / tag to point to
     hooks:
       - id: pydocstyle
-        exclude: ^(tests/)
+        exclude: ^(tests/)|(miniwob/envs/)
         args:
           - --source
           - --explain
