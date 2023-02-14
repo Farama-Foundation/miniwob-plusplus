@@ -16,12 +16,14 @@
 # -- Project information -----------------------------------------------------
 from typing import Any, Dict
 
+import miniwob
+
 project = "MiniWoB++"
 copyright = "2023"
 author = "Farama Foundation"
 
 # The full version, including alpha/beta/rc tags
-release = "0.0.1"
+release = miniwob.__version__
 
 
 # -- General configuration ---------------------------------------------------
