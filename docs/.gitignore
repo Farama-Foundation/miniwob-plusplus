@@ -1,1 +1,3 @@
-environments/**/*.md
+environments/*.md
+_build/
+demos/
