@@ -323,10 +323,12 @@ list_md_path = os.path.join(os.path.dirname(__file__), "..", "environments", "li
 with open(list_md_path, "w") as fp:
     content = file_start_content
     for env_type in ENV_TYPES:
-        df = pd.DataFrame({
-            "Name": [f"[{env}](./{env})" for env in env_type["envs"]],
-            "Description": [ENVS_DESCRIPTIONS[env] for env in env_type["envs"]]
-        })
+        df = pd.DataFrame(
+            {
+                "Name": [f"[{env}](./{env})" for env in env_type["envs"]],
+                "Description": [ENVS_DESCRIPTIONS[env] for env in env_type["envs"]],
+            }
+        )
         type_name = env_type["name"]
         type_desc = env_type["description"]
         content += f"## {type_name}\n\n"

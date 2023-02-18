@@ -27,12 +27,7 @@ source_path = os.path.join(
 )
 # Sphinx copies everything inside the first demos/ directory to the root
 # So to ensure that the final path is /demos/** we need another demos folder
-destination_path = os.path.join(
-    os.path.dirname(__file__),
-    "..",
-    "demos",
-    "demos"
-)
+destination_path = os.path.join(os.path.dirname(__file__), "..", "demos", "demos")
 shutil.copytree(source_path, destination_path)
 
 
