@@ -2,7 +2,6 @@
 """
 
 import os
-import re
 import gymnasium as gym
 import pandas as pd
 from utils import trim
