@@ -69,4 +69,5 @@ html_context["github_repo"] = "miniwob-plusplus"
 html_context["github_version"] = "main"
 
 html_static_path = ["_static"]
+html_extra_path = ["demos"]
 html_css_files = []
