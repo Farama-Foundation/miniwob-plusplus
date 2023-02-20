@@ -1,5 +1,4 @@
-"""Generate markdown files for the environments.
-"""
+# Generate markdown files for the environments.
 
 import os
 import shutil

@@ -1,10 +1,10 @@
-"""Generate markdown files for the environments.
-"""
+# Generate Environments List page content.
 
 import os
+
 import gymnasium as gym
 import pandas as pd
-from utils import trim
+
 import miniwob  # noqa: F401
 
 gym.logger.set_level(gym.logger.DISABLED)
