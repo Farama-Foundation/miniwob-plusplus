@@ -6,8 +6,49 @@ ATTRIBUTE_MAX_LENGTH = 256
 TEXT_MAX_LENGTH = 256
 TYPING_MAX_LENGTH = 64
 
+# TODO: Use the list of keys from Humphreys22
+DEFAULT_ALLOWED_KEYS = (
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z",
+)
+
 MIN_REF = -1000000
 MAX_REF = 1000000
+MAX_FIELDS = 10
 
 WINDOW_WIDTH = 500
 WINDOW_HEIGHT = 240

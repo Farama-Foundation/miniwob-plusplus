@@ -16,7 +16,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from miniwob.action import Action, execute_action
+from miniwob.action import Action, ActionSpaceConfig, execute_action
 from miniwob.constants import (
     FLIGHT_TASK_HEIGHT,
     FLIGHT_TASK_WIDTH,
@@ -230,6 +230,7 @@ class MiniWoBInstance(Thread):
     def step(
         self,
         action: Optional[Action],
+        action_space_config: ActionSpaceConfig,
         obs: List[Any],
         rewards: List[Any],
         dones: List[Any],
@@ -241,13 +242,14 @@ class MiniWoBInstance(Thread):
 
         Args:
             action: The action to execute from the action space, or None (do nothing).
+            action_space_config: ActionSpaceConfig object.
             obs: A list to store observations. The entry obs[i] will be modified.
             rewards: A list to store rewards. The entry rewards[i] will be modified.
             dones: A list to store termination statuses. The entry dones[i] will be modified.
             infos: A list to store info dicts. The entry infos[i] will be modified.
         """
         i = self.index
-        self.perform(action)
+        self.perform(action, action_space_config)
         metadata = self.get_metadata()
         rewards[i] = self.reward_processor(metadata)
         dones[i] = metadata["done"]
@@ -297,11 +299,12 @@ class MiniWoBInstance(Thread):
             time.sleep(self.wait_ms / 1000.0)
         self.start_time = time.time()
 
-    def perform(self, action: Optional[Action]):
+    def perform(self, action: Optional[Action], action_space_config: ActionSpaceConfig):
         """Perform an action.
 
         Args:
             action: The action to execute from the action space, or None (do nothing).
+            action_space_config: ActionSpaceConfig object.
         """
         if action is not None:
             if self.get_metadata()["done"]:
@@ -311,7 +314,7 @@ class MiniWoBInstance(Thread):
                     self.index,
                 )
             else:
-                execute_action(action, self.driver)
+                execute_action(action, action_space_config, self.driver)
         if self.wait_ms:
             time.sleep(self.wait_ms / 1000.0)
 

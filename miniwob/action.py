@@ -1,156 +1,183 @@
 """MiniWoB action space."""
-import logging
-from enum import IntEnum
-from typing import Any, Dict
+from dataclasses import dataclass
+from enum import Enum
+from typing import Any, Dict, Optional, Sequence, Set, Tuple, Union
 
 import numpy as np
 from gymnasium import spaces
 from selenium.webdriver import Chrome as ChromeDriver
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.by import By
 
-from miniwob.constants import ASCII_CHARSET, MAX_REF, TYPING_MAX_LENGTH
+from miniwob import selenium_actions
+from miniwob.constants import (
+    ASCII_CHARSET,
+    DEFAULT_ALLOWED_KEYS,
+    MAX_FIELDS,
+    MAX_REF,
+    TYPING_MAX_LENGTH,
+)
 
 Action = Dict[str, Any]
 
 
-class ActionTypes(IntEnum):
+class ActionTypes(str, Enum):
     """Valid action types for MiniWoB environments."""
 
-    NONE = 0
-    COORD_CLICK = 1
-    ELEMENT_CLICK = 2
-    TYPE = 3
-    FOCUS_AND_TYPE = 4
+    # No-op
+    NONE = "NONE"
+    # Mouse actions with coordinates
+    CLICK_COORDS = "CLICK_COORDS"
+    DBLCLICK_COORDS = "DBLCLICK_COORDS"
+    MOUSEDOWN_COORDS = "MOUSEDOWN_COORDS"
+    MOUSEUP_COORDS = "MOUSEUP_COORDS"
+    # Mouse actions with elements
+    CLICK_ELEMENT = "CLICK_ELEMENT"
+    DBLCLICK_ELEMENT = "DBLCLICK_ELEMENT"
+    MOUSEDOWN_ELEMENT = "MOUSEDOWN_ELEMENT"
+    MOUSEUP_ELEMENT = "MOUSEUP_ELEMENT"
+    # Mouse wheel
+    SCROLL_UP = "SCROLL_UP"
+    SCROLL_DOWN = "SCROLL_DOWN"
+    # Keyboard
+    PRESS_KEY = "PRESS_KEY"
+    TYPE_TEXT = "TYPE_TEXT"
+    TYPE_FIELD = "TYPE_FIELD"
+    FOCUS_ELEMENT_AND_TYPE_TEXT = "FOCUS_ELEMENT_AND_TYPE_TEXT"
+    FOCUS_ELEMENT_AND_TYPE_FIELD = "FOCUS_ELEMENT_AND_TYPE_FIELD"
 
 
-def get_action_space(screen_width: int, screen_height: int) -> spaces.Space:
-    """Return the space of serialized actions."""
-    space = spaces.Dict(
-        {
-            "action_type": spaces.Discrete(len(ActionTypes)),
-            # coords (left, top) is used for COORD_CLICK
-            "coords": spaces.Box(
+COORDS_ACTIONS = {
+    ActionTypes.CLICK_COORDS,
+    ActionTypes.DBLCLICK_COORDS,
+    ActionTypes.MOUSEDOWN_COORDS,
+    ActionTypes.MOUSEUP_COORDS,
+}
+ELEMENT_ACTIONS = {
+    ActionTypes.CLICK_ELEMENT,
+    ActionTypes.DBLCLICK_ELEMENT,
+    ActionTypes.MOUSEDOWN_ELEMENT,
+    ActionTypes.MOUSEUP_ELEMENT,
+    ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT,
+    ActionTypes.FOCUS_ELEMENT_AND_TYPE_FIELD,
+}
+TEXT_ACTIONS = {
+    ActionTypes.TYPE_TEXT,
+    ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT,
+}
+FIELD_ACTIONS = {
+    ActionTypes.TYPE_FIELD,
+    ActionTypes.FOCUS_ELEMENT_AND_TYPE_FIELD,
+}
+
+
+@dataclass
+class ActionSpaceConfig:
+    """Configurations for the action space.
+
+    Attributes:
+        action_types: An ordered sequence of action types to include.
+            The order will be used for interpreting the Discrete space.
+        screen_width: Screen width. Will be overridden by MiniWoBEnvironment.
+        screen_height: Screen height. Will be overridden by MiniWoBEnvironment.
+        coord_bins: If specified, bin the x and y coordinates to these numbers
+            of bins. Mouse actions will be executed at the middle of the
+            specified partition.
+        allowed_keys: An ordered sequence of allowed keys and key combinations
+            for the PRESS_KEY action. The order will be used for interpreting
+            the Discrete space.
+        text_max_len: Maximum text length for the TYPE_TEXT action.
+        text_charset: Character set for the TYPE_TEXT action.
+    """
+
+    action_types: Sequence[ActionTypes]
+    screen_width: Optional[float] = None
+    screen_height: Optional[float] = None
+    coord_bins: Optional[Tuple[int, int]] = None
+    allowed_keys: Sequence[str] = DEFAULT_ALLOWED_KEYS
+    text_max_len: int = TYPING_MAX_LENGTH
+    text_charset: Union[str, Set[str]] = ASCII_CHARSET
+
+    @classmethod
+    def get_preset(cls, name="all_supported"):
+        """Returns a preset config."""
+        if name == "all_supported":
+            return cls(
+                action_types=[
+                    ActionTypes.NONE,
+                    ActionTypes.CLICK_COORDS,
+                    ActionTypes.CLICK_ELEMENT,
+                    ActionTypes.TYPE_TEXT,
+                    ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT,
+                ]
+            )
+        else:
+            raise ValueError(f"Unknown preset name {name}")
+
+
+def get_action_space(config: ActionSpaceConfig) -> spaces.Space:
+    """Returns the space of serialized actions."""
+    space = {}
+    space["action_type"] = spaces.Discrete(len(config.action_types))
+    if COORDS_ACTIONS.intersection(config.action_types):
+        if not config.screen_width or not config.screen_height:
+            raise ValueError("screen_width and screen_height must be specified.")
+        if config.coord_bins:
+            space["coords"] = spaces.MultiDiscrete(np.array(config.coord_bins))
+        else:
+            space["coords"] = spaces.Box(
                 np.array([0.0, 0.0], dtype=np.float32),
-                np.array([screen_width, screen_height], dtype=np.float32),
-            ),
-            # ref (element ref ID) is used for ELEMENT_CLICK and FOCUS_AND_TYPE
-            "ref": spaces.Discrete(MAX_REF, start=1),
-            # text is only used for TYPE and FOCUS_AND_TYPE
-            "text": spaces.Text(TYPING_MAX_LENGTH, charset=ASCII_CHARSET),
-        }
-    )
-    return space
+                np.array([config.screen_width, config.screen_height], dtype=np.float32),
+            )
+    if ELEMENT_ACTIONS.intersection(config.action_types):
+        space["ref"] = spaces.Discrete(MAX_REF)
+    if ActionTypes.PRESS_KEY in config.action_types:
+        space["key"] = spaces.Discrete(len(config.allowed_keys))
+    if TEXT_ACTIONS.intersection(config.action_types):
+        space["text"] = spaces.Text(config.text_max_len, charset=config.text_charset)
+    if FIELD_ACTIONS.intersection(config.action_types):
+        space["field"] = spaces.Discrete(MAX_FIELDS)
+    return spaces.Dict(space)
 
 
-def create_none_action() -> Action:
-    """Return a valid action object that does nothing."""
-    return {
-        "action_type": ActionTypes.NONE,
-        "coords": np.zeros(2, dtype=np.float32),
-        "ref": 1,
-        "text": " ",
-    }
-
-
-def create_coord_click_action(left: float, top: float) -> Action:
-    """Return a valid action object with type COORD_CLICK."""
-    action = create_none_action()
-    action.update(
-        {
-            "action_type": ActionTypes.COORD_CLICK,
-            "coords": np.array([left, top], dtype=np.float32),
-        }
-    )
-    return action
-
-
-def create_element_click_action(ref: int) -> Action:
-    """Return a valid action object with type ELEMENT_CLICK."""
-    action = create_none_action()
-    action.update(
-        {
-            "action_type": ActionTypes.ELEMENT_CLICK,
-            "ref": ref,
-        }
-    )
-    return action
-
-
-def create_type_action(text: str) -> Action:
-    """Return a valid action object with type TYPE."""
-    action = create_none_action()
-    action.update(
-        {
-            "action_type": ActionTypes.TYPE,
-            "text": text,
-        }
-    )
-    return action
-
-
-def create_focus_and_type_action(ref: int, text: str) -> Action:
-    """Return a valid action object with type FOCUS_AND_TYPE."""
-    action = create_none_action()
-    action.update(
-        {
-            "action_type": ActionTypes.FOCUS_AND_TYPE,
-            "ref": ref,
-            "text": text,
-        }
-    )
-    return action
-
-
-def execute_coord_click(left: float, top: float, driver: ChromeDriver):
-    """Click at coordinates (left, top)."""
-    body = driver.find_element(By.TAG_NAME, "body")
-    # The offset is from the center, not top-left.
-    x = -body.size["width"] / 2 + left
-    y = -body.size["height"] / 2 + top
-    chain = ActionChains(driver)
-    chain.move_to_element_with_offset(body, x, y).click().perform()
-
-
-def execute_element_click(ref: int, driver: ChromeDriver):
-    """Click on the DOM element specified by a ref ID."""
-    # TODO: Handle <select> correctly.
-    result = driver.execute_script(f"return core.elementClick({ref});")
-    if result is not True:
-        logging.warning("Clicking %s failed: %s", ref, result)
-
-
-def execute_type(text: str, driver: ChromeDriver):
-    """Send keystrokes to the focused element."""
-    chain = ActionChains(driver)
-    chain.send_keys(text)
-    chain.perform()
-
-
-def execute_focus_and_type(ref: int, text: str, driver: ChromeDriver):
-    """Click the specified DOM element and then send keystrokes."""
-    execute_element_click(ref, driver)
-    execute_type(text, driver)
-
-
-def execute_action(action: Action, driver: ChromeDriver):
-    """Execute the action on the ChromeDriver."""
-    action_type = action["action_type"]
-    if action_type == ActionTypes.NONE:
-        pass
-    elif action_type == ActionTypes.COORD_CLICK:
+def get_raw_coords(
+    action: Action,
+    config: ActionSpaceConfig,
+) -> Tuple[float, float]:
+    """Extract the left and top coordinates from the action."""
+    if config.coord_bins:
+        # Add 0.5 to click at the middle of the partition.
+        if not config.screen_width or not config.screen_height:
+            raise ValueError("screen_width and screen_height must be specified.")
+        left = (0.5 + int(action["coords"][0])) * (
+            config.screen_width / config.coord_bins[0]
+        )
+        top = (0.5 + int(action["coords"][1])) * (
+            config.screen_height / config.coord_bins[1]
+        )
+    else:
         left = float(action["coords"][0])
         top = float(action["coords"][1])
-        execute_coord_click(left, top, driver)
-    elif action_type == ActionTypes.ELEMENT_CLICK:
-        ref = int(action["ref"])
-        execute_element_click(ref, driver)
-    elif action_type == ActionTypes.TYPE:
-        text = action["text"]
-        execute_type(text, driver)
-    elif action_type == ActionTypes.FOCUS_AND_TYPE:
-        ref = int(action["ref"])
-        text = action["text"]
-        execute_focus_and_type(ref, text, driver)
+    return left, top
+
+
+def execute_action(
+    action: Action,
+    config: ActionSpaceConfig,
+    driver: ChromeDriver,
+):
+    """Execute the action on the ChromeDriver."""
+    action_type = config.action_types[action["action_type"]]
+    if action_type == ActionTypes.NONE:
+        pass
+    elif action_type == ActionTypes.CLICK_COORDS:
+        left, top = get_raw_coords(action, config)
+        selenium_actions.execute_coord_click(left, top, driver)
+    elif action_type == ActionTypes.CLICK_ELEMENT:
+        selenium_actions.execute_element_click(int(action["ref"]), driver)
+    elif action_type == ActionTypes.TYPE_TEXT:
+        selenium_actions.execute_type(action["text"], driver)
+    elif action_type == ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT:
+        selenium_actions.execute_focus_and_type(
+            int(action["ref"]), action["text"], driver
+        )
     else:
-        raise ValueError(f"Unknown action type: {action_type}")
+        raise ValueError(f"Unsupported action type: {action_type}")

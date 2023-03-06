@@ -1,12 +1,12 @@
 """MiniWoB environment."""
 import logging
 from abc import ABC
-from typing import Any, Dict, Mapping, Optional, Tuple
+from typing import Any, Dict, Mapping, Optional, Tuple, Union
 
 import gymnasium as gym
 import numpy as np
 
-from miniwob.action import Action, get_action_space
+from miniwob.action import Action, ActionSpaceConfig, get_action_space
 from miniwob.instance import MiniWoBInstance
 from miniwob.observation import Observation, get_observation_space
 from miniwob.reward import RewardPreprocessor
@@ -25,6 +25,7 @@ class MiniWoBEnvironment(gym.Env, ABC):
         self,
         render_mode: Optional[str] = None,
         base_url: Optional[str] = None,
+        action_space_config: Union[str, ActionSpaceConfig] = "all_supported",
         reward_processor: Optional[RewardPreprocessor] = None,
         wait_ms: float = 0.0,
         block_on_reset: bool = True,
@@ -42,6 +43,7 @@ class MiniWoBEnvironment(gym.Env, ABC):
                 - http://localhost:8000/     (served by http-serve)
                 - file:///path/to/miniwob-plusplus/html/
                 If None, infers the file:// path from this module's location.
+            action_space_config: ActionSpaceConfig object or a preset name.
             reward_processor: A function that takes the metadata and returns
                 a reward (see miniwob.reward)
             wait_ms: Pause the instance after each action for this amount of
@@ -68,10 +70,13 @@ class MiniWoBEnvironment(gym.Env, ABC):
             "data_mode": data_mode,
         }
         self._hard_reset_instance()
-        self.action_space = get_action_space(
-            screen_width=self.instance.task_width,
-            screen_height=self.instance.task_height,
-        )
+        if isinstance(action_space_config, str):
+            self.action_space_config = ActionSpaceConfig.get_preset(action_space_config)
+        else:
+            self.action_space_config = action_space_config
+        self.action_space_config.screen_width = self.instance.task_width
+        self.action_space_config.screen_height = self.instance.task_height
+        self.action_space = get_action_space(self.action_space_config)
         self.observation_space = get_observation_space(
             screen_width=self.instance.task_width,
             screen_height=self.instance.task_height,
@@ -145,7 +150,15 @@ class MiniWoBEnvironment(gym.Env, ABC):
         dones = [True]
         truncs = [False]
         infos = [{}]
-        self.instance.call(self.instance.step, action, obs, rewards, dones, infos)
+        self.instance.call(
+            self.instance.step,
+            action,
+            self.action_space_config,
+            obs,
+            rewards,
+            dones,
+            infos,
+        )
         self.instance.wait()
         return obs[0], rewards[0], dones[0], truncs[0], infos[0]
 
