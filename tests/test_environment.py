@@ -5,7 +5,7 @@ import gymnasium
 import numpy as np
 import pytest
 
-from miniwob.action import create_coord_click_action, create_element_click_action
+from miniwob.action import ActionTypes
 
 
 class MiniWoBTester:
@@ -21,34 +21,30 @@ class MiniWoBTester:
         yield env
         env.close()
 
+    ################################
+    # Helpers
+
+    def create_click_element_action(self, env, element):
+        """Create an action that clicks in the specified element."""
+        action = env.action_space.sample()
+        action["action_type"] = env.action_space_config.action_types.index(
+            ActionTypes.CLICK_ELEMENT
+        )
+        action["ref"] = element["ref"]
+        return action
+
+    def create_click_button_action(self, env, obs, button_text):
+        """Create an action that clicks on the button with the specified text."""
+        for element in obs["dom_elements"]:
+            if element["tag"] == "button" and element["text"] == button_text:
+                return self.create_click_element_action(env, element)
+        assert False, f"{button_text} button not found"
+
 
 class TestMiniWoBEnvironment(MiniWoBTester):
     """Tests for basic environment functions."""
 
     ENV_NAME = "miniwob/click-test-v1"
-
-    ################################
-    # Helpers
-
-    def get_coord_click(self, obs):
-        """Get the action that clicks the button."""
-        for element in obs["dom_elements"]:
-            if element["tag"] == "button":
-                left, top = element["pos"].tolist()
-                action = create_coord_click_action(left + 5, top + 5)
-                return action
-        raise ValueError("Cannot find button.")
-
-    def get_element_click(self, obs):
-        """Get the action that clicks the button."""
-        for element in obs["dom_elements"]:
-            if element["tag"] == "button":
-                action = create_element_click_action(element["ref"])
-                return action
-        raise ValueError("Cannot find button.")
-
-    # get_click = get_coord_click
-    get_click = get_element_click
 
     ################################
     # Tests
@@ -70,7 +66,7 @@ class TestMiniWoBEnvironment(MiniWoBTester):
         assert terminated is False
         assert terminated is False
         # Test clicking
-        action = self.get_click(obs)
+        action = self.create_click_button_action(env, obs, "Click Me!")
         obs, reward, terminated, truncated, info = env.step(action)
         assert reward > 0
         assert terminated is True
@@ -79,7 +75,7 @@ class TestMiniWoBEnvironment(MiniWoBTester):
         obs, info = env.reset()
         assert obs["utterance"] == "Click the button."
         # Test clicking again
-        action = self.get_click(obs)
+        action = self.create_click_button_action(env, obs, "Click Me!")
         obs, reward, terminated, truncated, info = env.step(action)
         assert reward > 0
         assert terminated is True
@@ -137,17 +133,6 @@ class TestMiniWoBSeed(MiniWoBTester):
 
     ENV_NAME = "miniwob/click-button-v1"
 
-    def get_button_click(self, obs, info):
-        """Get the action that clicks the button."""
-        for element in obs["dom_elements"]:
-            if (
-                element["tag"] == "button"
-                and element["text"] == info["fields"]["target"]
-            ):
-                action = create_element_click_action(element["ref"])
-                return action
-        raise ValueError("Cannot find button.")
-
     def test_seed(self, env):
         """Test whether the same seed gives the same result."""
         obs_1, info_1 = env.reset(seed=31416)
@@ -166,7 +151,7 @@ class TestMiniWoBSeed(MiniWoBTester):
         assert ref_to_text_1 != ref_to_text_2
         # Compute the correct action from obs 1
         # and apply it on obs 4 (same seed)
-        action = self.get_button_click(obs_1, info_1)
+        action = self.create_click_button_action(env, obs_1, info_1["fields"]["target"])
         obs, reward, terminated, truncated, info = env.step(action)
         assert reward > 0
         assert terminated is True
@@ -177,14 +162,6 @@ class TestMiniWoBMode(MiniWoBTester):
 
     ENV_NAME = "miniwob/click-test-transfer-v1"
 
-    def get_button_click(self, obs, text):
-        """Get the action that clicks the button."""
-        for element in obs["dom_elements"]:
-            if element["tag"] == "button" and element["text"] == text:
-                action = create_element_click_action(element["ref"])
-                return action
-        raise ValueError("Cannot find button.")
-
     def test_mode(self, env):
         """Test if setting the mode works.
 
@@ -194,37 +171,37 @@ class TestMiniWoBMode(MiniWoBTester):
         # Training time
         obs, info = env.reset()
         assert obs["utterance"] == "Click button ONE."
-        action = self.get_button_click(obs, "ONE")
+        action = self.create_click_button_action(env, obs, "ONE")
         obs, reward, terminated, truncated, info = env.step(action)
         assert reward > 0
         obs, info = env.reset()
         assert obs["utterance"] == "Click button ONE."
-        action = self.get_button_click(obs, "TWO")
+        action = self.create_click_button_action(env, obs, "TWO")
         obs, reward, terminated, truncated, info = env.step(action)
         assert reward < 0
         # Test time
         env.set_data_mode("test")
         obs, info = env.reset()
         assert obs["utterance"] == "Click button TWO."
-        action = self.get_button_click(obs, "ONE")
+        action = self.create_click_button_action(env, obs, "ONE")
         obs, reward, terminated, truncated, info = env.step(action)
         assert reward < 0
         # Test time again; mode should be persistent
         obs, info = env.reset()
         assert obs["utterance"] == "Click button TWO."
-        action = self.get_button_click(obs, "TWO")
+        action = self.create_click_button_action(env, obs, "TWO")
         obs, reward, terminated, truncated, info = env.step(action)
         assert reward > 0
         # Training time again: set mode with reset()
         obs, info = env.reset(options={"data_mode": "train"})
         assert obs["utterance"] == "Click button ONE."
-        action = self.get_button_click(obs, "ONE")
+        action = self.create_click_button_action(env, obs, "ONE")
         obs, reward, terminated, truncated, info = env.step(action)
         assert reward > 0
         # Training time again; mode should be persistent
         obs, info = env.reset()
         assert obs["utterance"] == "Click button ONE."
-        action = self.get_button_click(obs, "TWO")
+        action = self.create_click_button_action(env, obs, "TWO")
         obs, reward, terminated, truncated, info = env.step(action)
         assert reward < 0
 

@@ -2,14 +2,10 @@
 from typing import Mapping, Tuple
 
 import gymnasium
+import numpy as np
 import pytest
 
-from miniwob.action import (
-    create_coord_click_action,
-    create_element_click_action,
-    create_focus_and_type_action,
-    create_type_action,
-)
+from miniwob.action import ActionSpaceConfig, ActionTypes
 
 
 class RepeatedTester:
@@ -23,14 +19,25 @@ class RepeatedTester:
     MAX_STEPS = 1
     # Fragile tasks need longer wait time and single instance
     FRAGILE = False
+    # Supported actions in the action space
+    SUPPORTED_ACTIONS = [
+        ActionTypes.NONE,
+        ActionTypes.CLICK_COORDS,
+        ActionTypes.CLICK_ELEMENT,
+        ActionTypes.TYPE_TEXT,
+        ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT,
+    ]
 
     @pytest.fixture
     def env(self):
         """Yield an environment for the task."""
+        action_space_config = ActionSpaceConfig(action_types=self.SUPPORTED_ACTIONS)
         if self.FRAGILE:
-            env = gymnasium.make(self.ENV_NAME, wait_ms=300)
+            env = gymnasium.make(
+                self.ENV_NAME, action_space_config=action_space_config, wait_ms=300
+            )
         else:
-            env = gymnasium.make(self.ENV_NAME)
+            env = gymnasium.make(self.ENV_NAME, action_space_config=action_space_config)
         yield env
         env.close()
 
@@ -41,7 +48,7 @@ class RepeatedTester:
             obs, info = env.reset()
             reward = -1
             for step in range(self.MAX_STEPS):
-                action = self._get_action(obs, info, step)
+                action = self._get_action(env, obs, info, step)
                 obs, reward, terminated, _, _ = env.step(action)
                 assert reward >= 0
                 if terminated:
@@ -50,22 +57,54 @@ class RepeatedTester:
                 assert False, f"Number of steps exceeded {self.MAX_STEPS}"
             assert reward >= 0
 
-    def _get_action(self, obs, info, step):
+    def _get_action(self, env, obs, info, step):
         """Return a MiniWoBAction that clicks the right thing."""
         raise NotImplementedError
 
-    def click_button(self, obs, text):
+    def create_click_element_action(self, env, element):
+        """Create an action that clicks in the specified element."""
+        action = env.action_space.sample()
+        action["action_type"] = self.SUPPORTED_ACTIONS.index(ActionTypes.CLICK_ELEMENT)
+        action["ref"] = element["ref"]
+        return action
+
+    def create_click_button_action(self, env, obs, button_text):
         """Create an action that clicks on the button with the specified text."""
         for element in obs["dom_elements"]:
-            if element["tag"] == "button" and element["text"] == text:
-                return create_element_click_action(element["ref"])
-        assert False, "Submit button not found"
+            if element["tag"] == "button" and element["text"] == button_text:
+                return self.create_click_element_action(env, element)
+        assert False, f"{button_text} button not found"
 
-    def create_coord_click_action(self, element):
-        """Create an action that clicks on the element using CoordClick."""
+    def create_click_coords_action(self, env, left, top):
+        """Create an action that clicks on the specified coordinates."""
+        action = env.action_space.sample()
+        action["action_type"] = self.SUPPORTED_ACTIONS.index(ActionTypes.CLICK_COORDS)
+        action["coords"] = np.array([left, top], dtype=np.float32)
+        return action
+
+    def create_click_element_center_action(self, env, element):
+        """Create an action that clicks the element's center."""
         left, top = element["pos"].tolist()
         width, height = element["size"].tolist()
-        action = create_coord_click_action(left + (width / 2), top + (height / 2))
+        return self.create_click_coords_action(
+            env, left + (width / 2), top + (height / 2)
+        )
+
+    def create_type_action(self, env, text):
+        """Create an action that types text."""
+        action = env.action_space.sample()
+        action["action_type"] = self.SUPPORTED_ACTIONS.index(ActionTypes.TYPE_TEXT)
+        action["text"] = text
+        return action
+
+    def create_focus_and_type_action(self, env, element, text):
+        """Create an action that focuses on the element and types text."""
+        action = env.action_space.sample()
+        action["action_type"] = self.SUPPORTED_ACTIONS.index(
+            ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT
+        )
+        action["ref"] = element["ref"]
+        action["text"] = text
         return action
 
 
@@ -78,10 +117,10 @@ class TestClickTest2(RepeatedTester):
 
     ENV_NAME = "miniwob/click-test-2-v1"
 
-    def _get_action(self, obs, info, step):
+    def _get_action(self, env, obs, info, step):
         for element in obs["dom_elements"]:
             if element["tag"] == "button" and element["text"] == "ONE":
-                return create_element_click_action(element["ref"])
+                return self.create_click_element_action(env, element)
         # No button is found, which is weird
         assert False, 'Button "ONE" not found'
 
@@ -91,11 +130,11 @@ class TestClickButton(RepeatedTester):
 
     ENV_NAME = "miniwob/click-button-v1"
 
-    def _get_action(self, obs, info, step):
+    def _get_action(self, env, obs, info, step):
         target = info["fields"]["target"]
         for element in obs["dom_elements"]:
             if element["tag"] == "button" and element["text"] == target:
-                return self.create_coord_click_action(element)
+                return self.create_click_element_center_action(env, element)
         # No button is found, which is weird
         assert False, f'Button "{target}" not found'
 
@@ -105,10 +144,10 @@ class TestFocusText(RepeatedTester):
 
     ENV_NAME = "miniwob/focus-text-v1"
 
-    def _get_action(self, obs, info, step):
+    def _get_action(self, env, obs, info, step):
         for element in obs["dom_elements"]:
             if element["tag"] == "input_text":
-                return self.create_coord_click_action(element)
+                return self.create_click_element_center_action(env, element)
         # No input is found, which is weird
         assert False, "Input box not found"
 
@@ -118,11 +157,11 @@ class TestIdentifyShape(RepeatedTester):
 
     ENV_NAME = "miniwob/identify-shape-v1"
 
-    def _get_action(self, obs, info, step):
+    def _get_action(self, env, obs, info, step):
         shape = self._identify_shape(obs)
         for element in obs["dom_elements"]:
             if element["tag"] == "button" and element["text"] == shape:
-                return create_element_click_action(element["ref"])
+                return self.create_click_element_action(env, element)
         # No button is found, which is weird
         assert False, f'Button "{shape}" not found'
 
@@ -150,13 +189,13 @@ class TestClickDialog2(RepeatedTester):
 
     ENV_NAME = "miniwob/click-dialog-2-v1"
 
-    def _get_action(self, obs, info, step):
+    def _get_action(self, env, obs, info, step):
         target = info["fields"]["target"]
         if target == "x":
             target = ""
         for element in obs["dom_elements"]:
             if element["tag"] == "button" and element["text"] == target:
-                return create_element_click_action(element["ref"])
+                return self.create_click_element_action(env, element)
         # No button is found, which is weird
         assert False, f'Button "{target}" not found'
 
@@ -171,13 +210,13 @@ class TestEnterText(RepeatedTester):
     ENV_NAME = "miniwob/enter-text-v1"
     MAX_STEPS = 3
 
-    def _get_action(self, obs, info, step):
+    def _get_action(self, env, obs, info, step):
         if step == 0:
             # Click on the textbox
             for element in obs["dom_elements"]:
                 if element["tag"] == "input_text":
                     assert not element["flags"][0].item()
-                    return create_element_click_action(element["ref"])
+                    return self.create_click_element_action(env, element)
             assert False, "Input text not found"
         elif step == 1:
             # Assert that the input is focused
@@ -192,10 +231,10 @@ class TestEnterText(RepeatedTester):
             if len(target) > 2:
                 # Hmm... Let's try the LEFT arrow key
                 target = target[:-2] + target[-1] + "\ue012" + target[-2]
-            return create_type_action(target)
+            return self.create_type_action(env, target)
         elif step == 2:
             # Click submit
-            return self.click_button(obs, "Submit")
+            return self.create_click_button_action(env, obs, "Submit")
 
 
 class TestEnterTextFocusAndType(RepeatedTester):
@@ -204,17 +243,17 @@ class TestEnterTextFocusAndType(RepeatedTester):
     ENV_NAME = "miniwob/enter-text-v1"
     MAX_STEPS = 2
 
-    def _get_action(self, obs, info, step):
+    def _get_action(self, env, obs, info, step):
         if step == 0:
             # Type into the textbox
             target = info["fields"]["target"]
             for element in obs["dom_elements"]:
                 if element["tag"] == "input_text":
-                    return create_focus_and_type_action(element["ref"], target)
+                    return self.create_focus_and_type_action(env, element, target)
             assert False, "Input text not found"
         elif step == 1:
             # Click submit
-            return self.click_button(obs, "Submit")
+            return self.create_click_button_action(env, obs, "Submit")
 
 
 class TestClickCheckboxes(RepeatedTester):
@@ -223,7 +262,7 @@ class TestClickCheckboxes(RepeatedTester):
     ENV_NAME = "miniwob/click-checkboxes-v1"
     MAX_STEPS = 7
 
-    def _get_action(self, obs, info, step):
+    def _get_action(self, env, obs, info, step):
         if not obs:
             return
         # print obs.dom.visualize()
@@ -240,10 +279,10 @@ class TestClickCheckboxes(RepeatedTester):
                     continue
                 elif text["text"] in things_to_click:
                     # Click on <label>:
-                    return create_element_click_action(element["ref"])
+                    return self.create_click_element_action(env, element)
         # Click the submit button
         assert not things_to_click
-        return self.click_button(obs, "Submit")
+        return self.create_click_button_action(env, obs, "Submit")
 
 
 class TestChooseDateEasy(RepeatedTester):
@@ -253,20 +292,20 @@ class TestChooseDateEasy(RepeatedTester):
     MAX_STEPS = 3
     FRAGILE = True
 
-    def _get_action(self, obs, info, step):
+    def _get_action(self, env, obs, info, step):
         if step == 0:
             for element in obs["dom_elements"]:
                 if element["tag"] == "input_text":
-                    return create_element_click_action(element["ref"])
+                    return self.create_click_element_action(env, element)
             assert False, "Input text not found"
         elif step == 1:
             target = info["fields"]["day"]
             for element in obs["dom_elements"]:
                 if element["tag"] == "a" and element["text"] == target:
-                    return create_element_click_action(element["ref"])
+                    return self.create_click_element_action(env, element)
             assert False, f"Day {target} not found"
         elif step == 2:
-            return self.click_button(obs, "Submit")
+            return self.create_click_button_action(env, obs, "Submit")
 
 
 class TestUseAutocomplete(RepeatedTester):
@@ -285,22 +324,22 @@ class TestUseAutocomplete(RepeatedTester):
         else:
             return t.startswith(fields["start"])
 
-    def _get_action(self, obs, info, step):
+    def _get_action(self, env, obs, info, step):
         if step == 0:
             for element in obs["dom_elements"]:
                 if element["tag"] == "input_text":
-                    return create_focus_and_type_action(
-                        element["ref"], info["fields"]["start"]
+                    return self.create_focus_and_type_action(
+                        env, element, info["fields"]["start"]
                     )
             assert False, "Input text not found"
         elif step == 1:
             # print obs.dom.visualize()
             for element in obs["dom_elements"]:
                 if element["tag"] == "div" and self._check(element, info["fields"]):
-                    return create_element_click_action(element["ref"])
+                    return self.create_click_element_action(env, element)
             assert False, "Correct entry not found"
         elif step == 2:
-            return self.click_button(obs, "Submit")
+            return self.create_click_button_action(env, obs, "Submit")
 
 
 class TestUseAutocompleteNoDelay(RepeatedTester):
@@ -319,22 +358,22 @@ class TestUseAutocompleteNoDelay(RepeatedTester):
         else:
             return t.startswith(fields["start"])
 
-    def _get_action(self, obs, info, step):
+    def _get_action(self, env, obs, info, step):
         if step == 0:
             for element in obs["dom_elements"]:
                 if element["tag"] == "input_text":
-                    return create_focus_and_type_action(
-                        element["ref"], info["fields"]["start"]
+                    return self.create_focus_and_type_action(
+                        env, element, info["fields"]["start"]
                     )
             assert False, "Input text not found"
         elif step == 1:
             # print obs.dom.visualize()
             for element in obs["dom_elements"]:
                 if element["tag"] == "div" and self._check(element, info["fields"]):
-                    return create_element_click_action(element["ref"])
+                    return self.create_click_element_action(env, element)
             assert False, "Correct entry not found"
         elif step == 2:
-            return self.click_button(obs, "Submit")
+            return self.create_click_button_action(env, obs, "Submit")
 
 
 class TestClickColor(RepeatedTester):
@@ -357,13 +396,13 @@ class TestClickColor(RepeatedTester):
         (255, 192, 203): "pink",
     }
 
-    def _get_action(self, obs, info, step):
+    def _get_action(self, env, obs, info, step):
         for element in obs["dom_elements"]:
             if "color" in element["classes"]:
                 r, g, b, a = element["bg_color"].tolist()
                 name = self.COLORS[int(r * 255), int(g * 255), int(b * 255)]
                 if name == info["fields"]["target"]:
-                    return create_element_click_action(element["ref"])
+                    return self.create_click_element_action(env, element)
         assert False, "Correct entry not found"
 
 
@@ -373,17 +412,17 @@ class TestEnterTime(RepeatedTester):
     ENV_NAME = "miniwob/enter-time-v1"
     MAX_STEPS = 2
 
-    def _get_action(self, obs, info, step):
+    def _get_action(self, env, obs, info, step):
         if step == 0:
             target = info["fields"]["target"]
             if target.startswith("1:"):
                 target = "0" + target  # Typing '14' will change the number to 2
             for element in obs["dom_elements"]:
                 if element["tag"] == "input_time":
-                    return create_focus_and_type_action(element["ref"], target)
+                    return self.create_focus_and_type_action(env, element, target)
             assert False, "Input text not found"
         elif step == 1:
-            return self.click_button(obs, "Submit")
+            return self.create_click_button_action(env, obs, "Submit")
 
 
 class TestClickPie(RepeatedTester):
@@ -392,7 +431,7 @@ class TestClickPie(RepeatedTester):
     ENV_NAME = "miniwob/click-pie-nodelay-v1"
     MAX_STEPS = 2
 
-    def _get_action(self, obs, info, step):
+    def _get_action(self, env, obs, info, step):
         if step == 0:
             path = None
             for element in obs["dom_elements"]:
@@ -400,7 +439,7 @@ class TestClickPie(RepeatedTester):
                     path = element
                 elif element["text"] == "+":
                     assert path is not None
-                    return create_element_click_action(path["ref"])
+                    return self.create_click_element_action(env, path)
             assert False, "Select not found"
         elif step == 1:
             path = None
@@ -409,5 +448,5 @@ class TestClickPie(RepeatedTester):
                     path = element
                 elif element["text"] == info["fields"]["target"]:
                     assert path is not None
-                    return create_element_click_action(path["ref"])
+                    return self.create_click_element_action(env, path)
             assert False, "Correct entry not found"
