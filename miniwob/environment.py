@@ -6,7 +6,7 @@ from typing import Any, Dict, Mapping, Optional, Tuple, Union
 import gymnasium as gym
 import numpy as np
 
-from miniwob.action import Action, ActionSpaceConfig, get_action_space
+from miniwob.action import Action, ActionSpaceConfig
 from miniwob.instance import MiniWoBInstance
 from miniwob.observation import Observation, get_observation_space
 from miniwob.reward import RewardPreprocessor
@@ -76,7 +76,7 @@ class MiniWoBEnvironment(gym.Env, ABC):
             self.action_space_config = action_space_config
         self.action_space_config.screen_width = self.instance.task_width
         self.action_space_config.screen_height = self.instance.task_height
-        self.action_space = get_action_space(self.action_space_config)
+        self.action_space = self.action_space_config.get_action_space()
         self.observation_space = get_observation_space(
             screen_width=self.instance.task_width,
             screen_height=self.instance.task_height,

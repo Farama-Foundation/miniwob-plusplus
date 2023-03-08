@@ -112,51 +112,46 @@ class ActionSpaceConfig:
         else:
             raise ValueError(f"Unknown preset name {name}")
 
+    def get_action_space(self) -> spaces.Space:
+        """Returns the space of serialized actions."""
+        space = {}
+        space["action_type"] = spaces.Discrete(len(self.action_types))
+        if COORDS_ACTIONS.intersection(self.action_types):
+            if not self.screen_width or not self.screen_height:
+                raise ValueError("screen_width and screen_height must be specified.")
+            if self.coord_bins:
+                space["coords"] = spaces.MultiDiscrete(np.array(self.coord_bins))
+            else:
+                space["coords"] = spaces.Box(
+                    np.array([0.0, 0.0], dtype=np.float32),
+                    np.array([self.screen_width, self.screen_height], dtype=np.float32),
+                )
+        if ELEMENT_ACTIONS.intersection(self.action_types):
+            space["ref"] = spaces.Discrete(MAX_REF)
+        if ActionTypes.PRESS_KEY in self.action_types:
+            space["key"] = spaces.Discrete(len(self.allowed_keys))
+        if TEXT_ACTIONS.intersection(self.action_types):
+            space["text"] = spaces.Text(self.text_max_len, charset=self.text_charset)
+        if FIELD_ACTIONS.intersection(self.action_types):
+            space["field"] = spaces.Discrete(MAX_FIELDS)
+        return spaces.Dict(space)
 
-def get_action_space(config: ActionSpaceConfig) -> spaces.Space:
-    """Returns the space of serialized actions."""
-    space = {}
-    space["action_type"] = spaces.Discrete(len(config.action_types))
-    if COORDS_ACTIONS.intersection(config.action_types):
-        if not config.screen_width or not config.screen_height:
-            raise ValueError("screen_width and screen_height must be specified.")
-        if config.coord_bins:
-            space["coords"] = spaces.MultiDiscrete(np.array(config.coord_bins))
-        else:
-            space["coords"] = spaces.Box(
-                np.array([0.0, 0.0], dtype=np.float32),
-                np.array([config.screen_width, config.screen_height], dtype=np.float32),
+    def compute_raw_coords(self, action: Action) -> Tuple[float, float]:
+        """Extract the left and top coordinates from the action."""
+        if self.coord_bins:
+            # Add 0.5 to click at the middle of the partition.
+            if not self.screen_width or not self.screen_height:
+                raise ValueError("screen_width and screen_height must be specified.")
+            left = (0.5 + int(action["coords"][0])) * (
+                self.screen_width / self.coord_bins[0]
             )
-    if ELEMENT_ACTIONS.intersection(config.action_types):
-        space["ref"] = spaces.Discrete(MAX_REF)
-    if ActionTypes.PRESS_KEY in config.action_types:
-        space["key"] = spaces.Discrete(len(config.allowed_keys))
-    if TEXT_ACTIONS.intersection(config.action_types):
-        space["text"] = spaces.Text(config.text_max_len, charset=config.text_charset)
-    if FIELD_ACTIONS.intersection(config.action_types):
-        space["field"] = spaces.Discrete(MAX_FIELDS)
-    return spaces.Dict(space)
-
-
-def get_raw_coords(
-    action: Action,
-    config: ActionSpaceConfig,
-) -> Tuple[float, float]:
-    """Extract the left and top coordinates from the action."""
-    if config.coord_bins:
-        # Add 0.5 to click at the middle of the partition.
-        if not config.screen_width or not config.screen_height:
-            raise ValueError("screen_width and screen_height must be specified.")
-        left = (0.5 + int(action["coords"][0])) * (
-            config.screen_width / config.coord_bins[0]
-        )
-        top = (0.5 + int(action["coords"][1])) * (
-            config.screen_height / config.coord_bins[1]
-        )
-    else:
-        left = float(action["coords"][0])
-        top = float(action["coords"][1])
-    return left, top
+            top = (0.5 + int(action["coords"][1])) * (
+                self.screen_height / self.coord_bins[1]
+            )
+        else:
+            left = float(action["coords"][0])
+            top = float(action["coords"][1])
+        return left, top
 
 
 def execute_action(
@@ -169,7 +164,7 @@ def execute_action(
     if action_type == ActionTypes.NONE:
         pass
     elif action_type == ActionTypes.CLICK_COORDS:
-        left, top = get_raw_coords(action, config)
+        left, top = config.compute_raw_coords(action)
         selenium_actions.execute_coord_click(left, top, driver)
     elif action_type == ActionTypes.CLICK_ELEMENT:
         selenium_actions.execute_element_click(int(action["ref"]), driver)
