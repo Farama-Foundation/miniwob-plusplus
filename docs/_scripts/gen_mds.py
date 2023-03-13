@@ -4,7 +4,6 @@ import os
 import shutil
 
 import gymnasium as gym
-from tqdm import tqdm
 from utils import trim
 
 import miniwob  # noqa: F401
@@ -31,7 +30,7 @@ shutil.copytree(source_path, destination_path)
 
 
 # Obtain filtered list
-for env_spec in tqdm(all_envs):
+for env_spec in all_envs:
     if env_spec.namespace != "miniwob":
         continue
     filtered_envs.append(env_spec)
