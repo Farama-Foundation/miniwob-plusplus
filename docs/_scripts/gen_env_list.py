@@ -163,16 +163,6 @@ ENV_TYPES = [
             "visual-addition",
         ],
     },
-    {
-        "name": "Timing",
-        "description": "These tasks require the agent to wait for events to happen before acting, and a 'nodelay' version is impossible to make.",
-        "envs": ["chase-circle", "moving-items", "simon-says"],
-    },
-    {
-        "name": "Timing",
-        "description": "These tasks require the agent to wait for events to happen before acting, and a 'nodelay' version is impossible to make.",
-        "envs": ["chase-circle", "moving-items", "simon-says"],
-    },
 ]
 
 ENVS_DESCRIPTIONS = {
@@ -335,13 +325,24 @@ with open(list_md_path, "w") as fp:
         content += df.to_markdown(index=False) + "\n\n"
 
     content += """
+## Timing
+
+These tasks require the agent to wait for events to happen before acting,
+and a 'nodelay' version is impossible to make.
+
+| Name         | Description                               |
+|:------------ |:----------------------------------------- |
+| chase-circle | Keep your mouse inside a moving circle.   |
+| moving-items | Click moving items before they disappear. |
+| simon-says   | Push the buttons in the order shown.      |
+
 ## Missing
 
 These tasks are listed in the original paper but were missing from the OpenAI
 website.
 
-|                   |                                                                  |
-| ----------------- | ---------------------------------------------------------------- |
+| Name              | Description                                                      |
+|:----------------- |:---------------------------------------------------------------- |
 | ascending-numbers | Click on the numbers in ascending order.                         |
 | button-delay      | Wait a certain period of time before clicking the second button. |
 | buy-ticket        | Buy a ticket that matches the requested criteria.                |

@@ -13,16 +13,24 @@ pip install -r docs/requirements.txt
 pip install -e .
 ```
 
+To generate the environment pages:
+
+```
+python docs/scripts/gen_mds.py
+python docs/scripts/gen_env_list.py
+```
+
 To build the documentation once:
 
 ```
 cd docs
-make dirhtml
+sphinx-build . _build
 ```
 
 To rebuild the documentation automatically every time a change is made:
 
 ```
+pip install sphinx-autobuild
 cd docs
-sphinx-autobuild -b dirhtml . _build
+sphinx-autobuild . _build
 ```
