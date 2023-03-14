@@ -1,7 +1,7 @@
 # MiniWoB++
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Farama-Foundation/miniwob-plusplus/main/miniwobplusplus-text.png" width="500px"/>
+  <img src="https://raw.githubusercontent.com/Farama-Foundation/miniwob-plusplus/master/miniwobplusplus-text.png" width="500px"/>
 </p>
 
 The MiniWoB++ (Mini World of Bits++) library contains a collection of over 100 **web interaction environments**,
