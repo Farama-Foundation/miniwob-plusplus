@@ -354,11 +354,318 @@ Supported values are:</p>
 </section>
 <section id="observation-space">
 <span id="id1"></span><h2>Observation Space<a class="headerlink" href="#observation-space" title="Permalink to this heading">#</a></h2>
-<p>TODO: Add details</p>
+<section id="observation-object">
+<h3>Observation Object<a class="headerlink" href="#observation-object" title="Permalink to this heading">#</a></h3>
+<p>In all MiniWoB++ environments, an observation is a <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following fields:</p>
+<div class="table-wrapper docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">utterance</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
+<td><p>Task instruction string.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">field_keys</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tuple[str]</span></code></p></td>
+<td><p>Environment-specific task field keys. (<strong>TODO</strong>: Implement this in code)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">field_values</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tuple[str]</span></code></p></td>
+<td><p>Task field values extracted from the task instruction. (<strong>TODO</strong>: Implement this in code)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">screenshot</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(height,</span> <span class="pre">width,</span> <span class="pre">3)</span></code> and type <code class="docutils literal notranslate"><span class="pre">uint8</span></code></p></td>
+<td><p>Screenshot as RGB values for each pixel. Note that some elements such as
+opened dropdown may not be captured in the screenshot.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dom_elements</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">list[dict]</span></code></p></td>
+<td><p>List of feature dicts, each describing a DOM elements (see below).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="dom-element-features">
+<h3>DOM Element Features<a class="headerlink" href="#dom-element-features" title="Permalink to this heading">#</a></h3>
+<p>Each feature dict in <code class="docutils literal notranslate"><span class="pre">dom_elements</span></code> has the following fields:</p>
+<div class="table-wrapper docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ref</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
+<td><p>Non-zero integer ID.</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">ref</span></code> for normal HTML elements start from 1.</p></li>
+<li><p>Each HTML element retains the same <code class="docutils literal notranslate"><span class="pre">ref</span></code> during the same episode.</p></li>
+<li><p>Non-empty text nodes are converted into pseudo-elements with <code class="docutils literal notranslate"><span class="pre">ref</span></code> counting down from -1.<a class="footnote-reference brackets" href="#id6" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">parent</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ref</span></code> of the parent. For the root DOM element, <code class="docutils literal notranslate"><span class="pre">parent</span></code> will be 0.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">left</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(1,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
+<td><p>Left coordinate relative to the screen (can be negative).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">top</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(1,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
+<td><p>Top coordinate relative to the screen (can be negative).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">width</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(1,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
+<td><p>Element width.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">height</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(1,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
+<td><p>Element height.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">tag</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
+<td><p>HTML tag.</p>
+<ul class="simple">
+<li><p>For normal elements, this is the uppercased tag name (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;DIV&quot;</span></code>).</p></li>
+<li><p>For <code class="docutils literal notranslate"><span class="pre">&lt;input&gt;</span></code> elements, the input type is appended (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;INPUT_text&quot;</span></code>).</p></li>
+<li><p>Non-empty text nodes become pseudo-elements with tag <code class="docutils literal notranslate"><span class="pre">&quot;t&quot;</span></code>.<a class="footnote-reference brackets" href="#id6" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">text</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
+<td><p>Text content, which is non-empty only for leaf elements.<a class="footnote-reference brackets" href="#id6" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">value</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
+<td><p>Value of <code class="docutils literal notranslate"><span class="pre">&lt;input&gt;</span></code> element.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
+<td><p>HTML <code class="docutils literal notranslate"><span class="pre">id</span></code> attribute.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">classes</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
+<td><p>HTML <code class="docutils literal notranslate"><span class="pre">class</span></code> attribute (multiple classes are separated by spaces).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">bg_color</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(4,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
+<td><p>Background color as RGBA value.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fg_color</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(4,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
+<td><p>Foreground color as RGBA value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">flags</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(4,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">int8</span></code></p></td>
+<td><p>Binary flags:</p>
+<ul class="simple">
+<li><p>(<code class="docutils literal notranslate"><span class="pre">focused</span></code>) Whether the element is being focused on.</p></li>
+<li><p>(<code class="docutils literal notranslate"><span class="pre">tampered</span></code>) Whether the element has been tampered (clicked, focused, typed, etc.).</p></li>
+<li><p>(<code class="docutils literal notranslate"><span class="pre">targeted</span></code>) Whether the element is an event target (for recorded demonstrations).</p></li>
+<li><p>(<code class="docutils literal notranslate"><span class="pre">is_leaf</span></code>) Whether the element is a leaf.</p></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 </section>
 <section id="action-space">
-<span id="id2"></span><h2>Action Space<a class="headerlink" href="#action-space" title="Permalink to this heading">#</a></h2>
-<p>TODO: Add details</p>
+<span id="id5"></span><h2>Action Space<a class="headerlink" href="#action-space" title="Permalink to this heading">#</a></h2>
+<section id="supported-actions">
+<h3>Supported Actions<a class="headerlink" href="#supported-actions" title="Permalink to this heading">#</a></h3>
+<p>MiniWoB++ environments support the following actions.</p>
+<div class="table-wrapper docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NONE</span></code></p></td>
+<td><p>Do nothing for the current step.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CLICK_COORDS</span></code></p></td>
+<td><p>Click on the specified coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DBLCLICK_COORDS</span></code></p></td>
+<td><p>Double-click on the specified coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MOUSEDOWN_COORDS</span></code></p></td>
+<td><p>Start dragging on the specified coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MOUSEUP_COORDS</span></code></p></td>
+<td><p>Stop dragging on the specified coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CLICK_ELEMENT</span></code></p></td>
+<td><p>Click on the specified element.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DBLCLICK_ELEMENT</span></code></p></td>
+<td><p>Double-click on the specified element.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MOUSEDOWN_ELEMENT</span></code></p></td>
+<td><p>Start dragging on the specified element.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MOUSEUP_ELEMENT</span></code></p></td>
+<td><p>Stop dragging on the specified element.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SCROLL_UP</span></code></p></td>
+<td><p>Scroll up on the mouse wheel.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SCROLL_DOWN</span></code></p></td>
+<td><p>Scroll down on the mouse wheel.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PRESS_KEY</span></code></p></td>
+<td><p>Press the specified key or key combination.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">TYPE_TEXT</span></code></p></td>
+<td><p>Type the specified string.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TYPE_FIELD</span></code></p></td>
+<td><p>Type the value of the specified task field.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">FOCUS_ELEMENT_AND_TYPE_TEXT</span></code></p></td>
+<td><p>Click on the specified element, and then type the specified string.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">FOCUS_ELEMENT_AND_TYPE_FIELD</span></code></p></td>
+<td><p>Click on the specified element, and then type the value of the specified task field.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="action-configs">
+<h3>Action Configs<a class="headerlink" href="#action-configs" title="Permalink to this heading">#</a></h3>
+<p>The list of selected actions, along with other configurations, can be customized
+by passing a <code class="docutils literal notranslate"><span class="pre">miniwob.action.ActionSpaceConfig</span></code> object to the <code class="docutils literal notranslate"><span class="pre">action_space_config</span></code> argument
+during environment construction.
+The <code class="docutils literal notranslate"><span class="pre">ActionSpaceConfig</span></code> object has the following fields:</p>
+<div class="table-wrapper docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">action_types</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Sequence[ActionTypes]</span></code> or <code class="docutils literal notranslate"><span class="pre">Sequence[str]</span></code></p></td>
+<td><p>An ordered sequence of action types to include.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">screen_width</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p></td>
+<td><p>Screen width. Will be overridden by the environment constructor.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">screen_height</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p></td>
+<td><p>Screen height. Will be overridden by the environment constructor.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">coord_bins</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tuple[int,</span> <span class="pre">int]</span></code></p></td>
+<td><p>If specified, bin the x and y coordinates to these numbers of bins.
+Mouse actions will be executed at the middle of the specified partition.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">allowed_keys</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Sequence[str]</span></code></p></td>
+<td><p>An ordered sequence of allowed keys and key combinations for the <code class="docutils literal notranslate"><span class="pre">PRESS_KEY</span></code> action.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">text_max_len</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
+<td><p>Maximum text length for the <code class="docutils literal notranslate"><span class="pre">TYPE_TEXT</span></code> action.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">text_charset</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">set[str]</span></code></p></td>
+<td><p>Character set for the <code class="docutils literal notranslate"><span class="pre">TYPE_TEXT</span></code> action.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="action-object">
+<h3>Action Object<a class="headerlink" href="#action-object" title="Permalink to this heading">#</a></h3>
+<p>An action is a <code class="docutils literal notranslate"><span class="pre">dict</span></code> whose field inclusion depends on the selected actions:</p>
+<div class="table-wrapper docutils container">
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p>Key</p></td>
+<td><p>Type</p></td>
+<td><p>Description</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">action_type</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
+<td><p>Action type index from the <code class="docutils literal notranslate"><span class="pre">action_types</span></code> list in the config.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">coords</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> of shape <code class="docutils literal notranslate"><span class="pre">(2,)</span></code></p></td>
+<td><p>Coordinates. Included when any <code class="docutils literal notranslate"><span class="pre">*COORDS</span></code> action is selected.
+Depending on the <code class="docutils literal notranslate"><span class="pre">coord_bins</span></code> config, <code class="docutils literal notranslate"><span class="pre">coords</span></code> can be of type <code class="docutils literal notranslate"><span class="pre">int8</span></code> (binned) or <code class="docutils literal notranslate"><span class="pre">float32</span></code> (unbinned).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ref</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
+<td><p>Element <code class="docutils literal notranslate"><span class="pre">ref</span></code> ID. Included when any <code class="docutils literal notranslate"><span class="pre">*_ELEMENT*</span></code> action is selected.
+If no element has the specified <code class="docutils literal notranslate"><span class="pre">ref</span></code>, the action becomes a no-op.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">key</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
+<td><p>Key index from the <code class="docutils literal notranslate"><span class="pre">allowed_keys</span></code> list in the config.
+Included when the <code class="docutils literal notranslate"><span class="pre">PRESS_KEY</span></code> action is selected.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">text</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
+<td><p>Text to type. Included when any <code class="docutils literal notranslate"><span class="pre">*_TYPE_TEXT</span></code> action is selected.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">field</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
+<td><p>Task field index. Included when any <code class="docutils literal notranslate"><span class="pre">*_TYPE_FIELD</span></code> action is selected.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="presets">
+<h3>Presets<a class="headerlink" href="#presets" title="Permalink to this heading">#</a></h3>
+<p>The following preset names can be specified in place of the <code class="docutils literal notranslate"><span class="pre">ActionSpaceConfig</span></code> object:
+(<strong>TODO</strong>: Implement this in code)</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">all_supported</span></code>: Select all supported actions, including redundant ones.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shi17</span></code>: The action space from (Shi et al., 2017)
+<a class="reference external" href="http://proceedings.mlr.press/v70/shi17a/shi17a.pdf">World of Bits: An Open-Domain Platform for Web-Based Agents</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">liu18</span></code>: The action space from (Liu et al., 2018)
+<a class="reference external" href="https://arxiv.org/abs/1802.08802">Reinforcement Learning on Web Interfaces Using Workflow-Guided Exploration</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">humphreys22</span></code>: The action space from (Humphreys et al., 2022)
+<a class="reference external" href="https://arxiv.org/abs/2202.08137">A data-driven approach for learning to control computers</a>.</p></li>
+</ul>
+<hr class="footnotes docutils" />
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id6" role="note">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id3">2</a>,<a role="doc-backlink" href="#id4">3</a>)</span>
+<p><strong>Note:</strong> Regarding text nodes:</p>
+<ul class="simple">
+<li><p>For an element with a single text node as its child (e.g., <code class="docutils literal notranslate"><span class="pre">&lt;button&gt;Submit&lt;/button&gt;</span></code>),
+a text pseudo-element will not be created. The element will become a leaf with the
+<code class="docutils literal notranslate"><span class="pre">text</span></code> feature filled in.</p></li>
+<li><p>For an element with a text node as one of its children (e.g., <code class="docutils literal notranslate"><span class="pre">&lt;button&gt;Submit</span> <span class="pre">&lt;b&gt;NOW&lt;/b&gt;&lt;/button&gt;</span></code>),
+a text pseudo-element (negative <code class="docutils literal notranslate"><span class="pre">ref</span></code> and <code class="docutils literal notranslate"><span class="pre">tag</span> <span class="pre">=</span> <span class="pre">&quot;t&quot;</span></code>) will be created for the text node.</p></li>
+</ul>
+</aside>
+</aside>
+</section>
 </section>
 </section>
 
@@ -434,8 +741,18 @@ Supported values are:</p>
 <li><a class="reference internal" href="#">Basic Usage</a><ul>
 <li><a class="reference internal" href="#simple-example">Simple Example</a></li>
 <li><a class="reference internal" href="#environment-initialization">Environment Initialization</a></li>
-<li><a class="reference internal" href="#observation-space">Observation Space</a></li>
-<li><a class="reference internal" href="#action-space">Action Space</a></li>
+<li><a class="reference internal" href="#observation-space">Observation Space</a><ul>
+<li><a class="reference internal" href="#observation-object">Observation Object</a></li>
+<li><a class="reference internal" href="#dom-element-features">DOM Element Features</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#action-space">Action Space</a><ul>
+<li><a class="reference internal" href="#supported-actions">Supported Actions</a></li>
+<li><a class="reference internal" href="#action-configs">Action Configs</a></li>
+<li><a class="reference internal" href="#action-object">Action Object</a></li>
+<li><a class="reference internal" href="#presets">Presets</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
