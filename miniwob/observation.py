@@ -32,19 +32,15 @@ def get_observation_space(screen_width: int, screen_height: int) -> spaces.Space
             "ref": spaces.Discrete(MAX_REF - MIN_REF, start=MIN_REF),
             # `ref` ID of the parent (0 = no parent, for root element).
             "parent": spaces.Discrete(MAX_REF),
-            # Position (left, top)
-            "pos": spaces.Box(
-                np.array([float("-inf"), float("-inf")]),
-                np.array([float("inf"), float("inf")]),
-            ),
-            # Size (width, height)
-            "size": spaces.Box(
-                np.array([0.0, 0.0]), np.array([float("inf"), float("inf")])
-            ),
+            # Position and size
+            "left": spaces.Box(float("-inf"), float("inf")),
+            "top": spaces.Box(float("-inf"), float("inf")),
+            "width": spaces.Box(0.0, float("inf")),
+            "height": spaces.Box(0.0, float("inf")),
             # Tag:
             # For normal elements, this is the uppercased tag name (e.g., "DIV").
             # For <input> elements, the input type is appended (e.g., "INPUT_text").
-            # Each non-empty text node becomes a pseudo-elements with tag "t".
+            # Non-empty text nodes become pseudo-elements with tag "t".
             "tag": spaces.Text(max_length=ATTRIBUTE_MAX_LENGTH, charset=ASCII_CHARSET),
             # Text content of leaf nodes.
             "text": spaces.Text(
@@ -100,8 +96,10 @@ def serialize_dom_element(element: DOMElement) -> Dict[str, Any]:
     serialized = {
         "ref": element.ref,
         "parent": element.parent.ref if element.parent else 0,
-        "pos": np.array([element.left, element.top], dtype=np.float32),
-        "size": np.array([element.width, element.height], dtype=np.float32),
+        "left": np.array([element.left], dtype=np.float32),
+        "top": np.array([element.top], dtype=np.float32),
+        "width": np.array([element.width], dtype=np.float32),
+        "height": np.array([element.height], dtype=np.float32),
         "tag": element.tag[:ATTRIBUTE_MAX_LENGTH],
         "text": (element.text or "")[:TEXT_MAX_LENGTH],
         "value": str(element.value or "")[:TEXT_MAX_LENGTH],

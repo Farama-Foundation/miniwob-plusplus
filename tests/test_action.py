@@ -84,8 +84,8 @@ class RepeatedTester:
 
     def create_click_element_center_action(self, env, element):
         """Create an action that clicks the element's center."""
-        left, top = element["pos"].tolist()
-        width, height = element["size"].tolist()
+        left, top = element["left"].item(), element["top"].item()
+        width, height = element["width"].item(), element["height"].item()
         return self.create_click_coords_action(
             env, left + (width / 2), top + (height / 2)
         )
