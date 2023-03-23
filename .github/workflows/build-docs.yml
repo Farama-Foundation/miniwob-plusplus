@@ -21,7 +21,7 @@ jobs:
         run: pip install -r docs/requirements.txt
 
       - name: Install MiniWoB++
-        run: pip install .
+        run: pip install -e .
 
       - name: Build Envs Docs
         run: python docs/_scripts/gen_mds.py
