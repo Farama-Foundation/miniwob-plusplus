@@ -3,11 +3,11 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark">
-    <meta name="description" content="">
+    <meta name="description" content="A collection of over 100 web interaction environments, along with JavaScript and Python interfaces.">
     <meta property="og:title" content="MiniWoB++ Documentation" />
     <meta property="og:type" content="website" />
-    <meta property="og:description" content="" />
-    <meta property="og:url" content="None" /><meta name="twitter:card" content="summary_large_image"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta property="og:description" content="A collection of over 100 web interaction environments, along with JavaScript and Python interfaces." />
+    <meta property="og:url" content="None" /><meta property="og:image" content="/_static/img/miniwobplusplus-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Find Midpoint" href="../find-midpoint/" /><link rel="prev" title="Enter Text Dynamic" href="../enter-text-dynamic/" />
 
     <!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07.dev1 -->
@@ -68,6 +68,8 @@
         </div>
         <div class="farama-header__left farama-header__center--mobile">
           <a href="../../">
+              <img class="farama-header__logo only-light" src="../../_static/img/miniwobplusplus.svg" alt="Light Logo"/>
+              <img class="farama-header__logo only-dark" src="../../_static/img/miniwobplusplus-white.svg" alt="Dark Logo"/>
             <span class="farama-header__title">MiniWoB++ Documentation</span>
           </a>
         </div>
@@ -210,6 +212,8 @@
     <div class="sidebar-container">
       
       <div class="sidebar-sticky"><a class="farama-sidebar__title" href="../../">
+      <img class="farama-header__logo only-light" src="../../_static/img/miniwobplusplus.svg" alt="Light Logo"/>
+      <img class="farama-header__logo only-dark" src="../../_static/img/miniwobplusplus-white.svg" alt="Dark Logo"/>
     <span class="farama-header__title">MiniWoB++ Documentation</span>
   </a><form class="sidebar-search-container" method="get" action="../../search/" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -396,7 +400,9 @@
             <section id="enter-time">
 <h1>Enter Time<a class="headerlink" href="#enter-time" title="Permalink to this heading">#</a></h1>
 <center>
-    <a href="../../demos/miniwob/enter-time.html"><button>Go To Demo</button></a>
+    <iframe src="../../demos/miniwob/enter-time.html" width="325" height="210" scrolling="no" style="overflow:hidden;">
+    </iframe><br>
+    <a href="../../demos/miniwob/enter-time.html" target="_blank"><button>Open demo in a separate tab.</button></a>
 </center>
 <section id="description">
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this heading">#</a></h2>
@@ -650,7 +656,30 @@
     </script>
 
     
-    
+    <script>
+      const versioningConfig = {
+        githubUser: 'Farama-Foundation',
+        githubRepo: 'miniwob-plusplus',
+      };
+      fetch('/main/_static/versioning/versioning_menu.html').then(response => {
+        if (response.status === 200) {
+            response.text().then(text => {
+                const container = document.createElement("div");
+                container.innerHTML = text;
+                document.querySelector("body").appendChild(container);
+                // innerHtml doenst evaluate scripts, we need to add them dynamically
+                Array.from(container.querySelectorAll("script")).forEach(oldScript => {
+                    const newScript = document.createElement("script");
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+            });
+        } else {
+            console.warn("Unable to load versioning menu", response);
+        }
+      });
+    </script>
 
     </body>
 </html>
