@@ -61,6 +61,14 @@ napoleon_custom_sections = [("Returns", "params_style")]
 html_theme = "furo"
 html_title = "MiniWoB++ Documentation"
 html_copy_source = False
+html_favicon = "_static/img/favicon.png"
+html_theme_options = {
+    "light_logo": "img/miniwobplusplus.svg",
+    "dark_logo": "img/miniwobplusplus-white.svg",
+    "description": "A collection of over 100 web interaction environments, along with JavaScript and Python interfaces.",
+    "image": "img/miniwobplusplus-github.png",
+    "versioning": True,
+}
 html_context: Dict[str, Any] = {}
 html_context["conf_py_path"] = "/docs/"
 html_context["display_github"] = True
