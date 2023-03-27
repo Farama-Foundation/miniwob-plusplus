@@ -74,7 +74,9 @@ title: {title_env_name}
         gif = ""
         info = f"""
 <center>
-    <a href="../../demos/miniwob/{env_name}.html"><button>Go To Demo</button></a>
+    <iframe src="../../demos/miniwob/{env_name}.html" width="325" height="210" scrolling="no" style="overflow:hidden;">
+    </iframe><br>
+    <a href="../../demos/miniwob/{env_name}.html" target="_blank"><button>Open demo in a separate tab.</button></a>
 </center>
 """
         if docstring is None:
