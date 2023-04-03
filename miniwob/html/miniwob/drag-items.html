@@ -21,6 +21,9 @@
 </style>
 
 <script>
+var DESTINATION_LABEL;
+var SOURCE_LABEL;
+
 var OLDIX;
 var genProblem = function() {
   var ITEMS = core.shuffle(ui_utils.PEOPLE_NAMES.slice());
@@ -36,6 +39,7 @@ var genProblem = function() {
   }
 
   var ix = core.randi(0,n) + 1; // ground truth item index, 1-indexed
+  SOURCE_LABEL = ix - 1
   var poss = [];
 
   if (ix !== 1) { poss.push(['to the top.', 1]); }
@@ -56,6 +60,7 @@ var genProblem = function() {
 
   // generate a query
   var s = core.sample(poss);
+  DESTINATION_LABEL = s[1] - 1
   var target_description = s[0];
   var target_index = s[1];
   d3.select('#query').html('Drag ' + ITEMS[ix-1] + ' ' + target_description);
