@@ -168,6 +168,10 @@ class MiniWoBInstance(Thread):
             self.index
         )
         options = webdriver.ChromeOptions()
+        options.add_argument(
+            f"window-size={self.window_width},{self.window_height}"
+        )
+        options.add_argument('--force-device-scale-factor=1')
         if self.headless:
             options.add_argument("headless")
             options.add_argument("disable-gpu")
@@ -175,14 +179,12 @@ class MiniWoBInstance(Thread):
         else:
             options.add_argument("app=" + self.url)
             options.add_argument(
-                f"window-size={self.window_width},{self.window_height}"
-            )
-            options.add_argument(
                 "window-position={},{}".format(
                     9000, 30 + self.index * (self.window_height + 30)
                 )
             )
-        self.driver = webdriver.Chrome(options=options)
+        # Todo: remove hard coded driver path
+        self.driver = webdriver.Chrome(executable_path="/Users/moritzstephan/Projects/miniwob-plusplus/chromedriver", options=options)
         self.driver.implicitly_wait(5)
         if self.headless:
             self.driver.get(self.url)

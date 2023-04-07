@@ -22,6 +22,7 @@ class ActionTypes(IntEnum):
     ELEMENT_CLICK = 2
     TYPE = 3
     FOCUS_AND_TYPE = 4
+    COORD_SCROLL = 5
 
 
 def get_action_space(screen_width: int, screen_height: int) -> spaces.Space:
@@ -38,6 +39,10 @@ def get_action_space(screen_width: int, screen_height: int) -> spaces.Space:
             "ref": spaces.Discrete(MAX_REF, start=1),
             # text is only used for TYPE and FOCUS_AND_TYPE
             "text": spaces.Text(TYPING_MAX_LENGTH, charset=ASCII_CHARSET),
+            "scroll_coords": spaces.Box(
+                np.array([0.0, 0.0], dtype=np.float32),
+                np.array([screen_width, screen_height], dtype=np.float32),
+            )
         }
     )
     return space
@@ -50,6 +55,7 @@ def create_none_action() -> Action:
         "coords": np.zeros(2, dtype=np.float32),
         "ref": 1,
         "text": " ",
+        "scroll_coords": np.zeros(2, dtype=np.float32),
     }
 
 
@@ -102,13 +108,27 @@ def create_focus_and_type_action(ref: int, text: str) -> Action:
     return action
 
 
+def create_coord_scroll_action(left: float, top: float, scroll_x: int, scroll_y: int) -> Action:
+    """Return a valid action object with type COORD_SCROLL."""
+    action = create_none_action()
+    action.update(
+        {
+            "action_type": ActionTypes.COORD_SCROLL,
+            "coords": np.array([left, top], dtype=np.float32),
+            "scroll_coords": np.array([scroll_x, scroll_y], dtype=np.float32),
+        }
+    )
+    return action
+
+
 def execute_coord_click(left: float, top: float, driver: ChromeDriver):
     """Click at coordinates (left, top)."""
     body = driver.find_element(By.TAG_NAME, "body")
     # The offset is from the center, not top-left.
     x = -body.size["width"] / 2 + left
     y = -body.size["height"] / 2 + top
-    chain = ActionChains(driver)
+    # Added 0 duration to action chain to avoid waiting for the default 0.25s
+    chain = ActionChains(driver, duration=0)
     chain.move_to_element_with_offset(body, x, y).click().perform()
 
 
@@ -122,7 +142,7 @@ def execute_element_click(ref: int, driver: ChromeDriver):
 
 def execute_type(text: str, driver: ChromeDriver):
     """Send keystrokes to the focused element."""
-    chain = ActionChains(driver)
+    chain = ActionChains(driver, duration=0)
     chain.send_keys(text)
     chain.perform()
 
@@ -131,6 +151,14 @@ def execute_focus_and_type(ref: int, text: str, driver: ChromeDriver):
     """Click the specified DOM element and then send keystrokes."""
     execute_element_click(ref, driver)
     execute_type(text, driver)
+
+
+def execute_coord_scroll(left: float, top: float, scroll_x: int, scroll_y: int, driver: ChromeDriver):
+    """Scroll at coordinates (left, top)."""
+    x = left
+    y = top
+    chain = ActionChains(driver, duration=0)
+    chain.scroll(int(x), int(y), scroll_x, scroll_y).perform()
 
 
 def execute_action(action: Action, driver: ChromeDriver):
@@ -152,5 +180,11 @@ def execute_action(action: Action, driver: ChromeDriver):
         ref = int(action["ref"])
         text = action["text"]
         execute_focus_and_type(ref, text, driver)
+    elif action_type == ActionTypes.COORD_SCROLL:
+        left = float(action["coords"][0])
+        top = float(action["coords"][1])
+        scroll_x = int(action["scroll_coords"][0])
+        scroll_y = int(action["scroll_coords"][1])
+        execute_coord_scroll(left, top, scroll_x, scroll_y, driver)
     else:
         raise ValueError(f"Unknown action type: {action_type}")

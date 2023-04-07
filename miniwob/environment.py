@@ -11,6 +11,7 @@ from miniwob.instance import MiniWoBInstance
 from miniwob.observation import Observation, get_observation_space
 from miniwob.reward import RewardPreprocessor
 
+INSTANCE = None
 
 class MiniWoBEnvironment(gym.Env, ABC):
     """Abstract class for MiniWoB environments."""
@@ -79,10 +80,17 @@ class MiniWoBEnvironment(gym.Env, ABC):
 
     def _hard_reset_instance(self):
         """Close the current MiniWoBInstance (if exists) and starts a new one."""
-        if hasattr(self, "instance") and self.instance:
-            self.instance.close()
+
+        # MODIFIED: Never close the instance
+        #if hasattr(self, "instance") and self.instance:
+        #    self.instance.close()
+        global INSTANCE
         logging.info("Starting WebDriver Instance")
+        if INSTANCE is not None:
+            self.instance = INSTANCE
+            return
         self.instance = MiniWoBInstance(index=0, **self.instance_kwargs)
+        INSTANCE = self.instance
         self.instance.start()
         self.instance.wait()
 
