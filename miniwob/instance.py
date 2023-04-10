@@ -28,7 +28,7 @@ from miniwob.constants import (
     WINDOW_WIDTH,
 )
 from miniwob.dom import DOMElement
-from miniwob.fields import Fields, get_field_extractor
+from miniwob.fields import get_field_extractor
 from miniwob.observation import (
     Observation,
     create_empty_observation,
@@ -330,14 +330,12 @@ class MiniWoBInstance(Thread):
             observation: Observation object from the observation space.
             extra_metadata: A dict containing the following extra information:
                 - root_dom: DOMElement object for the root DOM element.
-                - fields: Fields object storing task-specific key-value pairs
-                    extracted from the instruction.
         """
         # Get the utterance
         response = self.driver.execute_script("return core.getUtterance();")
         if isinstance(response, dict):
             utterance = response["utterance"]
-            fields = Fields(response["fields"])
+            fields = list(response["fields"].items())
         else:
             utterance = response
             fields = self.field_extractor(utterance)
@@ -350,8 +348,8 @@ class MiniWoBInstance(Thread):
             img = pil_to_numpy_array(img)
         else:
             img = create_empty_screenshot(self.task_width, self.task_height)
-        observation = create_observation(utterance, root_dom, img)
-        return observation, {"root_dom": root_dom, "fields": fields}
+        observation = create_observation(utterance, root_dom, img, fields)
+        return observation, {"root_dom": root_dom}
 
     def get_metadata(self) -> Dict[str, Any]:
         """Get other metadata.

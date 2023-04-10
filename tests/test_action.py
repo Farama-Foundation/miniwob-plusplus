@@ -6,6 +6,7 @@ import numpy as np
 import pytest
 
 from miniwob.action import ActionSpaceConfig, ActionTypes
+from miniwob.fields import field_lookup
 
 
 class RepeatedTester:
@@ -131,7 +132,7 @@ class TestClickButton(RepeatedTester):
     ENV_NAME = "miniwob/click-button-v1"
 
     def _get_action(self, env, obs, info, step):
-        target = info["fields"]["target"]
+        target = field_lookup(obs["fields"], "target")
         for element in obs["dom_elements"]:
             if element["tag"] == "button" and element["text"] == target:
                 return self.create_click_element_center_action(env, element)
@@ -190,7 +191,7 @@ class TestClickDialog2(RepeatedTester):
     ENV_NAME = "miniwob/click-dialog-2-v1"
 
     def _get_action(self, env, obs, info, step):
-        target = info["fields"]["target"]
+        target = field_lookup(obs["fields"], "target")
         if target == "x":
             target = ""
         for element in obs["dom_elements"]:
@@ -227,7 +228,7 @@ class TestEnterText(RepeatedTester):
             else:
                 assert False, "Input text not found"
             # Type the text
-            target = info["fields"]["target"]
+            target = field_lookup(obs["fields"], "target")
             if len(target) > 2:
                 # Hmm... Let's try the LEFT arrow key
                 target = target[:-2] + target[-1] + "\ue012" + target[-2]
@@ -246,7 +247,7 @@ class TestEnterTextFocusAndType(RepeatedTester):
     def _get_action(self, env, obs, info, step):
         if step == 0:
             # Type into the textbox
-            target = info["fields"]["target"]
+            target = field_lookup(obs["fields"], "target")
             for element in obs["dom_elements"]:
                 if element["tag"] == "input_text":
                     return self.create_focus_and_type_action(env, element, target)
@@ -266,9 +267,7 @@ class TestClickCheckboxes(RepeatedTester):
         if not obs:
             return
         # print obs.dom.visualize()
-        things_to_click = [
-            info["fields"][key] for key in info["fields"].keys if key != "button"
-        ]
+        things_to_click = [value for (key, value) in obs["fields"] if key != "button"]
         for element in obs["dom_elements"]:
             if element["tag"] == "label":
                 checkbox, text = (
@@ -299,7 +298,7 @@ class TestChooseDateEasy(RepeatedTester):
                     return self.create_click_element_action(env, element)
             assert False, "Input text not found"
         elif step == 1:
-            target = info["fields"]["day"]
+            target = field_lookup(obs["fields"], "day")
             for element in obs["dom_elements"]:
                 if element["tag"] == "a" and element["text"] == target:
                     return self.create_click_element_action(env, element)
@@ -319,23 +318,22 @@ class TestUseAutocomplete(RepeatedTester):
         t = element["text"]
         if t is None:
             return False
-        if "end" in fields.keys:
-            return t.startswith(fields["start"]) and t.endswith(fields["end"])
-        else:
-            return t.startswith(fields["start"])
+        start = field_lookup(fields, "start")
+        end = field_lookup(fields, "end")
+        return t.startswith(start) and t.endswith(end)
 
     def _get_action(self, env, obs, info, step):
         if step == 0:
             for element in obs["dom_elements"]:
                 if element["tag"] == "input_text":
                     return self.create_focus_and_type_action(
-                        env, element, info["fields"]["start"]
+                        env, element, field_lookup(obs["fields"], "start")
                     )
             assert False, "Input text not found"
         elif step == 1:
             # print obs.dom.visualize()
             for element in obs["dom_elements"]:
-                if element["tag"] == "div" and self._check(element, info["fields"]):
+                if element["tag"] == "div" and self._check(element, obs["fields"]):
                     return self.create_click_element_action(env, element)
             assert False, "Correct entry not found"
         elif step == 2:
@@ -353,23 +351,22 @@ class TestUseAutocompleteNoDelay(RepeatedTester):
         t = element["text"]
         if t is None:
             return False
-        if "end" in fields.keys:
-            return t.startswith(fields["start"]) and t.endswith(fields["end"])
-        else:
-            return t.startswith(fields["start"])
+        start = field_lookup(fields, "start")
+        end = field_lookup(fields, "end")
+        return t.startswith(start) and t.endswith(end)
 
     def _get_action(self, env, obs, info, step):
         if step == 0:
             for element in obs["dom_elements"]:
                 if element["tag"] == "input_text":
                     return self.create_focus_and_type_action(
-                        env, element, info["fields"]["start"]
+                        env, element, field_lookup(obs["fields"], "start")
                     )
             assert False, "Input text not found"
         elif step == 1:
             # print obs.dom.visualize()
             for element in obs["dom_elements"]:
-                if element["tag"] == "div" and self._check(element, info["fields"]):
+                if element["tag"] == "div" and self._check(element, obs["fields"]):
                     return self.create_click_element_action(env, element)
             assert False, "Correct entry not found"
         elif step == 2:
@@ -401,7 +398,7 @@ class TestClickColor(RepeatedTester):
             if "color" in element["classes"]:
                 r, g, b, a = element["bg_color"].tolist()
                 name = self.COLORS[int(r * 255), int(g * 255), int(b * 255)]
-                if name == info["fields"]["target"]:
+                if name == field_lookup(obs["fields"], "target"):
                     return self.create_click_element_action(env, element)
         assert False, "Correct entry not found"
 
@@ -414,7 +411,7 @@ class TestEnterTime(RepeatedTester):
 
     def _get_action(self, env, obs, info, step):
         if step == 0:
-            target = info["fields"]["target"]
+            target = field_lookup(obs["fields"], "target")
             if target.startswith("1:"):
                 target = "0" + target  # Typing '14' will change the number to 2
             for element in obs["dom_elements"]:
@@ -446,7 +443,7 @@ class TestClickPie(RepeatedTester):
             for element in obs["dom_elements"]:
                 if element["tag"] == "path":
                     path = element
-                elif element["text"] == info["fields"]["target"]:
+                elif element["text"] == field_lookup(obs["fields"], "target"):
                     assert path is not None
                     return self.create_click_element_action(env, path)
             assert False, "Correct entry not found"

@@ -1,50 +1,28 @@
 """Task-specific key-value pairs extracted from the task instructions."""
-import collections
 import json
 import re
-from typing import Callable, Dict, Sequence
+from typing import Callable, Dict, Sequence, Tuple
+
+Fields = Sequence[Tuple[str, str]]
 
 
-class Fields:
-    """Wrapper around a dict to make it immutable.
+def field_lookup(fields: Fields, key: str):
+    """Returns the value for the given field key.
 
     Args:
-        d (dict): the wrapped dict.
+        fields: The fields, as a sequence of key-value pairs.
+        key: The key.
+
+    Returns:
+        The value if the key is present, and an empty string otherwise.
     """
-
-    def __init__(self, d):
-        """Initialize a Field from the given dict d."""
-        self._d = collections.OrderedDict(sorted(d.items()))
-        if not self._d:
-            # Ensure at least one key to prevent the typing action from being ignored.
-            self._d["dummy"] = "dummy"
-
-    def __getitem__(self, key):
-        """Return the value for the given key."""
-        return self._d[key]
-
-    def __len__(self):
-        """Return the number of entries."""
-        return len(self._d)
-
-    @property
-    def keys(self):
-        """Return the sorted list of keys."""
-        return list(self._d.keys())
-
-    @property
-    def values(self):
-        """Return the list of values sorted by keys."""
-        return list(self._d.values())
-
-    def __repr__(self):
-        """Return the string representation of Fields."""
-        return "\n".join(f"{k}: {repr(v)}" for k, v in self._d.items())
-
-    __str__ = __repr__
+    for k, v in fields:
+        if k == key:
+            return v
+    return ""
 
 
-# A callable taking the instruction from the environment and returning Fields.
+# A callable taking the instruction from the environment and returning the fields.
 FieldExtractor = Callable[[str], Fields]
 
 
@@ -71,7 +49,7 @@ def _add(task_name: str, regex: str, keys: Sequence[str]):
             raise ValueError(
                 f"Failed extracting fields (regex={regex}, utterance={utterance})"
             )
-        return Fields(dict(zip(keys, match.groups())))
+        return list(zip(keys, match.groups()))
 
     FIELD_EXTRACTORS[task_name] = extractor
 
@@ -173,9 +151,9 @@ def _extract_click_checkboxes(utterance):
         targets = []
     else:
         targets = re.split(", ?", targets)
-    fields = dict(zip([f"target {i}" for i in range(len(targets))], targets))
-    fields["button"] = "submit"
-    return Fields(fields)
+    fields = list(zip([f"target {i}" for i in range(len(targets))], targets))
+    fields.append(("button", "submit"))
+    return fields
 
 
 FIELD_EXTRACTORS["click-checkboxes"] = _extract_click_checkboxes
@@ -201,9 +179,9 @@ def _extract_click_checkboxes_soft(utterance):
         raise ValueError(f"Invalid utterance: {utterance}")
     targets = match.group(1)
     targets = re.split(", ?", targets)
-    fields = dict(zip([f"target {i}" for i in range(len(targets))], targets))
-    fields["button"] = "submit"
-    return Fields(fields)
+    fields = list(zip([f"target {i}" for i in range(len(targets))], targets))
+    fields.append(("button", "submit"))
+    return fields
 
 
 FIELD_EXTRACTORS["click-checkboxes-soft"] = _extract_click_checkboxes_soft
@@ -388,7 +366,7 @@ def _extract_click_shape(utterance):
     if not match:
         raise ValueError(f"Invalid utterance: {utterance}")
     words = match.group(1).split()
-    return Fields(_parse_shape_desc(words))
+    return list(_parse_shape_desc(words).items())
 
 
 FIELD_EXTRACTORS["click-shape"] = _extract_click_shape
@@ -481,7 +459,7 @@ def _extract_count_shape(utterance):
     if not match:
         raise ValueError(f"Invalid utterance: {utterance}")
     words = match.group(1).split()
-    return Fields(_parse_shape_desc(words))
+    return list(_parse_shape_desc(words).items())
 
 
 FIELD_EXTRACTORS["count-shape"] = _extract_count_shape
@@ -608,7 +586,7 @@ def _extract_email_inbox(utterance):
     for task, regex, keys in EMAIL_INBOX_PATTERNS:
         match = re.match(regex, utterance)
         if match:
-            return Fields(dict(zip(keys, match.groups())))
+            return list(zip(keys, match.groups()))
     raise ValueError(f"Bad email-inbox utterance: {utterance}")
 
 
@@ -621,7 +599,7 @@ FIELD_EXTRACTORS["email-inbox-star-reply"] = FIELD_EXTRACTORS[
 
 def _extract_email_inbox_nl(utterance):
     # Natural language version: no fields at test time
-    return Fields({})
+    return []
 
 
 FIELD_EXTRACTORS["email-inbox-forward-nl"] = FIELD_EXTRACTORS[
@@ -717,7 +695,7 @@ def _extract_enter_time(utterance):
     if not match:
         raise ValueError(f"Invalid utterance: {utterance}")
     target = match.group(1)
-    return Fields({"target": target.replace(" ", "")})
+    return [("target", target.replace(" ", ""))]
 
 
 FIELD_EXTRACTORS["enter-time"] = _extract_enter_time
@@ -1061,12 +1039,12 @@ def _extract_use_autocomplete(utterance):
         r'Enter an item that starts with "([^"]*)" and ends with "([^"]*)"\.', utterance
     )
     if match:
-        return Fields({"start": match.group(1), "end": match.group(2)})
+        return [("start", match.group(1)), ("end", match.group(2))]
     else:
         match = re.match(r'Enter an item that starts with "([^"]*)"', utterance)
         if not match:
             raise ValueError(f"Invalid utterance: {utterance}")
-        return Fields({"start": match.group(1)})
+        return [("start", match.group(1))]
 
 
 FIELD_EXTRACTORS["use-autocomplete"] = _extract_use_autocomplete
@@ -1141,7 +1119,7 @@ _add(
 
 def _extract_flight_subtasks(utterance):
     fields = json.loads(utterance)
-    return Fields({str(x): str(y) for (x, y) in fields.items()})
+    return [(str(x), str(y)) for (x, y) in fields.items()]
 
 
 FIELD_EXTRACTORS["flight.AA"] = _extract_flight_subtasks
