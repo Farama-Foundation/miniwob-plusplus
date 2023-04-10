@@ -122,6 +122,7 @@ class MiniWoBInstance(Thread):
         if not threading:
             # Hack: override the start method of Thread
             self.start = self.create_driver
+        self.cached_fields = []
 
     def run(self):
         """Overrides `Thread.run`."""
@@ -222,7 +223,7 @@ class MiniWoBInstance(Thread):
         i = self.index
         self.force_stop()
         self.begin_task(seed=seed)
-        obs[i], extra_metadata = self.get_observation()
+        obs[i], extra_metadata = self.get_observation(use_cached_fields=False)
         metadata = self.get_metadata()
         metadata.update(extra_metadata)
         infos[i] = metadata
@@ -257,7 +258,7 @@ class MiniWoBInstance(Thread):
             obs[i] = self.get_empty_observation()
             extra_metadata = {}
         else:
-            obs[i], extra_metadata = self.get_observation()
+            obs[i], extra_metadata = self.get_observation(use_cached_fields=True)
         metadata["elapsed"] = max(0.0, time.time() - self.start_time)
         metadata.update(extra_metadata)
         infos[i] = metadata
@@ -322,8 +323,13 @@ class MiniWoBInstance(Thread):
         """Get an empty observation for a terminated session."""
         return create_empty_observation(self.task_width, self.task_height)
 
-    def get_observation(self) -> Tuple[Observation, Dict[str, Any]]:
+    def get_observation(
+        self, use_cached_fields: bool = False
+    ) -> Tuple[Observation, Dict[str, Any]]:
         """Get the current observation.
+
+        Args;
+            use_cached_fields: Use the cached fields instead of running the field extractor.
 
         Returns:
             a tuple (observation, extra_metadata).
@@ -335,10 +341,16 @@ class MiniWoBInstance(Thread):
         response = self.driver.execute_script("return core.getUtterance();")
         if isinstance(response, dict):
             utterance = response["utterance"]
-            fields = list(response["fields"].items())
         else:
             utterance = response
-            fields = self.field_extractor(utterance)
+        if use_cached_fields:
+            fields = self.cached_fields
+        else:
+            if isinstance(response, dict):
+                fields = list(response["fields"].items())
+            else:
+                fields = self.field_extractor(utterance)
+            self.cached_fields = fields
         # Get the DOM
         dom_info = self.driver.execute_script("return core.getDOMInfo();")
         root_dom = DOMElement(dom_info)
