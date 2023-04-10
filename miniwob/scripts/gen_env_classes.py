@@ -65,8 +65,7 @@ def print_class(env_id: str, desc: str, seeds: Sequence[int], max_utterances: in
         utt = obs["utterance"]
         if len(utterances) < max_utterances and utt not in utterances:
             utterances.append(utt)
-        if "fields" in info:
-            fields.update(info["fields"].keys)
+        fields.update(x[0] for x in obs["fields"])
     env.close()
     print(
         CLASS_TEMPLATE.format(
