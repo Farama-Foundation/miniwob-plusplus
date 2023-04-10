@@ -15,7 +15,7 @@ class BisectAngleEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -233,7 +233,7 @@ class CircleCenterEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -281,7 +281,7 @@ class ClickButtonSequenceEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -431,7 +431,7 @@ class ClickCollapsibleEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -505,7 +505,7 @@ class ClickCollapsibleNodelayEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -553,7 +553,7 @@ class ClickDialogEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -962,7 +962,7 @@ class ClickTestEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -1054,7 +1054,7 @@ class CopyPasteEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -1129,7 +1129,7 @@ class CountSidesEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -1151,7 +1151,7 @@ class DragBoxEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -1165,7 +1165,7 @@ class DragCircleEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    TODO
+    Drag an item in a specified direction.
 
     ## Example utterances
 
@@ -1300,7 +1300,7 @@ class DragSortNumbersEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -1758,7 +1758,7 @@ class FindMidpointEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -1806,7 +1806,7 @@ class FocusTextEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -1879,7 +1879,7 @@ class GuessNumberEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -1901,7 +1901,7 @@ class HighlightTextEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -1947,7 +1947,7 @@ class IdentifyShapeEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -2157,7 +2157,7 @@ class ReadTable2Env(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -2204,7 +2204,7 @@ class RightAngleEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -2226,7 +2226,7 @@ class ScrollTextEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -2298,7 +2298,7 @@ class SimpleAlgebraEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -2320,7 +2320,7 @@ class SimpleArithmeticEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -2478,7 +2478,7 @@ class TextTransformEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -2500,7 +2500,7 @@ class TicTacToeEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -2602,7 +2602,7 @@ class UseColorwheel2Env(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 
@@ -2704,7 +2704,7 @@ class VisualAdditionEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    * dummy
+    (none)
 
     ## Custom settings
 

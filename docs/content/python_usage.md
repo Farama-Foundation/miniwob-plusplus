@@ -73,12 +73,11 @@ In all MiniWoB++ environments, an observation is a `dict` with the following fie
 * - `utterance`
   - `str`
   - Task instruction string.
-* - `field_keys`
-  - `tuple[str]`
-  - Environment-specific task field keys. (**TODO**: Implement this in code)
-* - `field_values`
-  - `tuple[str]`
-  - Task field values extracted from the task instruction. (**TODO**: Implement this in code)
+* - `fields`
+  - `list[tuple[str, str]]`
+  - Environment-specific key-value pairs extracted from the utterance;
+    e.g., "Click on the OK button" → `[("target", "OK")]`.
+    The fields are guaranteed to be the same during the same episode.
 * - `screenshot`
   - `np.ndarray` with shape `(height, width, 3)` and type `uint8`
   - Screenshot as RGB values for each pixel. Note that some elements such as

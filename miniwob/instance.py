@@ -28,7 +28,7 @@ from miniwob.constants import (
     WINDOW_WIDTH,
 )
 from miniwob.dom import DOMElement
-from miniwob.fields import Fields, get_field_extractor
+from miniwob.fields import get_field_extractor
 from miniwob.observation import (
     Observation,
     create_empty_observation,
@@ -122,6 +122,7 @@ class MiniWoBInstance(Thread):
         if not threading:
             # Hack: override the start method of Thread
             self.start = self.create_driver
+        self.cached_fields = []
 
     def run(self):
         """Overrides `Thread.run`."""
@@ -222,7 +223,7 @@ class MiniWoBInstance(Thread):
         i = self.index
         self.force_stop()
         self.begin_task(seed=seed)
-        obs[i], extra_metadata = self.get_observation()
+        obs[i], extra_metadata = self.get_observation(use_cached_fields=False)
         metadata = self.get_metadata()
         metadata.update(extra_metadata)
         infos[i] = metadata
@@ -257,7 +258,7 @@ class MiniWoBInstance(Thread):
             obs[i] = self.get_empty_observation()
             extra_metadata = {}
         else:
-            obs[i], extra_metadata = self.get_observation()
+            obs[i], extra_metadata = self.get_observation(use_cached_fields=True)
         metadata["elapsed"] = max(0.0, time.time() - self.start_time)
         metadata.update(extra_metadata)
         infos[i] = metadata
@@ -322,25 +323,34 @@ class MiniWoBInstance(Thread):
         """Get an empty observation for a terminated session."""
         return create_empty_observation(self.task_width, self.task_height)
 
-    def get_observation(self) -> Tuple[Observation, Dict[str, Any]]:
+    def get_observation(
+        self, use_cached_fields: bool = False
+    ) -> Tuple[Observation, Dict[str, Any]]:
         """Get the current observation.
+
+        Args;
+            use_cached_fields: Use the cached fields instead of running the field extractor.
 
         Returns:
             a tuple (observation, extra_metadata).
             observation: Observation object from the observation space.
             extra_metadata: A dict containing the following extra information:
                 - root_dom: DOMElement object for the root DOM element.
-                - fields: Fields object storing task-specific key-value pairs
-                    extracted from the instruction.
         """
         # Get the utterance
         response = self.driver.execute_script("return core.getUtterance();")
         if isinstance(response, dict):
             utterance = response["utterance"]
-            fields = Fields(response["fields"])
         else:
             utterance = response
-            fields = self.field_extractor(utterance)
+        if use_cached_fields:
+            fields = self.cached_fields
+        else:
+            if isinstance(response, dict):
+                fields = list(response["fields"].items())
+            else:
+                fields = self.field_extractor(utterance)
+            self.cached_fields = fields
         # Get the DOM
         dom_info = self.driver.execute_script("return core.getDOMInfo();")
         root_dom = DOMElement(dom_info)
@@ -350,8 +360,8 @@ class MiniWoBInstance(Thread):
             img = pil_to_numpy_array(img)
         else:
             img = create_empty_screenshot(self.task_width, self.task_height)
-        observation = create_observation(utterance, root_dom, img)
-        return observation, {"root_dom": root_dom, "fields": fields}
+        observation = create_observation(utterance, root_dom, img, fields)
+        return observation, {"root_dom": root_dom}
 
     def get_metadata(self) -> Dict[str, Any]:
         """Get other metadata.

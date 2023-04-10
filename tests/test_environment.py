@@ -6,6 +6,7 @@ import numpy as np
 import pytest
 
 from miniwob.action import ActionTypes
+from miniwob.fields import field_lookup
 
 
 class MiniWoBTester:
@@ -151,7 +152,9 @@ class TestMiniWoBSeed(MiniWoBTester):
         assert ref_to_text_1 != ref_to_text_2
         # Compute the correct action from obs 1
         # and apply it on obs 4 (same seed)
-        action = self.create_click_button_action(env, obs_1, info_1["fields"]["target"])
+        action = self.create_click_button_action(
+            env, obs_1, field_lookup(obs_1["fields"], "target")
+        )
         obs, reward, terminated, truncated, info = env.step(action)
         assert reward > 0
         assert terminated is True
@@ -218,17 +221,15 @@ class TestMiniWoBFields(MiniWoBTester):
         """Test field extraction."""
         # Training time
         obs, info = env.reset()
-        assert "by" in info["fields"].keys
-        assert "to" in info["fields"].keys
-        assert info["fields"]["by"] in obs["utterance"]
-        assert info["fields"]["to"] in obs["utterance"]
+        assert {"by", "to"} <= {x[0] for x in obs["fields"]}
+        assert field_lookup(obs["fields"], "by") in obs["utterance"]
+        assert field_lookup(obs["fields"], "to") in obs["utterance"]
         # Test time
         obs, info = env.reset(options={"data_mode": "test"})
-        assert info["fields"].keys == ["dummy"]
+        assert not obs["fields"]
         assert obs["utterance"]
         # Training time again
         obs, info = env.reset(options={"data_mode": "train"})
-        assert "by" in info["fields"].keys
-        assert "to" in info["fields"].keys
-        assert info["fields"]["by"] in obs["utterance"]
-        assert info["fields"]["to"] in obs["utterance"]
+        assert {"by", "to"} <= {x[0] for x in obs["fields"]}
+        assert field_lookup(obs["fields"], "by") in obs["utterance"]
+        assert field_lookup(obs["fields"], "to") in obs["utterance"]

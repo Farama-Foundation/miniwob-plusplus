@@ -1,5 +1,5 @@
 """MiniWoB observation space."""
-from typing import Any, Dict
+from typing import Any, Dict, Sequence, Tuple
 
 import numpy as np
 from gymnasium import spaces
@@ -7,6 +7,8 @@ from gymnasium import spaces
 from miniwob.constants import (
     ASCII_CHARSET,
     ATTRIBUTE_MAX_LENGTH,
+    FIELD_KEY_MAX_LENGTH,
+    FIELD_VALUE_MAX_LENGTH,
     MAX_REF,
     MIN_REF,
     TEXT_MAX_LENGTH,
@@ -81,11 +83,26 @@ def get_observation_space(screen_width: int, screen_height: int) -> spaces.Space
         np.ones((screen_height, screen_width, 3), dtype=np.uint8) * 255.0,
         dtype=np.uint8,
     )
+    fields_space = spaces.Sequence(
+        spaces.Tuple(
+            (
+                spaces.Text(
+                    min_length=0, max_length=FIELD_KEY_MAX_LENGTH, charset=ASCII_CHARSET
+                ),
+                spaces.Text(
+                    min_length=0,
+                    max_length=FIELD_VALUE_MAX_LENGTH,
+                    charset=ASCII_CHARSET,
+                ),
+            )
+        )
+    )
     observation_space = spaces.Dict(
         {
             "utterance": utterance_space,
             "dom_elements": spaces.Sequence(element_space),
             "screenshot": screenshot_space,
+            "fields": fields_space,
         }
     )
     return observation_space
@@ -131,12 +148,16 @@ def create_empty_observation(screen_width: int, screen_height: int) -> Observati
         "utterance": "",
         "dom_elements": [],
         "screenshot": create_empty_screenshot(screen_width, screen_height),
+        "fields": [],
     }
     return observation
 
 
 def create_observation(
-    utterance: str, root_dom: DOMElement, screenshot: np.ndarray
+    utterance: str,
+    root_dom: DOMElement,
+    screenshot: np.ndarray,
+    fields: Sequence[Tuple[str, str]],
 ) -> Observation:
     """Returns an observation that fits in the observation space.
 
@@ -144,6 +165,7 @@ def create_observation(
         utterance: Instruction text extracted from the task.
         root_dom: DOMElement object for the root element.
         screenshot: Screenshot as an RGB array.
+        fields: Fields extracted from the utterance.
 
     Returns:
         the observation object
@@ -154,5 +176,6 @@ def create_observation(
         "utterance": utterance[:UTTERANCE_MAX_LENGTH],
         "dom_elements": serialized_elements,
         "screenshot": screenshot,
+        "fields": fields,
     }
     return observation

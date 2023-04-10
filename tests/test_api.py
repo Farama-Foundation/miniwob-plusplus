@@ -25,7 +25,12 @@ class TestGymAPI:
     def test_flattened_observation_space(self, env):
         """Verify the flattened observation space."""
         assert isinstance(env.observation_space, spaces.Dict)
-        assert set(env.observation_space) == {"utterance", "dom_elements", "screenshot"}
+        assert set(env.observation_space) == {
+            "utterance",
+            "dom_elements",
+            "screenshot",
+            "fields",
+        }
         # dom_elements is a Sequence space and cannot be flattened.
         # But each element in the Sequence can be flattened.
         env = FlattenObservation(env)
@@ -33,3 +38,4 @@ class TestGymAPI:
         assert isinstance(env.observation_space["utterance"], spaces.Box)
         assert isinstance(env.observation_space["dom_elements"], spaces.Sequence)
         assert isinstance(env.observation_space["screenshot"], spaces.Box)
+        assert isinstance(env.observation_space["fields"], spaces.Sequence)
