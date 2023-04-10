@@ -374,8 +374,7 @@
             </svg>
             <span>Back to top</span>
           </a>
-          <div class="content-icon-container">
-            <div class="theme-toggle-container theme-toggle-content">
+          <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
               <button class="theme-toggle" title="Toggle color theme">
                 <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
                 <svg class="theme-icon-when-auto">
@@ -481,20 +480,18 @@ Supported values are:</p>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
 <td><p>Task instruction string.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">field_keys</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">tuple[str]</span></code></p></td>
-<td><p>Environment-specific task field keys. (<strong>TODO</strong>: Implement this in code)</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fields</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">list[tuple[str,</span> <span class="pre">str]]</span></code></p></td>
+<td><p>Environment-specific key-value pairs extracted from the utterance;
+e.g., “Click on the OK button” → <code class="docutils literal notranslate"><span class="pre">[(&quot;target&quot;,</span> <span class="pre">&quot;OK&quot;)]</span></code>.
+The fields are guaranteed to be the same during the same episode.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">field_values</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">tuple[str]</span></code></p></td>
-<td><p>Task field values extracted from the task instruction. (<strong>TODO</strong>: Implement this in code)</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">screenshot</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">screenshot</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(height,</span> <span class="pre">width,</span> <span class="pre">3)</span></code> and type <code class="docutils literal notranslate"><span class="pre">uint8</span></code></p></td>
 <td><p>Screenshot as RGB values for each pixel. Note that some elements such as
 opened dropdown may not be captured in the screenshot.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dom_elements</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dom_elements</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">list[dict]</span></code></p></td>
 <td><p>List of feature dicts, each describing a DOM elements (see below).</p></td>
 </tr>
