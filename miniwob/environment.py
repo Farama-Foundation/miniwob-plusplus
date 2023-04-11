@@ -1,7 +1,7 @@
 """MiniWoB environment."""
 import logging
 from abc import ABC
-from typing import Any, Dict, Mapping, Optional, Tuple
+from typing import Any, Dict, Mapping, Optional, Tuple, List
 
 import gymnasium as gym
 import numpy as np
@@ -11,7 +11,7 @@ from miniwob.instance import MiniWoBInstance
 from miniwob.observation import Observation, get_observation_space
 from miniwob.reward import RewardPreprocessor
 
-INSTANCE = None
+INSTANCES = [] # List[MiniWoBInstance]
 
 class MiniWoBEnvironment(gym.Env, ABC):
     """Abstract class for MiniWoB environments."""
@@ -31,6 +31,7 @@ class MiniWoBEnvironment(gym.Env, ABC):
         block_on_reset: bool = True,
         refresh_freq: int = 0,
         data_mode: str = "train",
+        num_instances: int = 4
     ):
         """Creates a new MiniWoBEnvironment.
 
@@ -62,21 +63,25 @@ class MiniWoBEnvironment(gym.Env, ABC):
             "subdomain": self.subdomain,
             "headless": (render_mode is None),
             "base_url": base_url,
+            "threading": True,
             "reward_processor": reward_processor,
             "wait_ms": wait_ms,
             "block_on_reset": block_on_reset,
             "refresh_freq": refresh_freq,
             "data_mode": data_mode,
         }
+
+        self.num_instances = num_instances
         self._hard_reset_instance()
         self.action_space = get_action_space(
-            screen_width=self.instance.task_width,
-            screen_height=self.instance.task_height,
+            screen_width=self.instances[0].task_width,
+            screen_height=self.instances[0].task_height,
         )
         self.observation_space = get_observation_space(
-            screen_width=self.instance.task_width,
-            screen_height=self.instance.task_height,
+            screen_width=self.instances[0].task_width,
+            screen_height=self.instances[0].task_height,
         )
+        self.dones = [False] * self.num_instances
 
     def _hard_reset_instance(self):
         """Close the current MiniWoBInstance (if exists) and starts a new one."""
@@ -84,21 +89,30 @@ class MiniWoBEnvironment(gym.Env, ABC):
         # MODIFIED: Never close the instance
         #if hasattr(self, "instance") and self.instance:
         #    self.instance.close()
-        global INSTANCE
+        global INSTANCES
         logging.info("Starting WebDriver Instance")
-        if INSTANCE is not None:
-            self.instance = INSTANCE
+
+        # Replace the instances that died
+        if len(INSTANCES) != 0:
+            for i in range(len(INSTANCES)):
+                if INSTANCES[i].died:
+                    INSTANCES[i] = MiniWoBInstance(index=i, **self.instance_kwargs)
+                    INSTANCES[i].start()
+                    INSTANCES[i].wait()
+            self.instances = INSTANCES
             return
-        self.instance = MiniWoBInstance(index=0, **self.instance_kwargs)
-        INSTANCE = self.instance
-        self.instance.start()
-        self.instance.wait()
+        self.instances = [MiniWoBInstance(index=i, **self.instance_kwargs) for i in range(self.num_instances)]
+        INSTANCES = self.instances
+        for instance in self.instances:
+            instance.start()
+        for instance in self.instances:
+            instance.wait()
 
     def reset(
         self,
         seed: Optional[int] = None,
         options: Optional[Mapping[str, Any]] = None,
-    ) -> Tuple[Observation, Dict[str, Any]]:
+    ) -> Tuple[List[Observation], List[Dict[str, Any]]]:
         """Reset the instance.
 
         Args:
@@ -113,11 +127,11 @@ class MiniWoBEnvironment(gym.Env, ABC):
                 - info: Auxiliary information.
         """
         # The seed in Env is actually not used
+        if seed is None:
+            seed = np.random.randint(0, 2 ** 31)
         super().reset(seed=seed)
         # Hard reset the instances if needed
-        if not self.instance or self.instance.died:
-            logging.warning("Hard-resetting the instance ...")
-            self._hard_reset_instance()
+        self._hard_reset_instance()
         # Process the options
         options = options or {}
         if "data_mode" in options:
@@ -125,15 +139,19 @@ class MiniWoBEnvironment(gym.Env, ABC):
         if "record_screenshots" in options:
             self.set_record_screenshots(options["record_screenshots"])
         # We pass lists for the instance to modify in-place.
-        obs = [{}]
-        infos = [{}]
-        self.instance.call(self.instance.reset, obs, infos, seed)
-        self.instance.wait()
-        return obs[0], infos[0]
+        obs = [{} for _ in range(self.num_instances)]
+        infos = [{} for _ in range(self.num_instances)]
+        for instance in self.instances:
+            # Unsuring seeds are unique
+            instance.call(instance.reset, obs, infos, seed * self.num_instances + instance.index)
+        for instance in self.instances:
+            instance.wait()
+        self.dones = [False] * self.num_instances
+        return obs, infos
 
     def step(
-        self, action: Action
-    ) -> Tuple[Observation, float, bool, bool, Dict[str, Any]]:
+        self, actions: List[Action]
+    ) -> Tuple[List[Observation], List[float], List[bool], List[bool], List[Dict[str, Any]]]:
         """Apply an action on the instance and returns the result.
 
         Args:
@@ -148,14 +166,19 @@ class MiniWoBEnvironment(gym.Env, ABC):
                 - info: Auxiliary information.
         """
         # We pass lists for the instance to modify in-place.
-        obs = [{}]
-        rewards = [-1.0]
-        dones = [True]
-        truncs = [False]
-        infos = [{}]
-        self.instance.call(self.instance.step, action, obs, rewards, dones, infos)
-        self.instance.wait()
-        return obs[0], rewards[0], dones[0], truncs[0], infos[0]
+        obs = [{} for _ in range(len(actions))]
+        rewards = [-1.0 for _ in range(len(actions))]
+        dones = [True for _ in range(len(actions))]
+        truncs = [False for _ in range(len(actions))]
+        infos = [{} for _ in range(len(actions))]
+        for i in range(len(actions)):
+            instance = self.instances[i]
+            instance.call(instance.step, actions[instance.index], obs, rewards, dones, infos) if not self.dones[instance.index] else None
+        for i in range(len(actions)):
+            instance = self.instances[i]
+            instance.wait() if not self.dones[instance.index] else None
+        self.dones = dones
+        return obs, rewards, dones, truncs, infos
 
     def render(self) -> None:
         """Render the environment based on the render mode."""
@@ -170,7 +193,8 @@ class MiniWoBEnvironment(gym.Env, ABC):
         Args:
             mode (str): The mode to set to.
         """
-        self.instance.mode = mode
+        for instance in self.instances:
+            instance.mode = mode
 
     def set_record_screenshots(self, record_screenshots: bool):
         """Adjust whether the record the screenshots.
@@ -178,7 +202,8 @@ class MiniWoBEnvironment(gym.Env, ABC):
         Args:
             record_screenshots (bool): Whether to record screenshots.
         """
-        self.instance.record_screenshots = record_screenshots
+        for instance in self.instances:
+            instance.record_screenshots = record_screenshots
 
     def visualize_attention(self, attentions: Optional[np.ndarray]):
         """Send the attention weights to be visualized.
@@ -189,10 +214,14 @@ class MiniWoBEnvironment(gym.Env, ABC):
                 - np.array or 2d list of shape (num_grid_rows, num_grid_cols)
                 - np.array or 2d list of shape (0, 0): Clear the visualization
         """
-        self.instance.call(self.instance.visualize_attention, attentions)
-        self.instance.wait()
+        for instance in self.instances:
+            instance.call(instance.visualize_attention, attentions)
+        for instance in self.instances:
+            instance.wait()
 
     def close(self):
         """Close the instance."""
-        self.instance.call(self.instance.close)
-        self.instance.wait()
+        for instance in self.instances:
+            instance.call(instance.close)
+        for instance in self.instances:
+            instance.wait()
