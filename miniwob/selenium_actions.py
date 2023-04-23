@@ -48,7 +48,6 @@ def execute_mouseup_coords(left: float, top: float, driver: ChromeDriver):
 
 def execute_click_element(ref: int, driver: ChromeDriver):
     """Click on the DOM element specified by a ref ID."""
-    # TODO: Handle <select> correctly.
     result = driver.execute_script(f"return core.elementClick({ref});")
     if result is not True:
         logging.warning("Clicking %s failed: %s", ref, result)
@@ -56,6 +55,6 @@ def execute_click_element(ref: int, driver: ChromeDriver):
 
 def execute_type_text(text: str, driver: ChromeDriver):
     """Send keystrokes to the focused element."""
-    chain = ActionChains(driver)
+    chain = ActionChains(driver, duration=0)
     chain.send_keys(text)
     chain.perform()

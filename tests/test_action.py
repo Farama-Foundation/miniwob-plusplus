@@ -108,6 +108,23 @@ class RepeatedTester:
         action["text"] = text
         return action
 
+    def create_type_field_action(self, env, field_idx):
+        """Create an action that types text from a field."""
+        action = env.action_space.sample()
+        action["action_type"] = self._action_idx(env, ActionTypes.TYPE_FIELD)
+        action["field"] = field_idx
+        return action
+
+    def create_focus_and_type_field_action(self, env, element, field_idx):
+        """Create an action that focuses on the element and types a field."""
+        action = env.action_space.sample()
+        action["action_type"] = self._action_idx(
+            env, ActionTypes.FOCUS_ELEMENT_AND_TYPE_FIELD
+        )
+        action["ref"] = element["ref"]
+        action["field"] = field_idx
+        return action
+
 
 ################################################
 # Test suites for tasks that involve a single click
@@ -239,7 +256,7 @@ class TestEnterText(RepeatedTester):
 
 
 class TestEnterTextFocusAndType(RepeatedTester):
-    """Tests for task enter-text, using FocusAndType actions."""
+    """Tests for task enter-text, using the combined focus+type actions."""
 
     ENV_NAME = "miniwob/enter-text-v1"
     MAX_STEPS = 2
@@ -251,6 +268,56 @@ class TestEnterTextFocusAndType(RepeatedTester):
             for element in obs["dom_elements"]:
                 if element["tag"] == "input_text":
                     return self.create_focus_and_type_action(env, element, target)
+            assert False, "Input text not found"
+        elif step == 1:
+            # Click submit
+            return self.create_click_button_action(env, obs, "Submit")
+
+
+class TestEnterTextTypeField(RepeatedTester):
+    """Tests for task enter-text, using the field typing actions"""
+
+    ENV_NAME = "miniwob/enter-text-v1"
+    MAX_STEPS = 3
+
+    def _get_action(self, env, obs, info, step):
+        if step == 0:
+            # Click on the textbox
+            for element in obs["dom_elements"]:
+                if element["tag"] == "input_text":
+                    assert not element["flags"][0].item()
+                    return self.create_click_element_action(env, element)
+            assert False, "Input text not found"
+        elif step == 1:
+            # Assert that the input is focused
+            for element in obs["dom_elements"]:
+                if element["tag"] == "input_text":
+                    assert element["flags"][0].item()
+                    break
+            else:
+                assert False, "Input text not found"
+            # Type the text from field 0 (there is only 1 field).
+            assert obs["fields"][0][0] == "target"
+            return self.create_type_field_action(env, 0)
+        elif step == 2:
+            # Click submit
+            return self.create_click_button_action(env, obs, "Submit")
+
+
+class TestEnterTextFocusAndTypeField(RepeatedTester):
+    """Tests for task enter-text, using the focus + type field actions."""
+
+    ENV_NAME = "miniwob/enter-text-v1"
+    MAX_STEPS = 2
+
+    def _get_action(self, env, obs, info, step):
+        if step == 0:
+            # Type into the textbox
+            for element in obs["dom_elements"]:
+                if element["tag"] == "input_text":
+                    # Type the text from field 0 (there is only 1 field).
+                    assert obs["fields"][0][0] == "target"
+                    return self.create_focus_and_type_field_action(env, element, 0)
             assert False, "Input text not found"
         elif step == 1:
             # Click submit
@@ -486,7 +553,7 @@ class TestDragBox(RepeatedTester):
 
 
 class TestDragBoxWithMove(RepeatedTester):
-    """Tests for task drag-box."""
+    """Tests for task drag-box with a move action in-between."""
 
     ENV_NAME = "miniwob/drag-box-v1"
     MAX_STEPS = 4

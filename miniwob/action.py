@@ -1,4 +1,5 @@
 """MiniWoB action space."""
+import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Optional, Sequence, Set, Tuple, Union
@@ -188,5 +189,12 @@ def execute_action(
         text = action["text"]
         selenium_actions.execute_type_text(text, driver)
     elif action_type in FIELD_ACTIONS:
-        text = fields[action["fields"]][1]
+        field_idx = int(action["field"])
+        if field_idx >= len(fields):
+            logging.warning(
+                "Field index %d >= number of fields %d", field_idx, len(fields)
+            )
+            text = ""
+        else:
+            text = fields[field_idx][1]
         selenium_actions.execute_type_text(text, driver)
