@@ -20,22 +20,11 @@ class RepeatedTester:
     MAX_STEPS = 1
     # Fragile tasks need longer wait time and single instance
     FRAGILE = False
-    # Supported actions in the action space
-    SUPPORTED_ACTIONS = [
-        ActionTypes.NONE,
-        ActionTypes.CLICK_COORDS,
-        ActionTypes.MOVE_COORDS,
-        ActionTypes.MOUSEDOWN_COORDS,
-        ActionTypes.MOUSEUP_COORDS,
-        ActionTypes.CLICK_ELEMENT,
-        ActionTypes.TYPE_TEXT,
-        ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT,
-    ]
 
     @pytest.fixture
     def env(self):
         """Yield an environment for the task."""
-        action_space_config = ActionSpaceConfig(action_types=self.SUPPORTED_ACTIONS)
+        action_space_config = ActionSpaceConfig.get_preset("all_supported")
         if self.FRAGILE:
             env = gymnasium.make(
                 self.ENV_NAME, action_space_config=action_space_config, wait_ms=300
@@ -65,10 +54,14 @@ class RepeatedTester:
         """Return a MiniWoBAction that clicks the right thing."""
         raise NotImplementedError
 
+    def _action_idx(self, env, action_type):
+        """Return the action type index."""
+        return env.action_space_config.action_types.index(action_type)
+
     def create_click_element_action(self, env, element):
         """Create an action that clicks in the specified element."""
         action = env.action_space.sample()
-        action["action_type"] = self.SUPPORTED_ACTIONS.index(ActionTypes.CLICK_ELEMENT)
+        action["action_type"] = self._action_idx(env, ActionTypes.CLICK_ELEMENT)
         action["ref"] = element["ref"]
         return action
 
@@ -82,7 +75,7 @@ class RepeatedTester:
     def create_coords_action(self, env, left, top, action_type):
         """Create an action on the specified coordinates."""
         action = env.action_space.sample()
-        action["action_type"] = self.SUPPORTED_ACTIONS.index(action_type)
+        action["action_type"] = self._action_idx(env, action_type)
         action["coords"] = np.array([left, top], dtype=np.float32)
         return action
 
@@ -101,15 +94,15 @@ class RepeatedTester:
     def create_type_action(self, env, text):
         """Create an action that types text."""
         action = env.action_space.sample()
-        action["action_type"] = self.SUPPORTED_ACTIONS.index(ActionTypes.TYPE_TEXT)
+        action["action_type"] = self._action_idx(env, ActionTypes.TYPE_TEXT)
         action["text"] = text
         return action
 
     def create_focus_and_type_action(self, env, element, text):
         """Create an action that focuses on the element and types text."""
         action = env.action_space.sample()
-        action["action_type"] = self.SUPPORTED_ACTIONS.index(
-            ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT
+        action["action_type"] = self._action_idx(
+            env, ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT
         )
         action["ref"] = element["ref"]
         action["text"] = text

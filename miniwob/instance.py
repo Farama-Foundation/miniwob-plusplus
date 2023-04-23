@@ -313,7 +313,9 @@ class MiniWoBInstance(Thread):
                     self.index,
                 )
             else:
-                execute_action(action, action_space_config, self.driver)
+                execute_action(
+                    action, self.cached_fields, action_space_config, self.driver
+                )
         if self.wait_ms:
             time.sleep(self.wait_ms / 1000.0)
 

@@ -99,10 +99,16 @@ class ActionSpaceConfig:
             return cls(
                 action_types=[
                     ActionTypes.NONE,
+                    ActionTypes.MOVE_COORDS,
                     ActionTypes.CLICK_COORDS,
+                    ActionTypes.DBLCLICK_COORDS,
+                    ActionTypes.MOUSEDOWN_COORDS,
+                    ActionTypes.MOUSEUP_COORDS,
                     ActionTypes.CLICK_ELEMENT,
                     ActionTypes.TYPE_TEXT,
+                    ActionTypes.TYPE_FIELD,
                     ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT,
+                    ActionTypes.FOCUS_ELEMENT_AND_TYPE_FIELD,
                 ]
             )
         else:
@@ -150,39 +156,37 @@ class ActionSpaceConfig:
         return left, top
 
 
-_ACTION_TYPE_TO_SELENIUM_ACTION_FN = {
-    ActionTypes.NONE: None,
+_SELENIUM_COORDS_ACTIONS = {
     ActionTypes.MOVE_COORDS: selenium_actions.execute_move_coords,
     ActionTypes.CLICK_COORDS: selenium_actions.execute_click_coords,
     ActionTypes.DBLCLICK_COORDS: selenium_actions.execute_dblclick_coords,
     ActionTypes.MOUSEDOWN_COORDS: selenium_actions.execute_mousedown_coords,
     ActionTypes.MOUSEUP_COORDS: selenium_actions.execute_mouseup_coords,
-    ActionTypes.CLICK_ELEMENT: selenium_actions.execute_click_element,
-    ActionTypes.TYPE_TEXT: selenium_actions.execute_type_text,
-    ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT: selenium_actions.execute_focus_element_and_type_text,
 }
 
 
 def execute_action(
     action: Action,
+    fields: Sequence[Tuple[str, str]],
     config: ActionSpaceConfig,
     driver: ChromeDriver,
 ):
     """Execute the action on the ChromeDriver."""
     action_type = config.action_types[action["action_type"]]
-    selenium_action_fn = _ACTION_TYPE_TO_SELENIUM_ACTION_FN[action_type]
     if action_type == ActionTypes.NONE:
-        pass
-    elif action_type in COORDS_ACTIONS:
+        return
+    # Coords actions
+    if action_type in COORDS_ACTIONS:
         left, top = config.compute_raw_coords(action)
-        selenium_action_fn(left, top, driver)
-    elif action_type == ActionTypes.CLICK_ELEMENT:
-        selenium_actions.execute_click_element(int(action["ref"]), driver)
-    elif action_type == ActionTypes.TYPE_TEXT:
-        selenium_actions.execute_type_text(action["text"], driver)
-    elif action_type == ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT:
-        selenium_actions.execute_focus_element_and_type_text(
-            int(action["ref"]), action["text"], driver
-        )
-    else:
-        raise ValueError(f"Unsupported action type: {action_type}")
+        _SELENIUM_COORDS_ACTIONS[action_type](left, top, driver)
+        return
+    # Element and typing actions
+    if action_type in ELEMENT_ACTIONS:
+        ref = int(action["ref"])
+        selenium_actions.execute_click_element(ref, driver)
+    if action_type in TEXT_ACTIONS:
+        text = action["text"]
+        selenium_actions.execute_type_text(text, driver)
+    elif action_type in FIELD_ACTIONS:
+        text = fields[action["fields"]][1]
+        selenium_actions.execute_type_text(text, driver)

@@ -59,9 +59,3 @@ def execute_type_text(text: str, driver: ChromeDriver):
     chain = ActionChains(driver)
     chain.send_keys(text)
     chain.perform()
-
-
-def execute_focus_element_and_type_text(ref: int, text: str, driver: ChromeDriver):
-    """Click the specified DOM element and then send keystrokes."""
-    execute_click_element(ref, driver)
-    execute_type_text(text, driver)
