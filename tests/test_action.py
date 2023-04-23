@@ -24,6 +24,8 @@ class RepeatedTester:
     SUPPORTED_ACTIONS = [
         ActionTypes.NONE,
         ActionTypes.CLICK_COORDS,
+        ActionTypes.MOUSEDOWN_COORDS,
+        ActionTypes.MOUSEUP_COORDS,
         ActionTypes.CLICK_ELEMENT,
         ActionTypes.TYPE_TEXT,
         ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT,
@@ -76,12 +78,16 @@ class RepeatedTester:
                 return self.create_click_element_action(env, element)
         assert False, f"{button_text} button not found"
 
-    def create_click_coords_action(self, env, left, top):
-        """Create an action that clicks on the specified coordinates."""
+    def create_coords_action(self, env, left, top, action_type):
+        """Create an action on the specified coordinates."""
         action = env.action_space.sample()
-        action["action_type"] = self.SUPPORTED_ACTIONS.index(ActionTypes.CLICK_COORDS)
+        action["action_type"] = self.SUPPORTED_ACTIONS.index(action_type)
         action["coords"] = np.array([left, top], dtype=np.float32)
         return action
+
+    def create_click_coords_action(self, env, left, top):
+        """Create an action that clicks on the specified coordinates."""
+        return self.create_coords_action(env, left, top, ActionTypes.CLICK_COORDS)
 
     def create_click_element_center_action(self, env, element):
         """Create an action that clicks the element's center."""
@@ -447,3 +453,39 @@ class TestClickPie(RepeatedTester):
                     assert path is not None
                     return self.create_click_element_action(env, path)
             assert False, "Correct entry not found"
+
+
+################################################################################
+# Test suites for more advanced actions
+
+
+class TestDragBox(RepeatedTester):
+    """Tests for task drag-box."""
+
+    ENV_NAME = "miniwob/drag-box-v1"
+    MAX_STEPS = 3
+
+    def _get_action(self, env, obs, info, step):
+        if step == 0:
+            # Start dragging
+            for element in obs["dom_elements"]:
+                if element["text"] == "s":
+                    return self.create_coords_action(
+                        env,
+                        element["left"].item() + 2,
+                        element["top"].item() + 2,
+                        ActionTypes.MOUSEDOWN_COORDS,
+                    )
+        elif step == 1:
+            # Stop dragging
+            for element in obs["dom_elements"]:
+                if element["text"] == "L":
+                    return self.create_coords_action(
+                        env,
+                        element["left"].item() + 5,
+                        element["top"].item() + 5,
+                        ActionTypes.MOUSEUP_COORDS,
+                    )
+        elif step == 2:
+            # Click submit
+            return self.create_click_button_action(env, obs, "Submit")

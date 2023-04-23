@@ -116,7 +116,7 @@ class MiniWoBInstance(Thread):
         self.refresh_freq = refresh_freq
         self.num_episodes = 0
         self.mode = data_mode
-        self.record_screenshots = False
+        self.record_screenshots = True
         self.start_time = float("inf")
         self.task_queue = Queue()
         if not threading:
