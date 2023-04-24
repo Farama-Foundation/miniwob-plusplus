@@ -4,6 +4,8 @@ import logging
 from selenium.webdriver import Chrome as ChromeDriver
 from selenium.webdriver.common.action_chains import ActionChains
 
+from miniwob.constants import WEBDRIVER_MODIFIER_KEYS, WEBDRIVER_SPECIAL_KEYS
+
 
 def _get_move_coords_action_chains(left: float, top: float, driver: ChromeDriver):
     """Returns an ActionChains object that queues up a coordinate move action."""
@@ -53,8 +55,43 @@ def execute_click_element(ref: int, driver: ChromeDriver):
         logging.warning("Clicking %s failed: %s", ref, result)
 
 
+def execute_press_key(key: str, driver: ChromeDriver):
+    """Press the key or key combination.
+
+    The syntax for `key` is as follows:
+    - Modifiers are specified using prefixes "C-" (control), "S-" (shift),
+        "A-" (alternate), or "M-" (meta).
+    - Printable character keys (a, 1, etc.) are specified directly.
+        Shifted characters (A, !, etc.) will cause shift to be pressed.
+    - Special keys are inclosed in "<...>"; see the list in constants.py.
+
+    Args:
+        key: Key or key combination.
+        driver: ChromeDriver object.
+    """
+    raw_key = key
+    modifiers = []
+    while raw_key[:2] in WEBDRIVER_MODIFIER_KEYS:
+        modifiers.append(WEBDRIVER_MODIFIER_KEYS[key[:2]])
+        raw_key = raw_key[2:]
+    if raw_key in WEBDRIVER_SPECIAL_KEYS:
+        raw_key = WEBDRIVER_SPECIAL_KEYS[raw_key]
+    if len(raw_key) != 1:
+        logging.warning("Invalid key %s (raw: %s)", repr(key), repr(raw_key))
+    chain = ActionChains(driver, duration=0)
+    for modifier in modifiers:
+        chain.w3c_actions.key_action.key_down(modifier)
+    chain.w3c_actions.key_action.key_down(raw_key)
+    chain.w3c_actions.key_action.key_up(raw_key)
+    for modifier in reversed(modifiers):
+        chain.w3c_actions.key_action.key_up(modifier)
+    chain.perform()
+
+
 def execute_type_text(text: str, driver: ChromeDriver):
     """Send keystrokes to the focused element."""
     chain = ActionChains(driver, duration=0)
-    chain.send_keys(text)
+    for key in text:
+        chain.w3c_actions.key_action.key_down(key)
+        chain.w3c_actions.key_action.key_up(key)
     chain.perform()

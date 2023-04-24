@@ -1,5 +1,4 @@
 """MiniWoB action space."""
-import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Optional, Sequence, Set, Tuple, Union
@@ -106,6 +105,7 @@ class ActionSpaceConfig:
                     ActionTypes.MOUSEDOWN_COORDS,
                     ActionTypes.MOUSEUP_COORDS,
                     ActionTypes.CLICK_ELEMENT,
+                    ActionTypes.PRESS_KEY,
                     ActionTypes.TYPE_TEXT,
                     ActionTypes.TYPE_FIELD,
                     ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT,
@@ -181,6 +181,12 @@ def execute_action(
         left, top = config.compute_raw_coords(action)
         _SELENIUM_COORDS_ACTIONS[action_type](left, top, driver)
         return
+    # Key press action
+    if action_type == ActionTypes.PRESS_KEY:
+        key_idx = int(action["key"])
+        key = config.allowed_keys[key_idx]
+        selenium_actions.execute_press_key(key, driver)
+        return
     # Element and typing actions
     if action_type in ELEMENT_ACTIONS:
         ref = int(action["ref"])
@@ -191,9 +197,7 @@ def execute_action(
     elif action_type in FIELD_ACTIONS:
         field_idx = int(action["field"])
         if field_idx >= len(fields):
-            logging.warning(
-                "Field index %d >= number of fields %d", field_idx, len(fields)
-            )
+            # Treat the value as empty
             text = ""
         else:
             text = fields[field_idx][1]
