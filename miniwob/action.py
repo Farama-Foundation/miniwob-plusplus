@@ -30,11 +30,11 @@ class ActionTypes(str, Enum):
     DBLCLICK_COORDS = "DBLCLICK_COORDS"
     MOUSEDOWN_COORDS = "MOUSEDOWN_COORDS"
     MOUSEUP_COORDS = "MOUSEUP_COORDS"
+    # Mouse wheel
+    SCROLL_UP_COORDS = "SCROLL_UP_COORDS"
+    SCROLL_DOWN_COORDS = "SCROLL_DOWN_COORDS"
     # Mouse actions with elements
     CLICK_ELEMENT = "CLICK_ELEMENT"
-    # Mouse wheel
-    SCROLL_UP = "SCROLL_UP"
-    SCROLL_DOWN = "SCROLL_DOWN"
     # Keyboard
     PRESS_KEY = "PRESS_KEY"
     TYPE_TEXT = "TYPE_TEXT"
@@ -49,6 +49,8 @@ COORDS_ACTIONS = {
     ActionTypes.DBLCLICK_COORDS,
     ActionTypes.MOUSEDOWN_COORDS,
     ActionTypes.MOUSEUP_COORDS,
+    ActionTypes.SCROLL_UP_COORDS,
+    ActionTypes.SCROLL_DOWN_COORDS,
 }
 ELEMENT_ACTIONS = {
     ActionTypes.CLICK_ELEMENT,
@@ -104,6 +106,8 @@ class ActionSpaceConfig:
                     ActionTypes.DBLCLICK_COORDS,
                     ActionTypes.MOUSEDOWN_COORDS,
                     ActionTypes.MOUSEUP_COORDS,
+                    ActionTypes.SCROLL_UP_COORDS,
+                    ActionTypes.SCROLL_DOWN_COORDS,
                     ActionTypes.CLICK_ELEMENT,
                     ActionTypes.PRESS_KEY,
                     ActionTypes.TYPE_TEXT,
@@ -163,6 +167,8 @@ _SELENIUM_COORDS_ACTIONS = {
     ActionTypes.DBLCLICK_COORDS: selenium_actions.execute_dblclick_coords,
     ActionTypes.MOUSEDOWN_COORDS: selenium_actions.execute_mousedown_coords,
     ActionTypes.MOUSEUP_COORDS: selenium_actions.execute_mouseup_coords,
+    ActionTypes.SCROLL_UP_COORDS: selenium_actions.execute_scroll_up_coords,
+    ActionTypes.SCROLL_DOWN_COORDS: selenium_actions.execute_scroll_down_coords,
 }
 
 

@@ -4,7 +4,11 @@ import logging
 from selenium.webdriver import Chrome as ChromeDriver
 from selenium.webdriver.common.action_chains import ActionChains
 
-from miniwob.constants import WEBDRIVER_MODIFIER_KEYS, WEBDRIVER_SPECIAL_KEYS
+from miniwob.constants import (
+    SCROLL_AMOUNT,
+    WEBDRIVER_MODIFIER_KEYS,
+    WEBDRIVER_SPECIAL_KEYS,
+)
 
 
 def _get_move_coords_action_chains(left: float, top: float, driver: ChromeDriver):
@@ -45,6 +49,24 @@ def execute_mouseup_coords(left: float, top: float, driver: ChromeDriver):
     """Move to coordinates (left, top) then stop dragging."""
     chain = _get_move_coords_action_chains(left, top, driver)
     chain.w3c_actions.pointer_action.release()
+    chain.w3c_actions.perform()
+
+
+def execute_scroll_up_coords(left: float, top: float, driver: ChromeDriver):
+    """Use the scroll wheel to scroll up at coordinates (left, top)."""
+    chain = ActionChains(driver)
+    chain.w3c_actions.wheel_action.scroll(
+        x=int(left), y=int(top), delta_y=(-SCROLL_AMOUNT)
+    )
+    chain.w3c_actions.perform()
+
+
+def execute_scroll_down_coords(left: float, top: float, driver: ChromeDriver):
+    """Use the scroll wheel to scroll down at coordinates (left, top)."""
+    chain = _get_move_coords_action_chains(left, top, driver)
+    chain.w3c_actions.wheel_action.scroll(
+        x=int(left), y=int(top), delta_y=(+SCROLL_AMOUNT)
+    )
     chain.w3c_actions.perform()
 
 

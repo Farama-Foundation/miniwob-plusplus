@@ -638,3 +638,57 @@ class TestCopyPaste(RepeatedTester):
             return self.create_press_key_action(env, "C-v")
         elif step == 5:
             return self.create_click_button_action(env, obs, "Submit")
+
+
+class TestScrollText2(RepeatedTester):
+    """Tests for task scroll-text-2."""
+
+    ENV_NAME = "miniwob/scroll-text-2-v1"
+    MAX_STEPS = 6
+
+    def _get_action(self, env, obs, info, step):
+        if step < self.MAX_STEPS - 1:
+            # Use mouse wheel to ccroll.
+            # Note: Requires some time to finish scrolling.
+            target = field_lookup(obs["fields"], "target")
+            action_type = {
+                "top": ActionTypes.SCROLL_UP_COORDS,
+                "bottom": ActionTypes.SCROLL_DOWN_COORDS,
+            }[target]
+            for element in obs["dom_elements"]:
+                if element["tag"] == "textarea":
+                    left = int(element["left"]) + 5
+                    top = int(element["top"]) + 5
+                    return self.create_coords_action(env, left, top, action_type)
+            assert False, "Textarea not found"
+        else:
+            # Submit.
+            return self.create_click_button_action(env, obs, "Submit")
+
+
+class TestScrollText2WithPressKey(RepeatedTester):
+    """Tests for task scroll-text-2, using press key."""
+
+    ENV_NAME = "miniwob/scroll-text-2-v1"
+    MAX_STEPS = 6
+
+    def _get_action(self, env, obs, info, step):
+        if step == 0:
+            # Click on the textarea.
+            for element in obs["dom_elements"]:
+                if element["tag"] == "textarea":
+                    left = int(element["left"]) + 5
+                    top = int(element["top"]) + 5
+                    return self.create_click_coords_action(env, left, top)
+            assert False, "Textarea not found"
+        elif step < self.MAX_STEPS - 1:
+            # Press PageUp or PageDown.
+            target = field_lookup(obs["fields"], "target")
+            key = {
+                "top": "<PageUp>",
+                "bottom": "<PageDown>",
+            }[target]
+            return self.create_press_key_action(env, key)
+        else:
+            # Submit.
+            return self.create_click_button_action(env, obs, "Submit")
