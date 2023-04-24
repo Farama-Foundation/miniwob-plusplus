@@ -39,6 +39,7 @@ If you use MiniWoB++ in your research, please use the following citation:
 
 content/python_setup
 content/python_usage
+content/key_combinations
 ```
 
 ```{toctree}

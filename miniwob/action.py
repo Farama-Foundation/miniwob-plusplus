@@ -86,7 +86,7 @@ class ActionSpaceConfig:
             of bins. Mouse actions will be executed at the middle of the
             specified partition.
         scroll_amount: The amount to scroll for scroll actions.
-        scroll_time: The time to wait for scroll actions.
+        scroll_time: Time in milliseconds to wait for scroll action animation.
         allowed_keys: An ordered sequence of allowed keys and key combinations
             for the PRESS_KEY action. The order will be used for interpreting
             the Discrete space.
