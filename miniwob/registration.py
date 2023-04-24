@@ -385,6 +385,7 @@ def register_miniwob_envs():
     register(
         id="miniwob/terminal-v1",
         entry_point="miniwob.envs.miniwob_envs:TerminalEnv",
+        nondeterministic=True,
     )
     register(
         id="miniwob/text-editor-v1",

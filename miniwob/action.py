@@ -11,6 +11,8 @@ from miniwob import selenium_actions
 from miniwob.constants import (
     ASCII_CHARSET,
     DEFAULT_ALLOWED_KEYS,
+    DEFAULT_SCROLL_AMOUNT,
+    DEFAULT_SCROLL_TIME,
     MAX_FIELDS,
     MAX_REF,
     TYPING_MAX_LENGTH,
@@ -52,6 +54,10 @@ COORDS_ACTIONS = {
     ActionTypes.SCROLL_UP_COORDS,
     ActionTypes.SCROLL_DOWN_COORDS,
 }
+SCROLL_ACTIONS = {
+    ActionTypes.SCROLL_UP_COORDS,
+    ActionTypes.SCROLL_DOWN_COORDS,
+}
 ELEMENT_ACTIONS = {
     ActionTypes.CLICK_ELEMENT,
     ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT,
@@ -79,6 +85,8 @@ class ActionSpaceConfig:
         coord_bins: If specified, bin the x and y coordinates to these numbers
             of bins. Mouse actions will be executed at the middle of the
             specified partition.
+        scroll_amount: The amount to scroll for scroll actions.
+        scroll_time: The time to wait for scroll actions.
         allowed_keys: An ordered sequence of allowed keys and key combinations
             for the PRESS_KEY action. The order will be used for interpreting
             the Discrete space.
@@ -90,6 +98,8 @@ class ActionSpaceConfig:
     screen_width: Optional[float] = None
     screen_height: Optional[float] = None
     coord_bins: Optional[Tuple[int, int]] = None
+    scroll_amount: int = DEFAULT_SCROLL_AMOUNT
+    scroll_time: int = DEFAULT_SCROLL_TIME
     allowed_keys: Sequence[str] = DEFAULT_ALLOWED_KEYS
     text_max_len: int = TYPING_MAX_LENGTH
     text_charset: Union[str, Set[str]] = ASCII_CHARSET
@@ -167,8 +177,6 @@ _SELENIUM_COORDS_ACTIONS = {
     ActionTypes.DBLCLICK_COORDS: selenium_actions.execute_dblclick_coords,
     ActionTypes.MOUSEDOWN_COORDS: selenium_actions.execute_mousedown_coords,
     ActionTypes.MOUSEUP_COORDS: selenium_actions.execute_mouseup_coords,
-    ActionTypes.SCROLL_UP_COORDS: selenium_actions.execute_scroll_up_coords,
-    ActionTypes.SCROLL_DOWN_COORDS: selenium_actions.execute_scroll_down_coords,
 }
 
 
@@ -185,7 +193,15 @@ def execute_action(
     # Coords actions
     if action_type in COORDS_ACTIONS:
         left, top = config.compute_raw_coords(action)
-        _SELENIUM_COORDS_ACTIONS[action_type](left, top, driver)
+        if action_type in SCROLL_ACTIONS:
+            scroll_amount = config.scroll_amount
+            if action_type == ActionTypes.SCROLL_UP_COORDS:
+                scroll_amount = -scroll_amount
+            selenium_actions.execute_scroll_coords(
+                left, top, scroll_amount, config.scroll_time, driver
+            )
+        else:
+            _SELENIUM_COORDS_ACTIONS[action_type](left, top, driver)
         return
     # Key press action
     if action_type == ActionTypes.PRESS_KEY:
