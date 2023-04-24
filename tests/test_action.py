@@ -612,3 +612,29 @@ class TestDragBoxWithMove(RepeatedTester):
         elif step == 3:
             # Click submit
             return self.create_click_button_action(env, obs, "Submit")
+
+
+class TestCopyPaste(RepeatedTester):
+    """Tests for task copy-paste."""
+
+    ENV_NAME = "miniwob/copy-paste-v1"
+    MAX_STEPS = 6
+
+    # Note: Does not work in human render mode on ChromeOS.
+    def _get_action(self, env, obs, info, step):
+        if step == 0:
+            for element in obs["dom_elements"]:
+                if element["id"] == "to-copy":
+                    return self.create_click_element_action(env, element)
+        elif step == 1:
+            return self.create_press_key_action(env, "C-a")
+        elif step == 2:
+            return self.create_press_key_action(env, "C-c")
+        elif step == 3:
+            for element in obs["dom_elements"]:
+                if element["id"] == "answer-input":
+                    return self.create_click_element_action(env, element)
+        elif step == 4:
+            return self.create_press_key_action(env, "C-v")
+        elif step == 5:
+            return self.create_click_button_action(env, obs, "Submit")
