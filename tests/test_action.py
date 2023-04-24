@@ -91,6 +91,14 @@ class RepeatedTester:
             env, left + (width / 2), top + (height / 2)
         )
 
+    def create_press_key_action(self, env, key):
+        """Create an action that presses the key combination."""
+        key_idx = env.action_space_config.allowed_keys.index(key)
+        action = env.action_space.sample()
+        action["action_type"] = self._action_idx(env, ActionTypes.PRESS_KEY)
+        action["key"] = key_idx
+        return action
+
     def create_type_action(self, env, text):
         """Create an action that types text."""
         action = env.action_space.sample()
@@ -168,6 +176,20 @@ class TestFocusText(RepeatedTester):
                 return self.create_click_element_center_action(env, element)
         # No input is found, which is weird
         assert False, "Input box not found"
+
+
+class TestFocusTextWithTab(RepeatedTester):
+    """Tests for task focus-text, using the TAB key"""
+
+    ENV_NAME = "miniwob/focus-text-v1"
+    MAX_STEPS = 2
+
+    def _get_action(self, env, obs, info, step):
+        if step == 0:
+            # Focus on the page first
+            return self.create_click_coords_action(env, 0, 0)
+        elif step == 1:
+            return self.create_press_key_action(env, "<Tab>")
 
 
 class TestIdentifyShape(RepeatedTester):
