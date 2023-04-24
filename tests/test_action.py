@@ -644,7 +644,7 @@ class TestScrollText2(RepeatedTester):
     """Tests for task scroll-text-2."""
 
     ENV_NAME = "miniwob/scroll-text-2-v1"
-    MAX_STEPS = 6
+    MAX_STEPS = 7
 
     def _get_action(self, env, obs, info, step):
         if step < self.MAX_STEPS - 1:
