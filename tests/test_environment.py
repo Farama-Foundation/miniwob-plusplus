@@ -125,6 +125,25 @@ class TestMiniWoBEnvironment(MiniWoBTester):
         env.visualize_attention(None)
         time.sleep(1)
 
+    def test_screenshot(self, env):
+        """Test the screenshot."""
+        obs, info = env.reset()
+        assert obs["screenshot"].shape == (210, 160, 3)
+        # Upper-left should be the instruction (yellow).
+        np.testing.assert_almost_equal(
+            obs["screenshot"][0, 0], np.array([255.0, 255.0, 0.0])
+        )
+        # Lower-right should be the background (white).
+        np.testing.assert_almost_equal(
+            obs["screenshot"][-1, -1], np.array([255.0, 255.0, 255.0])
+        )
+        # Now click the button to complete the task.
+        action = self.create_click_button_action(env, obs, "Click Me!")
+        obs, reward, terminated, truncated, info = env.step(action)
+        assert terminated is True
+        # The screenshot should be all black
+        np.testing.assert_allclose(obs["screenshot"], 0.0)
+
 
 ################################################
 
