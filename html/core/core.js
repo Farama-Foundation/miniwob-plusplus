@@ -92,7 +92,6 @@ core.startEpisodeReal = function () {
   WOB_REWARD_REASON = null;
   core.clearUserSelection();
   core.canvasClear();
-  document.body.scrollTop = document.documentElement.scrollTop = 0;
   core.cover_div.style.display = 'none';
   core.ept0 = new Date().getTime();
   core.countdownTimer(core.EPISODE_MAX_TIME);

@@ -105,8 +105,6 @@ class MiniWoBInstance(Thread):
             self.window_height = WINDOW_HEIGHT
             self.task_width = TASK_WIDTH
             self.task_height = TASK_HEIGHT
-        self.inner_height = self.window_height
-        self.inner_height = self.window_width
         self.field_extractor = get_field_extractor(subdomain)
         self.threading = threading
         if not reward_processor:
@@ -118,7 +116,7 @@ class MiniWoBInstance(Thread):
         self.refresh_freq = refresh_freq
         self.num_episodes = 0
         self.mode = data_mode
-        self.record_screenshots = True
+        self.record_screenshots = False
         self.start_time = float("inf")
         self.task_queue = Queue()
         if not threading:
@@ -171,13 +169,20 @@ class MiniWoBInstance(Thread):
             self.index
         )
         options = webdriver.ChromeOptions()
-        options.add_argument(f"window-size={self.window_width},{self.window_height}")
         if self.headless:
             options.add_argument("headless")
             options.add_argument("disable-gpu")
             options.add_argument("no-sandbox")
         else:
             options.add_argument("app=" + self.url)
+            options.add_argument(
+                f"window-size={self.window_width},{self.window_height}"
+            )
+            options.add_argument(
+                "window-position={},{}".format(
+                    9000, 30 + self.index * (self.window_height + 30)
+                )
+            )
         self.driver = webdriver.Chrome(options=options)
         self.driver.implicitly_wait(5)
         if self.headless:
@@ -189,9 +194,6 @@ class MiniWoBInstance(Thread):
         except TimeoutException as e:
             logging.error("Page did not load properly. Wrong MINIWOB_BASE_URL?")
             raise e
-        self.inner_width, self.inner_height = self.driver.execute_script(
-            "return [window.innerWidth, window.innerHeight];"
-        )
 
     def close(self):
         """Tear down the WebDriver."""
@@ -356,13 +358,7 @@ class MiniWoBInstance(Thread):
         root_dom = DOMElement(dom_info)
         # Get screenshot if requested
         if self.record_screenshots:
-            img = get_screenshot(
-                self.driver,
-                true_width=self.inner_width,
-                true_height=self.inner_height,
-                crop_width=self.task_width,
-                crop_height=self.task_height,
-            )
+            img = get_screenshot(self.driver, self.task_width, self.task_height)
             img = pil_to_numpy_array(img)
         else:
             img = create_empty_screenshot(self.task_width, self.task_height)

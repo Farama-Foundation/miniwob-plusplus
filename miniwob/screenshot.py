@@ -8,30 +8,21 @@ from selenium.webdriver import Chrome as ChromeDriver
 
 
 def get_screenshot(
-    driver: ChromeDriver,
-    true_width: int,
-    true_height: int,
-    crop_width: int,
-    crop_height: int,
+    driver: ChromeDriver, width: int = 160, height: int = 210
 ) -> Image.Image:
-    """Return a scaled and cropped screenshot taken by the Selenium instance.
+    """Return a cropped screenshot taken by the Selenium instance.
 
     Args:
         driver: Chrome WebDriver.
-        true_width: Width of the screenshot in the correct resolution.
-        true_height: Height of the screenshot in the correct resolution.
-        crop_width: Width to crop the image to.
-        crop_height: Height to crop the image to.
+        width: width of the screenshot.
+        height: height of the screenshot.
 
     Returns:
-        A PIL Image object with width crop_width and height crop_height.
+        A PIL Image object.
     """
     png_data = driver.get_screenshot_as_png()
-    pil_image = Image.open(BytesIO(png_data)).convert("RGB")
-    if pil_image.size != (true_width, true_height):
-        print("SCALE!")
-        pil_image = pil_image.resize((true_width, true_height))
-    pil_image = pil_image.crop((0, 0, crop_width, crop_height))
+    pil_image = Image.open(BytesIO(png_data))
+    pil_image = pil_image.crop((0, 0, width, height)).convert("RGB")
     return pil_image
 
 
