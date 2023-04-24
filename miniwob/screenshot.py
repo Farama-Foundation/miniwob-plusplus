@@ -29,7 +29,6 @@ def get_screenshot(
     png_data = driver.get_screenshot_as_png()
     pil_image = Image.open(BytesIO(png_data)).convert("RGB")
     if pil_image.size != (true_width, true_height):
-        print("SCALE!")
         pil_image = pil_image.resize((true_width, true_height))
     pil_image = pil_image.crop((0, 0, crop_width, crop_height))
     return pil_image
