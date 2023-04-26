@@ -109,7 +109,7 @@ ALL_POSSIBLE_KEYS = tuple(
 # "A Data-Driven Approach for Learning to Control Computers"
 # (https://arxiv.org/abs/2202.08137).
 DEFAULT_ALLOWED_KEYS = (
-    "<Return>",
+    "<Enter>",
     "<PageUp>",
     "<PageDown>",
     "<Backspace>",
