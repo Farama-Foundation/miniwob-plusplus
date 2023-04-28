@@ -170,6 +170,8 @@ MiniWoB++ environments support the following actions.
   - Description
 * - `NONE`
   - Do nothing for the current step.
+* - `MOVE_COORDS`
+  - Move the cursor to the specified coordinates.
 * - `CLICK_COORDS`
   - Click on the specified coordinates.
 * - `DBLCLICK_COORDS`
@@ -178,20 +180,14 @@ MiniWoB++ environments support the following actions.
   - Start dragging on the specified coordinates.
 * - `MOUSEUP_COORDS`
   - Stop dragging on the specified coordinates.
+* - `SCROLL_UP_COORDS`
+  - Scroll up on the mouse wheel at the specified coordinates.
+* - `SCROLL_DOWN_COORDS`
+  - Scroll down on the mouse wheel at the specified coordinates.
 * - `CLICK_ELEMENT`
   - Click on the specified element.
-* - `DBLCLICK_ELEMENT`
-  - Double-click on the specified element.
-* - `MOUSEDOWN_ELEMENT`
-  - Start dragging on the specified element.
-* - `MOUSEUP_ELEMENT`
-  - Stop dragging on the specified element.
-* - `SCROLL_UP`
-  - Scroll up on the mouse wheel.
-* - `SCROLL_DOWN`
-  - Scroll down on the mouse wheel.
 * - `PRESS_KEY`
-  - Press the specified key or key combination.
+  - Press the specified [key or key combination](/content/key_combinations).
 * - `TYPE_TEXT`
   - Type the specified string.
 * - `TYPE_FIELD`
@@ -227,9 +223,15 @@ The `ActionSpaceConfig` object has the following fields:
   - `tuple[int, int]`
   - If specified, bin the x and y coordinates to these numbers of bins.
     Mouse actions will be executed at the middle of the specified partition.
+* - `scroll_amount`
+  - `int`
+  - The amount to scroll for scroll actions.
+* - `scroll_time`
+  - `int`
+  - Time in milliseconds to wait for scroll action animation.
 * - `allowed_keys`
   - `Sequence[str]`
-  - An ordered sequence of allowed keys and key combinations for the `PRESS_KEY` action.
+  - An ordered sequence of allowed [keys and key combinations](/content/key_combinations) for the `PRESS_KEY` action.
 * - `text_max_len`
   - `int`
   - Maximum text length for the `TYPE_TEXT` action.

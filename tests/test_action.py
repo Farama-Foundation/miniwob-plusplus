@@ -20,19 +20,11 @@ class RepeatedTester:
     MAX_STEPS = 1
     # Fragile tasks need longer wait time and single instance
     FRAGILE = False
-    # Supported actions in the action space
-    SUPPORTED_ACTIONS = [
-        ActionTypes.NONE,
-        ActionTypes.CLICK_COORDS,
-        ActionTypes.CLICK_ELEMENT,
-        ActionTypes.TYPE_TEXT,
-        ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT,
-    ]
 
     @pytest.fixture
     def env(self):
         """Yield an environment for the task."""
-        action_space_config = ActionSpaceConfig(action_types=self.SUPPORTED_ACTIONS)
+        action_space_config = ActionSpaceConfig.get_preset("all_supported")
         if self.FRAGILE:
             env = gymnasium.make(
                 self.ENV_NAME, action_space_config=action_space_config, wait_ms=300
@@ -62,10 +54,14 @@ class RepeatedTester:
         """Return a MiniWoBAction that clicks the right thing."""
         raise NotImplementedError
 
+    def _action_idx(self, env, action_type):
+        """Return the action type index."""
+        return env.action_space_config.action_types.index(action_type)
+
     def create_click_element_action(self, env, element):
         """Create an action that clicks in the specified element."""
         action = env.action_space.sample()
-        action["action_type"] = self.SUPPORTED_ACTIONS.index(ActionTypes.CLICK_ELEMENT)
+        action["action_type"] = self._action_idx(env, ActionTypes.CLICK_ELEMENT)
         action["ref"] = element["ref"]
         return action
 
@@ -76,12 +72,16 @@ class RepeatedTester:
                 return self.create_click_element_action(env, element)
         assert False, f"{button_text} button not found"
 
-    def create_click_coords_action(self, env, left, top):
-        """Create an action that clicks on the specified coordinates."""
+    def create_coords_action(self, env, left, top, action_type):
+        """Create an action on the specified coordinates."""
         action = env.action_space.sample()
-        action["action_type"] = self.SUPPORTED_ACTIONS.index(ActionTypes.CLICK_COORDS)
+        action["action_type"] = self._action_idx(env, action_type)
         action["coords"] = np.array([left, top], dtype=np.float32)
         return action
+
+    def create_click_coords_action(self, env, left, top):
+        """Create an action that clicks on the specified coordinates."""
+        return self.create_coords_action(env, left, top, ActionTypes.CLICK_COORDS)
 
     def create_click_element_center_action(self, env, element):
         """Create an action that clicks the element's center."""
@@ -91,21 +91,46 @@ class RepeatedTester:
             env, left + (width / 2), top + (height / 2)
         )
 
+    def create_press_key_action(self, env, key):
+        """Create an action that presses the key combination."""
+        key_idx = env.action_space_config.allowed_keys.index(key)
+        action = env.action_space.sample()
+        action["action_type"] = self._action_idx(env, ActionTypes.PRESS_KEY)
+        action["key"] = key_idx
+        return action
+
     def create_type_action(self, env, text):
         """Create an action that types text."""
         action = env.action_space.sample()
-        action["action_type"] = self.SUPPORTED_ACTIONS.index(ActionTypes.TYPE_TEXT)
+        action["action_type"] = self._action_idx(env, ActionTypes.TYPE_TEXT)
         action["text"] = text
         return action
 
     def create_focus_and_type_action(self, env, element, text):
         """Create an action that focuses on the element and types text."""
         action = env.action_space.sample()
-        action["action_type"] = self.SUPPORTED_ACTIONS.index(
-            ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT
+        action["action_type"] = self._action_idx(
+            env, ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT
         )
         action["ref"] = element["ref"]
         action["text"] = text
+        return action
+
+    def create_type_field_action(self, env, field_idx):
+        """Create an action that types text from a field."""
+        action = env.action_space.sample()
+        action["action_type"] = self._action_idx(env, ActionTypes.TYPE_FIELD)
+        action["field"] = field_idx
+        return action
+
+    def create_focus_and_type_field_action(self, env, element, field_idx):
+        """Create an action that focuses on the element and types a field."""
+        action = env.action_space.sample()
+        action["action_type"] = self._action_idx(
+            env, ActionTypes.FOCUS_ELEMENT_AND_TYPE_FIELD
+        )
+        action["ref"] = element["ref"]
+        action["field"] = field_idx
         return action
 
 
@@ -151,6 +176,20 @@ class TestFocusText(RepeatedTester):
                 return self.create_click_element_center_action(env, element)
         # No input is found, which is weird
         assert False, "Input box not found"
+
+
+class TestFocusTextWithTab(RepeatedTester):
+    """Tests for task focus-text, using the TAB key"""
+
+    ENV_NAME = "miniwob/focus-text-v1"
+    MAX_STEPS = 2
+
+    def _get_action(self, env, obs, info, step):
+        if step == 0:
+            # Focus on the page first
+            return self.create_click_coords_action(env, 0, 0)
+        elif step == 1:
+            return self.create_press_key_action(env, "<Tab>")
 
 
 class TestIdentifyShape(RepeatedTester):
@@ -239,7 +278,7 @@ class TestEnterText(RepeatedTester):
 
 
 class TestEnterTextFocusAndType(RepeatedTester):
-    """Tests for task enter-text, using FocusAndType actions."""
+    """Tests for task enter-text, using the combined focus+type actions."""
 
     ENV_NAME = "miniwob/enter-text-v1"
     MAX_STEPS = 2
@@ -251,6 +290,56 @@ class TestEnterTextFocusAndType(RepeatedTester):
             for element in obs["dom_elements"]:
                 if element["tag"] == "input_text":
                     return self.create_focus_and_type_action(env, element, target)
+            assert False, "Input text not found"
+        elif step == 1:
+            # Click submit
+            return self.create_click_button_action(env, obs, "Submit")
+
+
+class TestEnterTextTypeField(RepeatedTester):
+    """Tests for task enter-text, using the field typing actions"""
+
+    ENV_NAME = "miniwob/enter-text-v1"
+    MAX_STEPS = 3
+
+    def _get_action(self, env, obs, info, step):
+        if step == 0:
+            # Click on the textbox
+            for element in obs["dom_elements"]:
+                if element["tag"] == "input_text":
+                    assert not element["flags"][0].item()
+                    return self.create_click_element_action(env, element)
+            assert False, "Input text not found"
+        elif step == 1:
+            # Assert that the input is focused
+            for element in obs["dom_elements"]:
+                if element["tag"] == "input_text":
+                    assert element["flags"][0].item()
+                    break
+            else:
+                assert False, "Input text not found"
+            # Type the text from field 0 (there is only 1 field).
+            assert obs["fields"][0][0] == "target"
+            return self.create_type_field_action(env, 0)
+        elif step == 2:
+            # Click submit
+            return self.create_click_button_action(env, obs, "Submit")
+
+
+class TestEnterTextFocusAndTypeField(RepeatedTester):
+    """Tests for task enter-text, using the focus + type field actions."""
+
+    ENV_NAME = "miniwob/enter-text-v1"
+    MAX_STEPS = 2
+
+    def _get_action(self, env, obs, info, step):
+        if step == 0:
+            # Type into the textbox
+            for element in obs["dom_elements"]:
+                if element["tag"] == "input_text":
+                    # Type the text from field 0 (there is only 1 field).
+                    assert obs["fields"][0][0] == "target"
+                    return self.create_focus_and_type_field_action(env, element, 0)
             assert False, "Input text not found"
         elif step == 1:
             # Click submit
@@ -447,3 +536,159 @@ class TestClickPie(RepeatedTester):
                     assert path is not None
                     return self.create_click_element_action(env, path)
             assert False, "Correct entry not found"
+
+
+################################################################################
+# Test suites for more advanced actions
+
+
+class TestDragBox(RepeatedTester):
+    """Tests for task drag-box."""
+
+    ENV_NAME = "miniwob/drag-box-v1"
+    MAX_STEPS = 3
+
+    def _get_action(self, env, obs, info, step):
+        if step == 0:
+            # Start dragging
+            for element in obs["dom_elements"]:
+                if element["text"] == "s":
+                    return self.create_coords_action(
+                        env,
+                        element["left"].item() + 2,
+                        element["top"].item() + 2,
+                        ActionTypes.MOUSEDOWN_COORDS,
+                    )
+        elif step == 1:
+            # Stop dragging
+            for element in obs["dom_elements"]:
+                if element["text"] == "L":
+                    return self.create_coords_action(
+                        env,
+                        element["left"].item() + 5,
+                        element["top"].item() + 5,
+                        ActionTypes.MOUSEUP_COORDS,
+                    )
+        elif step == 2:
+            # Click submit
+            return self.create_click_button_action(env, obs, "Submit")
+
+
+class TestDragBoxWithMove(RepeatedTester):
+    """Tests for task drag-box with a move action in-between."""
+
+    ENV_NAME = "miniwob/drag-box-v1"
+    MAX_STEPS = 4
+
+    def _get_action(self, env, obs, info, step):
+        if step == 0:
+            # Start dragging
+            for element in obs["dom_elements"]:
+                if element["text"] == "s":
+                    return self.create_coords_action(
+                        env,
+                        element["left"].item() + 2,
+                        element["top"].item() + 2,
+                        ActionTypes.MOUSEDOWN_COORDS,
+                    )
+        elif step == 1:
+            # Try moving around. The mouse should not be released.
+            return self.create_coords_action(
+                env,
+                42,
+                84,
+                ActionTypes.MOVE_COORDS,
+            )
+        elif step == 2:
+            # Stop dragging
+            for element in obs["dom_elements"]:
+                if element["text"] == "L":
+                    return self.create_coords_action(
+                        env,
+                        element["left"].item() + 5,
+                        element["top"].item() + 5,
+                        ActionTypes.MOUSEUP_COORDS,
+                    )
+        elif step == 3:
+            # Click submit
+            return self.create_click_button_action(env, obs, "Submit")
+
+
+class TestCopyPaste(RepeatedTester):
+    """Tests for task copy-paste."""
+
+    ENV_NAME = "miniwob/copy-paste-v1"
+    MAX_STEPS = 6
+
+    # Note: Does not work in human render mode on ChromeOS.
+    def _get_action(self, env, obs, info, step):
+        if step == 0:
+            for element in obs["dom_elements"]:
+                if element["id"] == "to-copy":
+                    return self.create_click_element_action(env, element)
+        elif step == 1:
+            return self.create_press_key_action(env, "C-a")
+        elif step == 2:
+            return self.create_press_key_action(env, "C-c")
+        elif step == 3:
+            for element in obs["dom_elements"]:
+                if element["id"] == "answer-input":
+                    return self.create_click_element_action(env, element)
+        elif step == 4:
+            return self.create_press_key_action(env, "C-v")
+        elif step == 5:
+            return self.create_click_button_action(env, obs, "Submit")
+
+
+class TestScrollText2(RepeatedTester):
+    """Tests for task scroll-text-2."""
+
+    ENV_NAME = "miniwob/scroll-text-2-v1"
+    MAX_STEPS = 7
+
+    def _get_action(self, env, obs, info, step):
+        if step < self.MAX_STEPS - 1:
+            # Use mouse wheel to ccroll.
+            # Note: Requires some time to finish scrolling.
+            target = field_lookup(obs["fields"], "target")
+            action_type = {
+                "top": ActionTypes.SCROLL_UP_COORDS,
+                "bottom": ActionTypes.SCROLL_DOWN_COORDS,
+            }[target]
+            for element in obs["dom_elements"]:
+                if element["tag"] == "textarea":
+                    left = int(element["left"]) + 5
+                    top = int(element["top"]) + 5
+                    return self.create_coords_action(env, left, top, action_type)
+            assert False, "Textarea not found"
+        else:
+            # Submit.
+            return self.create_click_button_action(env, obs, "Submit")
+
+
+class TestScrollText2WithPressKey(RepeatedTester):
+    """Tests for task scroll-text-2, using press key."""
+
+    ENV_NAME = "miniwob/scroll-text-2-v1"
+    MAX_STEPS = 6
+
+    def _get_action(self, env, obs, info, step):
+        if step == 0:
+            # Click on the textarea.
+            for element in obs["dom_elements"]:
+                if element["tag"] == "textarea":
+                    left = int(element["left"]) + 5
+                    top = int(element["top"]) + 5
+                    return self.create_click_coords_action(env, left, top)
+            assert False, "Textarea not found"
+        elif step < self.MAX_STEPS - 1:
+            # Press PageUp or PageDown.
+            target = field_lookup(obs["fields"], "target")
+            key = {
+                "top": "<PageUp>",
+                "bottom": "<PageDown>",
+            }[target]
+            return self.create_press_key_action(env, key)
+        else:
+            # Submit.
+            return self.create_click_button_action(env, obs, "Submit")
