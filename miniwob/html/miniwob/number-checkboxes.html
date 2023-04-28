@@ -130,6 +130,7 @@ var PATTERNS =  [
     [0, 1, 1, 0],
   ]
 ];
+var EXPECTED_NUMBER;
 
 var resetUI = function(){
   d3.select('#checkboxes')[0][0].innerHTML = '';
@@ -142,6 +143,7 @@ var resetUI = function(){
 
 var setupProblem = function(){
   var expectedNumber = core.randi(0,10);
+  EXPECTED_NUMBER = expectedNumber;
   d3.select('#query').html('Draw the number "' + expectedNumber + '" in the checkboxes using the example on the right and press Submit when finished.');
   d3.selectAll('aside div').style('display', 'none');
   d3.select('#o' + expectedNumber).style('display', 'block');

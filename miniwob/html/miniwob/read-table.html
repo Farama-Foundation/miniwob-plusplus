@@ -19,6 +19,8 @@ tr:nth-child(even) { background-color: #dddddd; }
 <script src="../core/d3.v3.min.js"></script>
 <script src="../common/ui_utils.js"></script>
 <script>
+var TARGET_TEXT;
+
 var genYear = function() {
   return core.randi(1940, 2016).toString();
 }
@@ -69,7 +71,7 @@ var genProblem = function() {
 
   var lists = generateList();
   var expectedVals = createTable(lists, div);
-
+  TARGET_TEXT = expectedVals.valgt;
 
   d3.select('#query').html('Enter the value of <span class="bold">' + expectedVals.keygt + '</span> into the text field and press Submit.');
 

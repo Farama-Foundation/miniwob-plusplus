@@ -27,6 +27,9 @@ input { margin: 5px; width: 100px; }
 <script src="../core/d3.v3.min.js"></script>
 <script src="../common/ui_utils.js"></script>
 <script>
+var TARGET_USERNAME;
+var TARGET_PASSWORD;
+
 core.EPISODE_MAX_TIME = 15000; // 15 seconds
 
 var genProblem = function() {
@@ -35,6 +38,9 @@ var genProblem = function() {
 
   var user = core.sample(ui_utils.FIFTY_NAMES).toLowerCase();
   var password = ui_utils.generateString(2,6)
+  TARGET_USERNAME = user;
+  TARGET_PASSWORD = password;
+
   d3.select('#query').html('Enter the <span class="bold">username</span> "' + user + '" and the <span class="bold">password</span> "' + password + '" into the text fields and press login.');
 
   // reward awarder

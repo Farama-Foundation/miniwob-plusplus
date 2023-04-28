@@ -17,6 +17,7 @@
 <script src="../core/d3.v3.min.js"></script>
 <script src="../common/ui_utils.js"></script>
 <script>
+var TARGET_TEXT;
 core.EPISODE_MAX_TIME = 15000; // set episode interval to 15 seconds
 
 var genTransform = function(text){
@@ -47,6 +48,7 @@ var genProblem = function() {
 
   // generate a query
   var q = ui_utils.generateString(3,5);
+  TARGET_TEXT = q;
   for(var i=0;i<q.length;i++) genTransform(q[i]);
 
   // reward awarder

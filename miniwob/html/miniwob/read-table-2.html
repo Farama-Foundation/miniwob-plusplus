@@ -21,10 +21,12 @@ tr:nth-child(even) { background-color: #dddddd; }
 <script src="../core/d3.v3.min.js"></script>
 <script src="../common/ui_utils.js"></script>
 <script>
+var TARGET_TEXT;
+
 core.EPISODE_MAX_TIME = 20000; // set episode interval to 20 seconds
 
 var genYear = function() {
-  return core.randi(1940, 2016).toString();
+   return core.randi(1940, 2016).toString();
 }
 
 var resetUI = function(){
@@ -58,6 +60,7 @@ var createTable = function(lists, div){
     if(indices.indexOf(newNumb) === -1) indices.push(newNumb);
   }
 
+  TARGET_TEXTS = []
   var expectedVals = {};
   var table = div.append('table');
   for(var r=0;r<5;r++) {
@@ -74,6 +77,7 @@ var createTable = function(lists, div){
     tr.append('td').html(val);
 
     if(indices.indexOf(r) !== -1) {
+      TARGET_TEXTS.push([key, val]);
       expectedVals[key] = val;
     }
   }

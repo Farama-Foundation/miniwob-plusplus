@@ -16,6 +16,8 @@
 <script src="../common/ui_utils.js"></script>
 
 <script>
+var TARGET_TEXT;
+
 var regex_NONLETTERS = /[^a-zA-Z]+/g;
 var POSITIONS = ['1st', '2nd', '3rd'];
 
@@ -39,7 +41,7 @@ var randomText = function(){
     else { txt += w + ' '; }
     if(expectedIndex == i) var expectedWord = w.replace(regex_NONLETTERS, ''); // get rid of any punctuation
   }
-
+  TARGET_TEXT = expectedWord;
   return {expectedIndex: expectedIndex, text: txt, expectedWord: expectedWord};
 }
 

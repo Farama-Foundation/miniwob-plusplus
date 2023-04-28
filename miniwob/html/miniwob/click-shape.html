@@ -13,6 +13,8 @@
 #area_svg { width: 160px; height: 160px; }
 </style>
 <script>
+var GROUND_TRUTH_INDEX;
+
 // generate a new random grid of shapes
 var createShapes = function(){
   var grid = shapes.genGrid();
@@ -24,6 +26,7 @@ var createShapes = function(){
 
 var chooseShape = function(grid){
   var gtix = core.randi(0, grid.shapes.length);
+  GROUND_TRUTH_INDEX = gtix;
   var gtdesc = shapes.generalDesc(grid.shapes[gtix]);
   d3.select('#query').html('Click on a ' + gtdesc.text); // render query
   return gtdesc;

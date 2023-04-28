@@ -14,6 +14,8 @@ input { width: 100px; }
 <script src="../core/d3.v3.min.js"></script>
 <script src="../common/ui_utils.js"></script>
 <script>
+var TARGET_TEXT;
+
 var genProblem = function() {
   d3.select('#tt')[0][0].value ='';
 
@@ -28,6 +30,7 @@ var genProblem = function() {
 
   // generate a query
   var q = ui_utils.generateString(1,6);
+  TARGET_TEXT = q;
   d3.select('#query').html('Enter "<span class="bold">' + q + '</span>" into the text field and press Submit.');
 
   // reward awarder

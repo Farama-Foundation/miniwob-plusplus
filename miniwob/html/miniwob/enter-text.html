@@ -14,6 +14,8 @@ input { width: 100px; }
 <script src="../core/d3.v3.min.js"></script>
 <script src="../common/ui_utils.js"></script>
 <script>
+var TARGET_TEXT;
+
 var randomizeInputs = function(){
   // move the text field around
   var s = '';
@@ -30,6 +32,7 @@ var genProblem = function() {
   randomizeInputs();
 
   var q = core.sample(ui_utils.FIFTY_NAMES);
+  TARGET_TEXT = q;
   d3.select('#query').html('Enter "<span class="bold">' + q + '</span>" into the text field and press Submit.');
 
   // reward awarder
