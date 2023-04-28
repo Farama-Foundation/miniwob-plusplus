@@ -8,7 +8,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:description" content="A collection of over 100 web interaction environments, along with JavaScript and Python interfaces." />
     <meta property="og:url" content="https://miniwob.farama.org/content/python_usage.html" /><meta property="og:image" content="https://miniwob.farama.org/_static/img/miniwobplusplus-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Javascript API" href="../javascript_api/" /><link rel="prev" title="Setup" href="../python_setup/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Key Combinations" href="../key_combinations/" /><link rel="prev" title="Setup" href="../python_setup/" />
         <link rel="canonical" href="https://miniwob.farama.org/content/python_usage.html" />
 
     <!-- Generated with Sphinx 6.2.1 and Furo 2022.12.07.dev1 -->
@@ -226,6 +226,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../python_setup/">Setup</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_combinations/">Key Combinations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Javascript Interface</span></p>
 <ul>
@@ -607,38 +608,32 @@ opened dropdown may not be captured in the screenshot.</p></td>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NONE</span></code></p></td>
 <td><p>Do nothing for the current step.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CLICK_COORDS</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MOVE_COORDS</span></code></p></td>
+<td><p>Move the cursor to the specified coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CLICK_COORDS</span></code></p></td>
 <td><p>Click on the specified coordinates.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DBLCLICK_COORDS</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">DBLCLICK_COORDS</span></code></p></td>
 <td><p>Double-click on the specified coordinates.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MOUSEDOWN_COORDS</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MOUSEDOWN_COORDS</span></code></p></td>
 <td><p>Start dragging on the specified coordinates.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MOUSEUP_COORDS</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MOUSEUP_COORDS</span></code></p></td>
 <td><p>Stop dragging on the specified coordinates.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CLICK_ELEMENT</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SCROLL_UP_COORDS</span></code></p></td>
+<td><p>Scroll up on the mouse wheel at the specified coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SCROLL_DOWN_COORDS</span></code></p></td>
+<td><p>Scroll down on the mouse wheel at the specified coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CLICK_ELEMENT</span></code></p></td>
 <td><p>Click on the specified element.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DBLCLICK_ELEMENT</span></code></p></td>
-<td><p>Double-click on the specified element.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MOUSEDOWN_ELEMENT</span></code></p></td>
-<td><p>Start dragging on the specified element.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MOUSEUP_ELEMENT</span></code></p></td>
-<td><p>Stop dragging on the specified element.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SCROLL_UP</span></code></p></td>
-<td><p>Scroll up on the mouse wheel.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SCROLL_DOWN</span></code></p></td>
-<td><p>Scroll down on the mouse wheel.</p></td>
-</tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PRESS_KEY</span></code></p></td>
-<td><p>Press the specified key or key combination.</p></td>
+<td><p>Press the specified <a class="reference internal" href="../key_combinations/"><span class="doc std std-doc">key or key combination</span></a>.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">TYPE_TEXT</span></code></p></td>
 <td><p>Type the specified string.</p></td>
@@ -688,9 +683,17 @@ The <code class="docutils literal notranslate"><span class="pre">ActionSpaceConf
 <td><p>If specified, bin the x and y coordinates to these numbers of bins.
 Mouse actions will be executed at the middle of the specified partition.</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">scroll_amount</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
+<td><p>The amount to scroll for scroll actions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">scroll_time</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
+<td><p>Time in milliseconds to wait for scroll action animation.</p></td>
+</tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">allowed_keys</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Sequence[str]</span></code></p></td>
-<td><p>An ordered sequence of allowed keys and key combinations for the <code class="docutils literal notranslate"><span class="pre">PRESS_KEY</span></code> action.</p></td>
+<td><p>An ordered sequence of allowed <a class="reference internal" href="../key_combinations/"><span class="doc std std-doc">keys and key combinations</span></a> for the <code class="docutils literal notranslate"><span class="pre">PRESS_KEY</span></code> action.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">text_max_len</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
@@ -782,12 +785,12 @@ a text pseudo-element (negative <code class="docutils literal notranslate"><span
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../javascript_api/">
+            <a class="next-page" href="../key_combinations/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Javascript API</div>
+                <div class="title">Key Combinations</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
