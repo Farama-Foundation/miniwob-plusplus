@@ -39,6 +39,8 @@ If you use MiniWoB++ in your research, please use the following citation:
 
 content/python_setup
 content/python_usage
+content/observation_space
+content/action_space
 content/key_combinations
 ```
 
