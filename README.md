@@ -1,8 +1,9 @@
-# MiniWoB++
-
 <p align="center">
   <img src="https://raw.githubusercontent.com/Farama-Foundation/miniwob-plusplus/master/miniwobplusplus-text.png" width="500px"/>
 </p>
+
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 The MiniWoB++ (Mini World of Bits++) library contains a collection of over 100 **web interaction environments**,
 along with JavaScript and Python interfaces for programmatically interacting with them.
@@ -16,4 +17,106 @@ and was introduced in the paper
 [Reinforcement Learning on Web Interfaces using Workflow-Guided
 Exploration](https://arxiv.org/abs/1802.08802).
 
+The documentation website is at [miniwob.farama.org](https://miniwob.farama.org/).
 Development on MiniWoB++ is currently ongoing to bring it up to [our standards](https://farama.org/project_standards.html) for mature projects, and will be maintained long term after this point. If you'd like to help out, you can join our discord server here: <https://discord.gg/PfR7a79FpQ>.
+
+# Installation
+
+MiniWoB++ supports Python 3.6+ on Linux and macOS.
+
+## Installing the MiniWoB++ Library
+
+MiniWoB++ will soon be available on PyPI and can be installed via `pip`. For now, clone the repository and install using
+
+```sh
+cd miniwob-plusplus
+pip install -e .
+```
+
+## Installing Chrome/Chromium and ChromeDriver
+
+We strongly recommend using Chrome or Chromium as the web browser,
+as other browsers may render the environments differently.
+
+The MiniWoB++ Python interface uses [Selenium](https://www.selenium.dev/documentation/webdriver/),
+which interacts with the browser via the [WebDriver API](https://w3c.github.io/webdriver/).
+Follow one of the
+[instruction methods](https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/)
+to install ChromeDriver. The simplest method is to
+[download](https://chromedriver.chromium.org/downloads) ChromeDriver with the matching version,
+unzip it, and then add the directory containing the `chromedriver` executable to the `PATH` environment variable:
+
+```sh
+export PATH=$PATH:/path/to/chromedriver
+```
+
+For Chromium, the driver may also be available in a software package; for example, in Debian/Ubuntu:
+
+```sh
+sudo apt install chromium-driver
+```
+
+# Example Usage
+
+The following code performs a deterministic action on the
+[`click-test-2`](http://miniwob.farama.org/environments/click-test-2/) environment. 
+
+```python
+import time
+import gymnasium
+from miniwob.action import ActionTypes
+
+env = gymnasium.make('miniwob/click-test-2-v1', render_mode='human')
+
+# Wrap the code in try-finally to ensure proper cleanup.
+try:
+  # Start a new episode.
+  obs, info = env.reset()
+  assert obs["utterance"] == "Click button ONE."
+  assert obs["fields"] == [("target", "ONE")]
+  time.sleep(2)       # Only here to let you look at the environment.
+  
+  # Find the HTML element with text "ONE".
+  for element in obs["dom_elements"]:
+    if element["text"] == "ONE":
+      break
+
+  # Click on the element.
+  action = env.action_space.sample()     # Template for the action.
+  action["action_type"] = env.action_space_config.action_types.index(
+      ActionTypes.CLICK_ELEMENT
+  )
+  action["ref"] = element["ref"]
+  obs, reward, terminated, truncated, info = env.step(action)
+
+  # Check if the action was correct. 
+  assert reward >= 0      # Should be around 0.8 since 2 seconds has passed.
+  assert terminated is True
+  time.sleep(2)
+
+finally:
+  env.close()
+```
+
+See [the documentation](http://miniwob.farama.org/content/python_usage/) for more information.
+
+# Environments
+
+The list of the environments that were included in the MiniWoB++ library can be found in the
+[documentation](http://miniwob.farama.org/environments/list/).
+All environments share the same [observation space](http://miniwob.farama.org/content/observation_space/),
+while the [action space](http://miniwob.farama.org/content/action_space/) can be configured during environment construction.
+
+# Citation
+
+To cite this project please use:
+
+```bibtex
+@inproceedings{liu2018reinforcement,
+ author = {Evan Zheran Liu and Kelvin Guu and Panupong Pasupat and Tianlin Shi and Percy Liang},
+ title = {Reinforcement Learning on Web Interfaces using Workflow-Guided Exploration},
+ booktitle = {International Conference on Learning Representations ({ICLR})},
+ url = {https://arxiv.org/abs/1802.08802},
+ year = {2018},
+}
+```
