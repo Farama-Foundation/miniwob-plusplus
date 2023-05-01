@@ -1,5 +1,3 @@
-# MiniWoB++
-
 <p align="center">
   <img src="https://raw.githubusercontent.com/Farama-Foundation/miniwob-plusplus/master/miniwobplusplus-text.png" width="500px"/>
 </p>
@@ -16,4 +14,4 @@ and was introduced in the paper
 [Reinforcement Learning on Web Interfaces using Workflow-Guided
 Exploration](https://arxiv.org/abs/1802.08802).
 
-Development on MiniWoB++ is currently ongoing to bring it up to [our standards](https://farama.org/project_standards.html) for mature projects, and will be maintained long term after this point. If you'd like to help out, you can join our discord server here: <https://discord.gg/PfR7a79FpQ>.
+Development on MiniWoB++ is currently ongoing to bring it up to [Farama Standards](https://farama.org/project_standards.html) for mature projects, and will be maintained long term after this point. If you'd like to help out, you can join our discord server here: <https://discord.gg/PfR7a79FpQ>.
