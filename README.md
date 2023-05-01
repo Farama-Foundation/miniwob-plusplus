@@ -18,7 +18,7 @@ and was introduced in the paper
 Exploration](https://arxiv.org/abs/1802.08802).
 
 The documentation website is at [miniwob.farama.org](https://miniwob.farama.org/).
-Development on MiniWoB++ is currently ongoing to bring it up to [our standards](https://farama.org/project_standards.html) for mature projects, and will be maintained long term after this point. If you'd like to help out, you can join our discord server here: <https://discord.gg/PfR7a79FpQ>.
+Development on MiniWoB++ is currently ongoing to bring it up to [Farama Standards](https://farama.org/project_standards.html) for mature projects, and will be maintained long term after this point. If you'd like to help out, you can join our discord server here: <https://discord.gg/PfR7a79FpQ>.
 
 # Installation
 
