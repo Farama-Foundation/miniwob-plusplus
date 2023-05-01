@@ -28,17 +28,17 @@ MiniWoB++ environments support the following action types:
 * - `SCROLL_DOWN_COORDS`
   - Scroll down on the mouse wheel at the specified coordinates.
 * - `CLICK_ELEMENT`
-  - Click on the specified element.
+  - Click on the specified element using JavaScript.
 * - `PRESS_KEY`
-  - Press the specified [key or key combination](/content/key_combinations).
+  - Press the specified [key or key combination](#key-combinations).
 * - `TYPE_TEXT`
   - Type the specified string.
 * - `TYPE_FIELD`
   - Type the value of the specified task field.
 * - `FOCUS_ELEMENT_AND_TYPE_TEXT`
-  - Click on the specified element, and then type the specified string.
+  - Click on the specified element using JavaScript, and then type the specified string.
 * - `FOCUS_ELEMENT_AND_TYPE_FIELD`
-  - Click on the specified element, and then type the value of the specified task field.
+  - Click on the specified element using JavaScript, and then type the value of the specified task field.
 ```
 
 There are action types that perform similar actions (e.g., `CLICK_COORDS` and `CLICK_ELEMENT`).
@@ -78,7 +78,7 @@ An `ActionSpaceConfig` object has the following fields:
   - Time in milliseconds to wait for scroll action animation.
 * - `allowed_keys`
   - `Sequence[str]`
-  - An ordered sequence of allowed [keys and key combinations](/content/key_combinations) for the `PRESS_KEY` action.
+  - An ordered sequence of allowed [keys and key combinations](#key-combinations) for the `PRESS_KEY` action.
 * - `text_max_len`
   - `int`
   - Maximum text length for the `TYPE_TEXT` action.
@@ -87,10 +87,38 @@ An `ActionSpaceConfig` object has the following fields:
   - Character set for the `TYPE_TEXT` action.
 ```
 
+### Presets
+
+The following preset names can be specified in place of the `ActionSpaceConfig` object:
+(**TODO**: Implement this in code)
+
+* `"all_supported"`: Select all supported actions, including redundant ones.
+* `"shi17"`: The action space from (Shi et al., 2017)
+  [World of Bits: An Open-Domain Platform for Web-Based Agents](http://proceedings.mlr.press/v70/shi17a/shi17a.pdf).
+* `"liu18"`: The action space from (Liu et al., 2018)
+  [Reinforcement Learning on Web Interfaces Using Workflow-Guided Exploration](https://arxiv.org/abs/1802.08802).
+* `"humphreys22"`: The action space from (Humphreys et al., 2022)
+  [A data-driven approach for learning to control computers](https://arxiv.org/abs/2202.08137).
+
+### Key combinations
+
+The `PRESS_KEY` action type issues a key combination via Selenium.
+Each key combination in the `allowed_keys` config follow the rules:
+
+* Modifiers are specified using prefixes "C-" (control), "S-" (shift),
+    "A-" (alternate), or "M-" (meta).
+* Printable character keys (a, 1, etc.) are specified directly.
+    Shifted characters (A, !, etc.) are equivalent to "S-" + non-shifted counterpart.
+* Special keys are inclosed in "<...>". The list of valid names is specified in
+    `miniwob.constants.WEBDRIVER_SPECIAL_KEYS`.
+
+Example valid key combinations:`"7"`, `"<Enter>"`, `"C-S-<ArrowLeft>"`.
+
+
 ## Action Object
 
 The action passed to the [`step`](https://gymnasium.farama.org/api/env/#gymnasium.Env.step) method
-should be a `dict` whose field inclusion depends on the selected action types:
+should be a `dict` whose field inclusion depends on the selected action types in the config:
 
 ```{list-table}
 :header-rows: 1
@@ -125,16 +153,14 @@ should be a `dict` whose field inclusion depends on the selected action types:
   - When any `*_TYPE_FIELD` action type is selected.
 ```
 
-## Presets
+For instance, if the config only contains action types `CLICK_COORDS` and `PRESS_KEY`,
+the action object can be
 
-The following preset names can be specified in place of the `ActionSpaceConfig` object:
-(**TODO**: Implement this in code)
-
-* `"all_supported"`: Select all supported actions, including redundant ones.
-* `"shi17"`: The action space from (Shi et al., 2017)
-  [World of Bits: An Open-Domain Platform for Web-Based Agents](http://proceedings.mlr.press/v70/shi17a/shi17a.pdf).
-* `"liu18"`: The action space from (Liu et al., 2018)
-  [Reinforcement Learning on Web Interfaces Using Workflow-Guided Exploration](https://arxiv.org/abs/1802.08802).
-* `"humphreys22"`: The action space from (Humphreys et al., 2022)
-  [A data-driven approach for learning to control computers](https://arxiv.org/abs/2202.08137).
+```python
+action = {
+  "action_type": 0,     # CLICK_COORDS
+  "coords": np.array([100, 50]),
+  "key": 0,             # Ignored by the action CLICK_COORDS
+}
+```
 

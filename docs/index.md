@@ -41,7 +41,6 @@ content/python_setup
 content/python_usage
 content/observation_space
 content/action_space
-content/key_combinations
 ```
 
 ```{toctree}
