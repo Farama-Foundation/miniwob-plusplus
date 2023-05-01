@@ -1,6 +1,4 @@
-# Setup
-
-Follow the instructions below to setup the Python interface.
+# Installation
 
 ## Install the MiniWoB++ Library
 

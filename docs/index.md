@@ -37,7 +37,7 @@ If you use MiniWoB++ in your research, please use the following citation:
 :hidden:
 :caption: Python Interface
 
-content/python_setup
+content/installation
 content/python_usage
 content/observation_space
 content/action_space
