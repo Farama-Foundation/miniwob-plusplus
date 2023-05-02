@@ -19,7 +19,7 @@ from typing import Any, Dict
 import miniwob
 
 project = "MiniWoB++"
-copyright = "2023"
+copyright = "Farama Foundation 2023"
 author = "Farama Foundation"
 
 # The full version, including alpha/beta/rc tags
@@ -68,14 +68,11 @@ html_theme_options = {
     "dark_logo": "img/miniwobplusplus-white.svg",
     "description": "A collection of over 100 web interaction environments, along with JavaScript and Python interfaces.",
     "image": "img/miniwobplusplus-github.png",
+    "source_repository": "https://github.com/Farama-Foundation/miniwob-plusplus/",
+    "source_branch": "master",
+    "source_directory": "docs/",
     "versioning": True,
 }
-html_context: Dict[str, Any] = {}
-html_context["conf_py_path"] = "/docs/"
-html_context["display_github"] = True
-html_context["github_user"] = "Farama-Foundation"
-html_context["github_repo"] = "miniwob-plusplus"
-html_context["github_version"] = "main"
 
 html_static_path = ["_static"]
 html_extra_path = ["demos"]
