@@ -7,12 +7,12 @@
     <meta property="og:title" content="MiniWoB++ Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="A collection of over 100 web interaction environments, along with JavaScript and Python interfaces." />
-    <meta property="og:url" content="https://miniwob.farama.org/content/python_setup.html" /><meta property="og:image" content="https://miniwob.farama.org/_static/img/miniwobplusplus-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Basic Usage" href="../python_usage/" /><link rel="prev" title="MiniWoB++" href="../../" />
-        <link rel="canonical" href="https://miniwob.farama.org/content/python_setup.html" />
+    <meta property="og:url" content="https://miniwob.farama.org/content/observation_space.html" /><meta property="og:image" content="https://miniwob.farama.org/_static/img/miniwobplusplus-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Action Space" href="../action_space/" /><link rel="prev" title="Installation" href="../installation/" />
+        <link rel="canonical" href="https://miniwob.farama.org/content/observation_space.html" />
 
     <!-- Generated with Sphinx 6.2.1 and Furo 2022.12.07.dev1 -->
-        <title>Setup - MiniWoB++ Documentation</title>
+        <title>Observation Space - MiniWoB++ Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=721f65a87c37740baa8d605b09db5bec3a2987a8" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=4297ed78bc2370ec4493f1a6639f04addebc5da5" />
@@ -224,9 +224,9 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Python Interface</span></p>
 <ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../python_usage/">Basic Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../key_combinations/">Key Combinations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Observation Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../action_space/">Action Space</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Javascript Interface</span></p>
 <ul>
@@ -398,35 +398,148 @@
           </div>
           <article role="main">
             
-            <section id="setup">
-<h1>Setup<a class="headerlink" href="#setup" title="Permalink to this heading">#</a></h1>
-<p>Follow the instructions below to setup the Python interface.</p>
-<section id="install-the-miniwob-library">
-<h2>Install the MiniWoB++ Library<a class="headerlink" href="#install-the-miniwob-library" title="Permalink to this heading">#</a></h2>
-<p>Inside the repository directory, run</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>.
-</pre></div>
+            <section id="observation-space">
+<h1>Observation Space<a class="headerlink" href="#observation-space" title="Permalink to this heading">#</a></h1>
+<section id="observation-object">
+<h2>Observation Object<a class="headerlink" href="#observation-object" title="Permalink to this heading">#</a></h2>
+<p>In all MiniWoB++ environments, an observation is a <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following fields:</p>
+<div class="table-wrapper docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">utterance</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
+<td><p>Task instruction string.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fields</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">list[tuple[str,</span> <span class="pre">str]]</span></code></p></td>
+<td><p>Environment-specific key-value pairs extracted from the utterance;
+e.g., “Click on the OK button” → <code class="docutils literal notranslate"><span class="pre">[(&quot;target&quot;,</span> <span class="pre">&quot;OK&quot;)]</span></code>.
+The fields are guaranteed to be the same during the same episode.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">screenshot</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(height,</span> <span class="pre">width,</span> <span class="pre">3)</span></code> and type <code class="docutils literal notranslate"><span class="pre">uint8</span></code></p></td>
+<td><p>Screenshot as RGB values for each pixel.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dom_elements</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">list[dict]</span></code></p></td>
+<td><p>List of dicts, each listing properties of a <em>visible</em> DOM elements (see below).</p></td>
+</tr>
+</tbody>
+</table>
 </div>
-<p>If this gives you problems, try again and add pip’s <code class="docutils literal notranslate"><span class="pre">--ignore-installed</span></code> flag.</p>
 </section>
-<section id="install-chrome-chromium-and-chromedriver">
-<h2>Install Chrome/Chromium and ChromeDriver<a class="headerlink" href="#install-chrome-chromium-and-chromedriver" title="Permalink to this heading">#</a></h2>
-<p>We strongly recommend using Chrome or Chromium as the web browser,
-as other browsers may render the environments differently.</p>
-<p>The MiniWoB++ Python interface uses <a class="reference external" href="https://www.selenium.dev/documentation/webdriver/">Selenium</a>,
-which interacts with the browser via the <a class="reference external" href="https://w3c.github.io/webdriver/">WebDriver API</a>.
-If you use Google Chrome as the web browser, follow one of the
-<a class="reference external" href="https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/">instruction methods</a>
-to install ChromeDriver. The simplest method is to download
-<a class="reference external" href="https://chromedriver.chromium.org/downloads">ChromeDriver</a> with the matching version,
-unzip it, and then add the directory containing the <code class="docutils literal notranslate"><span class="pre">chromedriver</span></code> executable to the <code class="docutils literal notranslate"><span class="pre">PATH</span></code> environment variable:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/path/to/chromedriver
-</pre></div>
+<section id="dom-element-properties">
+<h2>DOM Element Properties<a class="headerlink" href="#dom-element-properties" title="Permalink to this heading">#</a></h2>
+<p>Each dict in <code class="docutils literal notranslate"><span class="pre">dom_elements</span></code> has the following fields:</p>
+<div class="table-wrapper docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ref</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
+<td><p>Non-zero integer ID.</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">ref</span></code> for normal HTML elements start from 1.</p></li>
+<li><p>Each HTML element retains the same <code class="docutils literal notranslate"><span class="pre">ref</span></code> during the same episode.</p></li>
+<li><p>Non-empty text nodes are converted into pseudo-elements with <code class="docutils literal notranslate"><span class="pre">ref</span></code> counting down from -1.<a class="footnote-reference brackets" href="#id4" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">parent</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ref</span></code> of the parent. For the root DOM element, <code class="docutils literal notranslate"><span class="pre">parent</span></code> will be 0.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">left</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(1,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
+<td><p>Left coordinate relative to the screen (can be negative).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">top</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(1,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
+<td><p>Top coordinate relative to the screen (can be negative).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">width</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(1,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
+<td><p>Element width.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">height</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(1,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
+<td><p>Element height.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">tag</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
+<td><p>HTML tag.</p>
+<ul class="simple">
+<li><p>For normal elements, this is the lowercased tag name (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;div&quot;</span></code>).</p></li>
+<li><p>For <code class="docutils literal notranslate"><span class="pre">&lt;input&gt;</span></code> elements, the input type is appended (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;input_text&quot;</span></code>).</p></li>
+<li><p>Non-empty text nodes become pseudo-elements with tag <code class="docutils literal notranslate"><span class="pre">&quot;t&quot;</span></code>.<a class="footnote-reference brackets" href="#id4" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">text</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
+<td><p>Text content, which is non-empty only for leaf elements.<a class="footnote-reference brackets" href="#id4" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">value</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
+<td><p>HTML <code class="docutils literal notranslate"><span class="pre">value</span></code> attribute (for an <code class="docutils literal notranslate"><span class="pre">&lt;input&gt;</span></code> element).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
+<td><p>HTML <code class="docutils literal notranslate"><span class="pre">id</span></code> attribute.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">classes</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
+<td><p>HTML <code class="docutils literal notranslate"><span class="pre">class</span></code> attribute (multiple classes are separated by spaces).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">bg_color</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(4,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
+<td><p>Background color as RGBA value.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fg_color</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(4,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
+<td><p>Foreground color as RGBA value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">flags</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(4,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">int8</span></code></p></td>
+<td><p>Binary flags:</p>
+<ul class="simple">
+<li><p>(<code class="docutils literal notranslate"><span class="pre">focused</span></code>) Whether the element is being focused on.</p></li>
+<li><p>(<code class="docutils literal notranslate"><span class="pre">tampered</span></code>) Whether the element has been tampered (clicked, focused, typed, etc.).</p></li>
+<li><p>(<code class="docutils literal notranslate"><span class="pre">targeted</span></code>) Whether the element is an event target (for recorded demonstrations).</p></li>
+<li><p>(<code class="docutils literal notranslate"><span class="pre">is_leaf</span></code>) Whether the element is a leaf.</p></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<p>For Chromium, the driver may also be available in a software package; for example, in Debian/Ubuntu:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>chromium-driver
-</pre></div>
-</div>
+<hr class="footnotes docutils" />
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id4" role="note">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>,<a role="doc-backlink" href="#id3">3</a>)</span>
+<p><strong>Note:</strong> Regarding text nodes:</p>
+<ul class="simple">
+<li><p>For an element with a single text node as its child (e.g., <code class="docutils literal notranslate"><span class="pre">&lt;button&gt;Submit&lt;/button&gt;</span></code>),
+a text pseudo-element will not be created. The element will become a leaf with the
+<code class="docutils literal notranslate"><span class="pre">text</span></code> feature filled in.</p></li>
+<li><p>For an element with a text node as one of its children (e.g., <code class="docutils literal notranslate"><span class="pre">&lt;button&gt;Submit</span> <span class="pre">&lt;b&gt;NOW&lt;/b&gt;&lt;/button&gt;</span></code>),
+a text pseudo-element (negative <code class="docutils literal notranslate"><span class="pre">ref</span></code> and <code class="docutils literal notranslate"><span class="pre">tag</span> <span class="pre">=</span> <span class="pre">&quot;t&quot;</span></code>) will be created for each line of text
+in the text node.</p></li>
+</ul>
+</aside>
+</aside>
 </section>
 </section>
 
@@ -435,18 +548,18 @@ unzip it, and then add the directory containing the <code class="docutils litera
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../python_usage/">
+            <a class="next-page" href="../action_space/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Basic Usage</div>
+                <div class="title">Action Space</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
             </a>
-            <a class="prev-page" href="../../">
+            <a class="prev-page" href="../installation/">
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
@@ -455,7 +568,7 @@ unzip it, and then add the directory containing the <code class="docutils litera
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Home</div>
+                <div class="title">Installation</div>
                 
               </div>
             </a>
@@ -499,9 +612,9 @@ unzip it, and then add the directory containing the <code class="docutils litera
           <div class="toc-tree-container">
             <div class="toc-tree">
               <ul>
-<li><a class="reference internal" href="#">Setup</a><ul>
-<li><a class="reference internal" href="#install-the-miniwob-library">Install the MiniWoB++ Library</a></li>
-<li><a class="reference internal" href="#install-chrome-chromium-and-chromedriver">Install Chrome/Chromium and ChromeDriver</a></li>
+<li><a class="reference internal" href="#">Observation Space</a><ul>
+<li><a class="reference internal" href="#observation-object">Observation Object</a></li>
+<li><a class="reference internal" href="#dom-element-properties">DOM Element Properties</a></li>
 </ul>
 </li>
 </ul>
