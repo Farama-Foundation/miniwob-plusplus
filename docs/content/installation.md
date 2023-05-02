@@ -1,13 +1,11 @@
-# Setup
-
-Follow the instructions below to setup the Python interface.
+# Installation
 
 ## Install the MiniWoB++ Library
 
 Inside the repository directory, run
 
 ```sh
-pip install .
+pip install -e .
 ```
 
 If this gives you problems, try again and add pip's `--ignore-installed` flag.
@@ -19,10 +17,10 @@ as other browsers may render the environments differently.
 
 The MiniWoB++ Python interface uses [Selenium](https://www.selenium.dev/documentation/webdriver/),
 which interacts with the browser via the [WebDriver API](https://w3c.github.io/webdriver/).
-If you use Google Chrome as the web browser, follow one of the
+Follow one of the
 [instruction methods](https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/)
-to install ChromeDriver. The simplest method is to download
-[ChromeDriver](https://chromedriver.chromium.org/downloads) with the matching version,
+to install ChromeDriver. The simplest method is to
+[download](https://chromedriver.chromium.org/downloads) ChromeDriver with the matching version,
 unzip it, and then add the directory containing the `chromedriver` executable to the `PATH` environment variable:
 
 ```sh
