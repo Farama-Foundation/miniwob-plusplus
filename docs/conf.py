@@ -14,8 +14,6 @@
 # sys.path.insert(0, os.path.abspath('.'))
 
 # -- Project information -----------------------------------------------------
-from typing import Any, Dict
-
 import miniwob
 
 project = "MiniWoB++"
