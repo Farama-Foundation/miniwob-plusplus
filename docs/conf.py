@@ -19,7 +19,7 @@ from typing import Any, Dict
 import miniwob
 
 project = "MiniWoB++"
-copyright = "Farama Foundation 2023"
+copyright = "2023 Farama Foundation"
 author = "Farama Foundation"
 
 # The full version, including alpha/beta/rc tags
