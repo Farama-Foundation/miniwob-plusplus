@@ -56,7 +56,6 @@ After 2 seconds:
 :align: center
 ```
 
-
 ## Environment Initialization
 
 An environment can be created using
