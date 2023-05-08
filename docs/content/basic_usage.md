@@ -15,13 +15,13 @@ env = gymnasium.make('miniwob/click-test-2-v1', render_mode='human')
 # Wrap the code in try-finally to ensure proper cleanup.
 try:
   # Start a new episode.
-  obs, info = env.reset()
-  assert obs["utterance"] == "Click button ONE."
-  assert obs["fields"] == [("target", "ONE")]
+  observation, info = env.reset()
+  assert observation["utterance"] == "Click button ONE."
+  assert observation["fields"] == [("target", "ONE")]
   time.sleep(2)       # Only here to let you look at the environment.
   
   # Find the HTML element with text "ONE".
-  for element in obs["dom_elements"]:
+  for element in observation["dom_elements"]:
     if element["text"] == "ONE":
       break
 
@@ -31,7 +31,7 @@ try:
       ActionTypes.CLICK_ELEMENT
   )
   action["ref"] = element["ref"]
-  obs, reward, terminated, truncated, info = env.step(action)
+  observation, reward, terminated, truncated, info = env.step(action)
 
   # Check if the action was correct. 
   assert reward >= 0      # Should be around 0.8 since 2 seconds has passed.
@@ -79,13 +79,13 @@ Common arguments include:
 ## Observation Space
 
 ```python
-obs, info = env.reset()
-obs, reward, terminated, truncated, info = env.step(action)
+observation, info = env.reset(seed=42)
+observation, reward, terminated, truncated, info = env.step(action)
 ```
 
 The [`reset`](https://gymnasium.farama.org/api/env/#gymnasium.Env.reset)
 and [`step`](https://gymnasium.farama.org/api/env/#gymnasium.Env.step) methods
-return an observation `obs`, which is a `dict` with the following fields:
+return an observation, which is a `dict` with the following fields:
 
 * **`utterance`:** Task instruction string, such as `"Click button ONE."`.
 * **`fields`:** Environment-specific key-value pairs extracted from the utterance, such as `[("target", "ONE")]`.
@@ -102,7 +102,7 @@ action["action_type"] = env.action_space_config.action_types.index(
     ActionTypes.CLICK_ELEMENT
 )
 action["ref"] = element["ref"]
-obs, reward, terminated, truncated, info = env.step(action)
+observation, reward, terminated, truncated, info = env.step(action)
 ```
 
 The [`step`](https://gymnasium.farama.org/api/env/#gymnasium.Env.step) method
