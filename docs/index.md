@@ -6,9 +6,10 @@ lastpage:
 
 # MiniWoB++
 
-<video width="100%" controls muted autoplay loop>
-  <source src="_static/videos/miniwob.mp4" type="video/mp4">
-</video>
+```{image} /_static/img/showcase.gif
+:width: 100%
+:align: center
+```
 
 The MiniWoB++ library contains a collection of over 100 **web interaction environments**,
 along with JavaScript and Python interfaces for programmatically interacting with them.
@@ -21,33 +22,36 @@ MiniWoB++ is an extension of the
 and was introduced in the paper
 [Reinforcement Learning on Web Interfaces using Workflow-Guided
 Exploration](https://arxiv.org/abs/1802.08802).
-If you use MiniWoB++ in your research, please use the following citation:
 
-```bibtex
-@inproceedings{liu2018reinforcement,
- author = {Evan Zheran Liu and Kelvin Guu and Panupong Pasupat and Tianlin Shi and Percy Liang},
- title = {Reinforcement Learning on Web Interfaces using Workflow-Guided Exploration},
- booktitle = {International Conference on Learning Representations ({ICLR})},
- url = {https://arxiv.org/abs/1802.08802},
- year = {2018},
-}
+The Gymnasium interface allows an agent to initialize and interact with a MiniWoB++ environment as follows:
+```python
+import gymnasium
+env = gymnasium.make('miniwob/click-test-2-v1', render_mode='human')
+try:
+  observation, info = env.reset(seed=42)
+  for _ in range(1000):
+    action = policy(observation)  # User-defined policy function
+    observation, reward, terminated, truncated, info = env.step(action) 
+    if terminated:
+      observation, info = env.reset()
+finally:
+  env.close()
 ```
 
 ```{toctree}
 :hidden:
-:caption: Python Interface
+:caption: Introduction
 
-content/installation
-content/python_usage
+content/getting_started
+content/basic_usage
+```
+
+```{toctree}
+:hidden:
+:caption: API
+
 content/observation_space
 content/action_space
-```
-
-```{toctree}
-:hidden:
-:caption: Javascript Interface
-
-content/javascript_api
 ```
 
 ```{toctree}
@@ -56,6 +60,7 @@ content/javascript_api
 
 content/viewing
 environments/list
+content/javascript_api
 content/demonstrations
 ```
 
@@ -63,7 +68,6 @@ content/demonstrations
 :hidden:
 :caption: Development
 
-content/dev_environment
 Github <https://github.com/Farama-Foundation/miniwob-plusplus>
 Contribute to the Docs <https://github.com/Farama-Foundation/miniwob-plusplus/blob/master/docs/README.md>
 ```

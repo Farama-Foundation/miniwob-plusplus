@@ -44,6 +44,7 @@ MiniWoB++ environments support the following action types:
 There are action types that perform similar actions (e.g., `CLICK_COORDS` and `CLICK_ELEMENT`).
 A common practice is to specify a subset of action types that the agent can use in the config, as described below.
 
+(action-configs)=
 ## Action Configs
 
 The list of selected action types, along with other configurations, can be customized
@@ -87,6 +88,7 @@ An `ActionSpaceConfig` object has the following fields:
   - Character set for the `TYPE_TEXT` action.
 ```
 
+(presets)=
 ### Presets
 
 The following preset names can be specified in place of the `ActionSpaceConfig` object:
@@ -100,6 +102,7 @@ The following preset names can be specified in place of the `ActionSpaceConfig` 
 * `"humphreys22"`: The action space from (Humphreys et al., 2022)
   [A data-driven approach for learning to control computers](https://arxiv.org/abs/2202.08137).
 
+(key-combinations)=
 ### Key combinations
 
 The `PRESS_KEY` action type issues a key combination via Selenium.

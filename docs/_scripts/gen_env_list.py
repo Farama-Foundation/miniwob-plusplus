@@ -11,18 +11,28 @@ gym.logger.set_level(gym.logger.DISABLED)
 
 ENV_TYPES = [
     {
-        "name": "Original tasks",
-        "description": "We use a subset of the original MiniWoB tasks that only involve (1) clicking and (2) typing text from the prompt.",
+        "name": "Original Tasks",
+        "description": "These are the original MiniWoB tasks.",
         "envs": [
+            "bisect-angle",
+            "book-flight",
+            "choose-date",
             "choose-list",
+            "circle-center",
             "click-button",
             "click-button-sequence",
             "click-checkboxes",
+            "click-collapsible",
+            "click-collapsible-2",
             "click-color",
             "click-dialog",
             "click-dialog-2",
             "click-link",
+            "click-menu",
+            "click-menu-2",
             "click-option",
+            "click-pie",
+            "click-scroll-list",
             "click-shades",
             "click-shape",
             "click-tab",
@@ -30,41 +40,77 @@ ENV_TYPES = [
             "click-test",
             "click-test-2",
             "click-widget",
+            "copy-paste",
+            "copy-paste-2",
             "count-shape",
+            "count-sides",
+            "drag-box",
+            "drag-circle",
+            "drag-cube",
+            "drag-items",
+            "drag-items-grid",
+            "drag-shapes",
+            "drag-sort-numbers",
             "email-inbox",
             "enter-date",
             "enter-password",
             "enter-text",
+            "enter-text-2",
             "enter-text-dynamic",
             "enter-time",
+            "find-midpoint",
+            "find-word",
             "focus-text",
             "focus-text-2",
             "grid-coordinate",
             "guess-number",
+            "highlight-text",
+            "highlight-text-2",
             "identify-shape",
             "login-user",
             "navigate-tree",
+            "number-checkboxes",
+            "read-table",
+            "read-table-2",
+            "resize-textarea",
+            "right-angle",
+            "scroll-text",
+            "scroll-text-2",
             "search-engine",
+            "simple-algebra",
+            "simple-arithmetic",
             "social-media",
+            "terminal",
+            "text-editor",
+            "text-transform",
             "tic-tac-toe",
-            "use-spinner",
-            "book-flight",
-            "choose-date",
-            "click-collapsible",
-            "click-collapsible-2",
-            "click-pie",
             "use-autocomplete",
+            "use-colorwheel",
+            "use-colorwheel-2",
+            "use-slider",
+            "use-slider-2",
+            "use-spinner",
+            "visual-addition",
+        ],
+    },
+    {
+        "name": "No-delay Tasks",
+        "description": """The UI elements in some tasks have animation delays
+or change the state when the browser is defocused.
+We provide the "no-delay" version without these issues.""",
+        "envs": [
             "book-flight-nodelay",
             "choose-date-nodelay",
-            "click-collapsible-2-nodelay",
             "click-collapsible-nodelay",
+            "click-collapsible-2-nodelay",
             "click-pie-nodelay",
             "use-autocomplete-nodelay",
         ],
     },
     {
-        "name": "Additional tasks",
-        "description": "Some are harder versions of the existing tasks, while some are completely new.",
+        "name": "Additional Tasks",
+        "description": """These tasks were introduced in MiniWoB++.
+Some are harder versions of the existing tasks, while some are completely new.""",
         "envs": [
             "click-checkboxes-large",
             "click-checkboxes-soft",
@@ -81,16 +127,8 @@ ENV_TYPES = [
         ],
     },
     {
-        "name": "Flight search tasks",
-        "description": """These are server-free ports of the FormWoB tasks in the original World of Bits "paper.",
-* The prompt is a list of key-value pairs (e.g., Departure City: New York)
-* If the required fields are not filled, or if the agent navigates away from the page, the reward is "-1.",
-* Otherwise, the reward is the fraction of key-value pairs that are satisfied """,
-        "envs": ["flight.Alaska", "flight.Alaska-auto", "flight.AA"],
-    },
-    {
-        "name": "Debug tasks",
-        "description": "These are easier versions of existing tasks. They are used for debugging.",
+        "name": "Debug Tasks",
+        "description": "These are easier versions of existing tasks, suitable for debugging.",
         "envs": [
             "choose-date-easy",
             "choose-date-medium",
@@ -106,62 +144,12 @@ ENV_TYPES = [
         ],
     },
     {
-        "name": "Clicking non-elements",
-        "description": "These tasks involve clicking at a specific point inside a canvas-like element.",
-        "envs": [
-            "bisect-angle",
-            "circle-center",
-            "count-sides",
-            "find-midpoint",
-            "number-checkboxes",
-            "right-angle",
-            "use-colorwheel",
-            "use-colorwheel-2",
-        ],
-    },
-    {
-        "name": "Hovering",
-        "description": "These tasks require hovering and moving the mouse cursor.",
-        "envs": ["click-menu", "click-menu-2"],
-    },
-    {
-        "name": "Dragging",
-        "description": "These tasks involve dragging.",
-        "envs": [
-            "click-scroll-list",
-            "drag-box",
-            "drag-circle",
-            "drag-cube",
-            "drag-items",
-            "drag-items-grid",
-            "drag-shapes",
-            "drag-sort-numbers",
-            "highlight-text",
-            "highlight-text-2",
-            "resize-textarea",
-            "scroll-text",
-            "scroll-text-2",
-            "text-editor",
-            "use-slider",
-            "use-slider-2",
-        ],
-    },
-    {
-        "name": "Typing free text",
-        "description": "These tasks involve typing texts that are not substrings of the prompt. Some of these also require advanced reasoning (e.g., solving math problems).",
-        "envs": [
-            "copy-paste",
-            "copy-paste-2",
-            "enter-text-2",
-            "find-word",
-            "read-table",
-            "read-table-2",
-            "simple-algebra",
-            "simple-arithmetic",
-            "terminal",
-            "text-transform",
-            "visual-addition",
-        ],
+        "name": "Flight Search Tasks",
+        "description": """These are ports of the FormWoB tasks in the original World of Bits paper.,
+* The prompt is a list of key-value pairs (e.g., Departure City: New York).
+* If the required fields are not filled, or if the agent navigates away from the page, the reward is -1.,
+* Otherwise, the reward is the fraction of key-value pairs that are satisfied.""",
+        "envs": ["flight.Alaska", "flight.Alaska-auto", "flight.AA"],
     },
 ]
 
@@ -206,38 +194,38 @@ ENVS_DESCRIPTIONS = {
     "click-collapsible-2": "Find and click on a specified link, from collapsible elements.",
     "click-pie": "Click items on a pie menu.",
     "use-autocomplete": "Use autocomplete element efficiently.",
-    "book-flight-nodelay": "[book-flight]",
-    "choose-date-nodelay": "[choose-date]",
-    "click-collapsible-2-nodelay": "[click-collapsible-2]",
-    "click-collapsible-nodelay": "[click-collapsible]",
-    "click-pie-nodelay": "[click-pie]",
-    "use-autocomplete-nodelay": "[use-autocomplete]",
-    "click-checkboxes-large": "[click-checkboxes] Click at least 5 out of up to 12 checkboxes",
-    "click-checkboxes-soft": "[click-checkboxes] Paraphrased entries",
-    "click-checkboxes-transfer": "[click-checkboxes] Train and test on different number of targets",
-    "click-tab-2-hard": "[click-tab-2] Varying number of tabs from 2 to 6",
-    "login-user-popup": "[login-user] Random popup",
+    "book-flight-nodelay": "[book-flight] Removed animation.",
+    "choose-date-nodelay": "[choose-date] Removed animation.",
+    "click-collapsible-2-nodelay": "[click-collapsible-2] Removed animation.",
+    "click-collapsible-nodelay": "[click-collapsible] Removed animation.",
+    "click-pie-nodelay": "[click-pie] Removed animation.",
+    "use-autocomplete-nodelay": "[use-autocomplete] Removed delay.",
+    "click-checkboxes-large": "[click-checkboxes] Click at least 5 out of up to 12 checkboxes.",
+    "click-checkboxes-soft": "[click-checkboxes] Paraphrased entries.",
+    "click-checkboxes-transfer": "[click-checkboxes] Train and test on different number of targets.",
+    "click-tab-2-hard": "[click-tab-2] Varying number of tabs from 2 to 6.",
+    "login-user-popup": "[login-user] Random popup.",
     "multi-layouts": "Fill in forms of varying layouts.",
     "multi-orderings": "Fill in forms with shuffled field orderings.",
-    "social-media-all": "[social-media] Do some action on all matching entries",
-    "social-media-some": "[social-media] Do some action on some matching entries",
-    "email-inbox-forward-nl": "[email-inbox-forward] NL instruction (30 templates)",
-    "email-inbox-forward-nl-turk": "[email-inbox-forward] NL instruction (100 templates)",
-    "email-inbox-nl-turk": "[email-inbox] NL instruction (100 templates for each subtask)",
-    "flight.Alaska": "port of Alaska FormWoB",
-    "flight.Alaska-auto": "port of Alaska FormWoB but harder",
-    "flight.AA": "port of American Airlines FormWoB (unused)",
-    "choose-date-easy": "[choose-date] December only",
-    "choose-date-medium": "[choose-date] December or November only",
-    "click-tab-2-easy": "[click-tab-2] One 1 tab",
-    "click-tab-2-medium": "[click-tab-2] Choose between a link or 'no match'",
-    "click-test-transfer": "[click-test] Different buttons during train and test",
-    "email-inbox-delete": "[email-inbox] No scrolling + 1 subtask",
-    "email-inbox-forward": "[email-inbox] No scrolling + 1 subtask",
-    "email-inbox-important": "[email-inbox] No scrolling + 1 subtask",
-    "email-inbox-noscroll": "[email-inbox] No scrolling",
-    "email-inbox-reply": "[email-inbox] No scrolling + 1 subtask",
-    "email-inbox-star-reply": "[email-inbox] No scrolling + 2 subtasks",
+    "social-media-all": "[social-media] Do some action on all matching entries.",
+    "social-media-some": "[social-media] Do some action on some matching entries.",
+    "email-inbox-forward-nl": "[email-inbox-forward] NL instruction (30 templates).",
+    "email-inbox-forward-nl-turk": "[email-inbox-forward] NL instruction (100 templates).",
+    "email-inbox-nl-turk": "[email-inbox] NL instruction (100 templates for each subtask).",
+    "flight.Alaska": "port of Alaska FormWoB.",
+    "flight.Alaska-auto": "port of Alaska FormWoB but harder.",
+    "flight.AA": "port of American Airlines FormWoB.",
+    "choose-date-easy": "[choose-date] December only.",
+    "choose-date-medium": "[choose-date] December or November only.",
+    "click-tab-2-easy": "[click-tab-2] One 1 tab.",
+    "click-tab-2-medium": "[click-tab-2] Choose between a link or 'no match'.",
+    "click-test-transfer": "[click-test] Different buttons during train and test.",
+    "email-inbox-delete": "[email-inbox] No scrolling + 1 subtask.",
+    "email-inbox-forward": "[email-inbox] No scrolling + 1 subtask.",
+    "email-inbox-important": "[email-inbox] No scrolling + 1 subtask.",
+    "email-inbox-noscroll": "[email-inbox] No scrolling.",
+    "email-inbox-reply": "[email-inbox] No scrolling + 1 subtask.",
+    "email-inbox-star-reply": "[email-inbox] No scrolling + 2 subtasks.",
     "bisect-angle": "Find the line that bisects an angle evenly in two.",
     "circle-center": "Find the center of a circle.",
     "count-sides": "Count the number of sides on a shape.",
@@ -248,7 +236,7 @@ ENVS_DESCRIPTIONS = {
     "use-colorwheel-2": "Use a color wheel given specific random color.",
     "click-menu": "Click menu items.",
     "click-menu-2": "Find a specific item from a menu.",
-    "click-scroll-list": "Click multiple items from a scroll list. (also require Shift + click) ",
+    "click-scroll-list": "Click multiple items from a scroll list.",
     "drag-box": "Drag the smaller box into the larger box.",
     "drag-circle": "Drag an item in a specified direction.",
     "drag-cube": "Drag a 3D cube to show a specific face.",
@@ -280,23 +268,6 @@ ENVS_DESCRIPTIONS = {
     "simon-says": "Push the buttons in the order shown.",
 }
 
-# all_envs = list(gym.envs.registry.values())
-# filtered_envs = []
-
-# # Obtain filtered "list",
-# for env_spec in tqdm(all_envs):
-#     if env_spec.namespace != "miniwob":
-#         continue
-#     filtered_envs.append(env_spec)
-# filtered_envs.sort(key=lambda x: x.name)
-
-
-# # Update "Docs",
-# for i, env_spec in tqdm(enumerate(filtered_envs)):
-#     print("ID:", env_spec.id)
-#     env_spec = gym.spec(env_spec.id)
-#     print(env_spec)
-
 file_start_content = """# Environments List
 
 ```{toctree}
@@ -325,10 +296,10 @@ with open(list_md_path, "w") as fp:
         content += df.to_markdown(index=False) + "\n\n"
 
     content += """
-## Timing
+## Excluded Tasks
 
-These tasks require the agent to wait for events to happen before acting,
-and a 'nodelay' version is impossible to make.
+The following tasks require the agent to wait for events to happen before acting,
+and a 'no-delay' version is impossible to make.
 
 | Name         | Description                               |
 |:------------ |:----------------------------------------- |
@@ -336,10 +307,7 @@ and a 'nodelay' version is impossible to make.
 | moving-items | Click moving items before they disappear. |
 | simon-says   | Push the buttons in the order shown.      |
 
-## Missing
-
-These tasks are listed in the original paper but were missing from the OpenAI
-website.
+The following tasks are listed in the original paper but were missing from the OpenAI website.
 
 | Name              | Description                                                      |
 |:----------------- |:---------------------------------------------------------------- |
