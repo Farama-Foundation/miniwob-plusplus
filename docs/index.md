@@ -44,6 +44,12 @@ finally:
 
 content/getting_started
 content/basic_usage
+```
+
+```{toctree}
+:hidden:
+:caption: API
+
 content/observation_space
 content/action_space
 ```
