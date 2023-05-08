@@ -102,7 +102,7 @@ finally:
   env.close()
 ```
 
-See [the documentation](http://miniwob.farama.org/content/python_usage/) for more information.
+See [the documentation](http://miniwob.farama.org/content/basic_usage/) for more information.
 
 # Environments
 
