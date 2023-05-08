@@ -7,15 +7,15 @@
     <meta property="og:title" content="MiniWoB++ Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="A collection of over 100 web interaction environments, along with JavaScript and Python interfaces." />
-    <meta property="og:url" content="https://miniwob.farama.org/content/installation.html" /><meta property="og:image" content="https://miniwob.farama.org/_static/img/miniwobplusplus-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Observation Space" href="../observation_space/" /><link rel="prev" title="MiniWoB++" href="../../" />
-        <link rel="canonical" href="https://miniwob.farama.org/content/installation.html" />
+    <meta property="og:url" content="https://miniwob.farama.org/content/basic_usage.html" /><meta property="og:image" content="https://miniwob.farama.org/_static/img/miniwobplusplus-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Observation Space" href="../observation_space/" /><link rel="prev" title="Getting Started" href="../getting_started/" />
+        <link rel="canonical" href="https://miniwob.farama.org/content/basic_usage.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.2.1 and Furo 2022.12.07.dev1 -->
-        <title>Installation - MiniWoB++ Documentation</title>
+        <title>Basic Usage - MiniWoB++ Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=721f65a87c37740baa8d605b09db5bec3a2987a8" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=4297ed78bc2370ec4493f1a6639f04addebc5da5" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=67ddc8aaa908fff6a8eb5c854d313935a27431d3" />
     
     
 
@@ -222,15 +222,15 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Python Interface</span></p>
+  <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting Started</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Basic Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../observation_space/">Observation Space</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../action_space/">Action Space</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Javascript Interface</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../javascript_api/">Javascript API</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
@@ -344,11 +344,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../../environments/visual-addition/">Visual Addition</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../javascript_api/">Javascript API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demonstrations/">Demonstrations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../dev_environment/">Development Environment</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/miniwob-plusplus">Github</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/miniwob-plusplus/blob/master/docs/README.md">Contribute to the Docs</a></li>
 </ul>
@@ -376,7 +376,7 @@
             <span>Back to top</span>
           </a>
           <div class="content-icon-container"><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/Farama-Foundation/miniwob-plusplus/edit/master/docs/content/installation.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/miniwob-plusplus/edit/master/docs/content/basic_usage.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -407,34 +407,111 @@
           </div>
           <article role="main">
             
-            <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">#</a></h1>
-<section id="install-the-miniwob-library">
-<h2>Install the MiniWoB++ Library<a class="headerlink" href="#install-the-miniwob-library" title="Permalink to this heading">#</a></h2>
-<p>Inside the repository directory, run</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+            <section id="basic-usage">
+<h1>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this heading">#</a></h1>
+<section id="simple-example">
+<h2>Simple Example<a class="headerlink" href="#simple-example" title="Permalink to this heading">#</a></h2>
+<p>The following code performs a deterministic action on the
+<a class="reference internal" href="../../environments/click-test-2/"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">click-test-2</span></code></span></a> environment.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">gymnasium</span>
+<span class="kn">from</span> <span class="nn">miniwob.action</span> <span class="kn">import</span> <span class="n">ActionTypes</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;miniwob/click-test-2-v1&#39;</span><span class="p">,</span> <span class="n">render_mode</span><span class="o">=</span><span class="s1">&#39;human&#39;</span><span class="p">)</span>
+
+<span class="c1"># Wrap the code in try-finally to ensure proper cleanup.</span>
+<span class="k">try</span><span class="p">:</span>
+  <span class="c1"># Start a new episode.</span>
+  <span class="n">observation</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+  <span class="k">assert</span> <span class="n">observation</span><span class="p">[</span><span class="s2">&quot;utterance&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Click button ONE.&quot;</span>
+  <span class="k">assert</span> <span class="n">observation</span><span class="p">[</span><span class="s2">&quot;fields&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[(</span><span class="s2">&quot;target&quot;</span><span class="p">,</span> <span class="s2">&quot;ONE&quot;</span><span class="p">)]</span>
+  <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>       <span class="c1"># Only here to let you look at the environment.</span>
+  
+  <span class="c1"># Find the HTML element with text &quot;ONE&quot;.</span>
+  <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">observation</span><span class="p">[</span><span class="s2">&quot;dom_elements&quot;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">element</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;ONE&quot;</span><span class="p">:</span>
+      <span class="k">break</span>
+
+  <span class="c1"># Click on the element.</span>
+  <span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>     <span class="c1"># Template for the action.</span>
+  <span class="n">action</span><span class="p">[</span><span class="s2">&quot;action_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space_config</span><span class="o">.</span><span class="n">action_types</span><span class="o">.</span><span class="n">index</span><span class="p">(</span>
+      <span class="n">ActionTypes</span><span class="o">.</span><span class="n">CLICK_ELEMENT</span>
+  <span class="p">)</span>
+  <span class="n">action</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">element</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">]</span>
+  <span class="n">observation</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+  <span class="c1"># Check if the action was correct. </span>
+  <span class="k">assert</span> <span class="n">reward</span> <span class="o">&gt;=</span> <span class="mi">0</span>      <span class="c1"># Should be around 0.8 since 2 seconds has passed.</span>
+  <span class="k">assert</span> <span class="n">terminated</span> <span class="ow">is</span> <span class="kc">True</span>
+  <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="k">finally</span><span class="p">:</span>
+  <span class="n">env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>If this gives you problems, try again and add pip’s <code class="docutils literal notranslate"><span class="pre">--ignore-installed</span></code> flag.</p>
+<p>The output should look something like this:</p>
+<a class="reference internal image-reference" href="../../_images/example-usage-1.png"><img alt="../../_images/example-usage-1.png" class="align-center" src="../../_images/example-usage-1.png" style="width: 50%;" /></a>
+<p>After 2 seconds:</p>
+<a class="reference internal image-reference" href="../../_images/example-usage-2.png"><img alt="../../_images/example-usage-2.png" class="align-center" src="../../_images/example-usage-2.png" style="width: 50%;" /></a>
 </section>
-<section id="install-chrome-chromium-and-chromedriver">
-<h2>Install Chrome/Chromium and ChromeDriver<a class="headerlink" href="#install-chrome-chromium-and-chromedriver" title="Permalink to this heading">#</a></h2>
-<p>We strongly recommend using Chrome or Chromium as the web browser,
-as other browsers may render the environments differently.</p>
-<p>The MiniWoB++ Python interface uses <a class="reference external" href="https://www.selenium.dev/documentation/webdriver/">Selenium</a>,
-which interacts with the browser via the <a class="reference external" href="https://w3c.github.io/webdriver/">WebDriver API</a>.
-Follow one of the
-<a class="reference external" href="https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/">instruction methods</a>
-to install ChromeDriver. The simplest method is to
-<a class="reference external" href="https://chromedriver.chromium.org/downloads">download</a> ChromeDriver with the matching version,
-unzip it, and then add the directory containing the <code class="docutils literal notranslate"><span class="pre">chromedriver</span></code> executable to the <code class="docutils literal notranslate"><span class="pre">PATH</span></code> environment variable:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/path/to/chromedriver
+<section id="environment-initialization">
+<h2>Environment Initialization<a class="headerlink" href="#environment-initialization" title="Permalink to this heading">#</a></h2>
+<p>An environment can be created using
+<a class="reference external" href="https://gymnasium.farama.org/api/registry/#gymnasium.make"><code class="docutils literal notranslate"><span class="pre">gymnasium.make</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;miniwob/click-test-2-v1&#39;</span><span class="p">,</span> <span class="n">render_mode</span><span class="o">=</span><span class="s1">&#39;human&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For Chromium, the driver may also be available in a software package; for example, in Debian/Ubuntu:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>chromium-driver
+<p>Common arguments include:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">render_mode</span></code>:</strong> Render mode. Supported values are:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> (default): Headless Chrome, which does not show the browser window.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;human&quot;</span></code>: Show the browser window.</p></li>
+</ul>
+</li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">action_space_config</span></code>:</strong> Configuration for the action space.
+Supported values are:</p>
+<ul>
+<li><p>An <a class="reference internal" href="../action_space/#action-configs"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">ActionSpaceConfig</span></code></span></a> object.</p></li>
+<li><p>A <a class="reference internal" href="../action_space/#presets"><span class="std std-ref">preset name</span></a>, which will instantiate an <code class="docutils literal notranslate"><span class="pre">ActionSpaceConfig</span></code> object.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="observation-space">
+<h2>Observation Space<a class="headerlink" href="#observation-space" title="Permalink to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">observation</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">observation</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>The <a class="reference external" href="https://gymnasium.farama.org/api/env/#gymnasium.Env.reset"><code class="docutils literal notranslate"><span class="pre">reset</span></code></a>
+and <a class="reference external" href="https://gymnasium.farama.org/api/env/#gymnasium.Env.step"><code class="docutils literal notranslate"><span class="pre">step</span></code></a> methods
+return an observation, which is a <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following fields:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">utterance</span></code>:</strong> Task instruction string, such as <code class="docutils literal notranslate"><span class="pre">&quot;Click</span> <span class="pre">button</span> <span class="pre">ONE.&quot;</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">fields</span></code>:</strong> Environment-specific key-value pairs extracted from the utterance, such as <code class="docutils literal notranslate"><span class="pre">[(&quot;target&quot;,</span> <span class="pre">&quot;ONE&quot;)]</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">screenshot</span></code>:</strong> A numpy array of shape <code class="docutils literal notranslate"><span class="pre">(height,</span> <span class="pre">width,</span> <span class="pre">3)</span></code> containing the RGB values.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">dom_elements</span></code>:</strong> A list of dicts, each listing properties like the geometry and HTML attributes of a visible DOM element.</p></li>
+</ul>
+<p>See the <a class="reference internal" href="../observation_space/"><span class="doc std std-doc">Observation Space</span></a> page for more details.</p>
+</section>
+<section id="action-space">
+<h2>Action Space<a class="headerlink" href="#action-space" title="Permalink to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>     <span class="c1"># Template for the action.</span>
+<span class="n">action</span><span class="p">[</span><span class="s2">&quot;action_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space_config</span><span class="o">.</span><span class="n">action_types</span><span class="o">.</span><span class="n">index</span><span class="p">(</span>
+    <span class="n">ActionTypes</span><span class="o">.</span><span class="n">CLICK_ELEMENT</span>
+<span class="p">)</span>
+<span class="n">action</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">element</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">]</span>
+<span class="n">observation</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <a class="reference external" href="https://gymnasium.farama.org/api/env/#gymnasium.Env.step"><code class="docutils literal notranslate"><span class="pre">step</span></code></a> method
+takes an <code class="docutils literal notranslate"><span class="pre">action</span></code> object, which should be a <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following fields:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">action_type</span></code>:</strong> The action type index from the <code class="docutils literal notranslate"><span class="pre">action_types</span></code> list in the action connfig.</p></li>
+<li><p>Other fields such as <code class="docutils literal notranslate"><span class="pre">ref</span></code>, <code class="docutils literal notranslate"><span class="pre">coords</span></code>, <code class="docutils literal notranslate"><span class="pre">text</span></code>, etc. should be specified based on the action type.</p></li>
+</ul>
+<p>See the <a class="reference internal" href="../action_space/"><span class="doc std std-doc">Action Space</span></a> page for more details.</p>
 </section>
 </section>
 
@@ -454,7 +531,7 @@ unzip it, and then add the directory containing the <code class="docutils litera
                 <use href="#svg-arrow-right"></use>
               </svg>
             </a>
-            <a class="prev-page" href="../../">
+            <a class="prev-page" href="../getting_started/">
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
@@ -463,7 +540,7 @@ unzip it, and then add the directory containing the <code class="docutils litera
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Home</div>
+                <div class="title">Getting Started</div>
                 
               </div>
             </a>
@@ -481,7 +558,14 @@ unzip it, and then add the directory containing the <code class="docutils litera
             </div>
             <div class="right-details">
               <div class="icons">
-                
+                <a class="muted-link" href="https://github.com/Farama-Foundation/miniwob-plusplus/"
+                  aria-label="On GitHub">
+                  <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                      d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z">
+                    </path>
+                  </svg>
+                </a>
               </div>
             </div>
           </div>
@@ -500,9 +584,11 @@ unzip it, and then add the directory containing the <code class="docutils litera
           <div class="toc-tree-container">
             <div class="toc-tree">
               <ul>
-<li><a class="reference internal" href="#">Installation</a><ul>
-<li><a class="reference internal" href="#install-the-miniwob-library">Install the MiniWoB++ Library</a></li>
-<li><a class="reference internal" href="#install-chrome-chromium-and-chromedriver">Install Chrome/Chromium and ChromeDriver</a></li>
+<li><a class="reference internal" href="#">Basic Usage</a><ul>
+<li><a class="reference internal" href="#simple-example">Simple Example</a></li>
+<li><a class="reference internal" href="#environment-initialization">Environment Initialization</a></li>
+<li><a class="reference internal" href="#observation-space">Observation Space</a></li>
+<li><a class="reference internal" href="#action-space">Action Space</a></li>
 </ul>
 </li>
 </ul>
@@ -543,6 +629,7 @@ unzip it, and then add the directory containing the <code class="docutils litera
     <script src="../../_static/scripts/furo.js"></script>
     
     <script>
+      // Create menu with Farama projects by using the API at farama.org/api/projects.json
       const createCORSRequest = (method, url) => {
         let xhr = new XMLHttpRequest();
         xhr.responseType = 'json';
@@ -657,8 +744,8 @@ unzip it, and then add the directory containing the <code class="docutils litera
     
     <script>
       const versioningConfig = {
-        githubUser: '',
-        githubRepo: '',
+        githubUser: 'Farama-Foundation',
+        githubRepo: 'miniwob-plusplus',
       };
       fetch('/main/_static/versioning/versioning_menu.html').then(response => {
         if (response.status === 200) {

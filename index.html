@@ -8,14 +8,14 @@
     <meta property="og:type" content="website" />
     <meta property="og:description" content="A collection of over 100 web interaction environments, along with JavaScript and Python interfaces." />
     <meta property="og:url" content="https://miniwob.farama.org/index.html" /><meta property="og:image" content="https://miniwob.farama.org/_static/img/miniwobplusplus-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<link rel="index" title="Index" href="genindex/" /><link rel="search" title="Search" href="search/" /><link rel="next" title="Installation" href="content/installation/" />
+<link rel="index" title="Index" href="genindex/" /><link rel="search" title="Search" href="search/" /><link rel="next" title="Getting Started" href="content/getting_started/" />
         <link rel="canonical" href="https://miniwob.farama.org/index.html" />
 
     <link rel="shortcut icon" href="_static/favicon.png"/><!-- Generated with Sphinx 6.2.1 and Furo 2022.12.07.dev1 -->
         <title>MiniWoB++ Documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=721f65a87c37740baa8d605b09db5bec3a2987a8" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=4297ed78bc2370ec4493f1a6639f04addebc5da5" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=67ddc8aaa908fff6a8eb5c854d313935a27431d3" />
     
     
 
@@ -222,15 +222,15 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Python Interface</span></p>
+  <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="content/installation/">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="content/getting_started/">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="content/basic_usage/">Basic Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="content/observation_space/">Observation Space</a></li>
 <li class="toctree-l1"><a class="reference internal" href="content/action_space/">Action Space</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Javascript Interface</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="content/javascript_api/">Javascript API</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
@@ -344,11 +344,11 @@
 <li class="toctree-l2"><a class="reference internal" href="environments/visual-addition/">Visual Addition</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="content/javascript_api/">Javascript API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="content/demonstrations/">Demonstrations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="content/dev_environment/">Development Environment</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/miniwob-plusplus">Github</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/miniwob-plusplus/blob/master/docs/README.md">Contribute to the Docs</a></li>
 </ul>
@@ -409,9 +409,7 @@
             
             <section id="miniwob">
 <h1>MiniWoB++<a class="headerlink" href="#miniwob" title="Permalink to this heading">#</a></h1>
-<video width="100%" controls muted autoplay loop>
-  <source src="_static/videos/miniwob.mp4" type="video/mp4">
-</video>
+<a class="reference internal image-reference" href="_images/showcase.gif"><img alt="_images/showcase.gif" class="align-center" src="_images/showcase.gif" style="width: 100%;" /></a>
 <p>The MiniWoB++ library contains a collection of over 100 <strong>web interaction environments</strong>,
 along with JavaScript and Python interfaces for programmatically interacting with them.
 The Python interface follows the <a class="reference external" href="https://gymnasium.farama.org/">Gymnasium</a> API
@@ -421,15 +419,19 @@ to perform actions on the web browser.</p>
 <a class="reference external" href="http://proceedings.mlr.press/v70/shi17a/shi17a.pdf">OpenAI MiniWoB benchmark</a>,
 and was introduced in the paper
 <a class="reference external" href="https://arxiv.org/abs/1802.08802">Reinforcement Learning on Web Interfaces using Workflow-Guided
-Exploration</a>.
-If you use MiniWoB++ in your research, please use the following citation:</p>
-<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@inproceedings</span><span class="p">{</span><span class="nl">liu2018reinforcement</span><span class="p">,</span>
-<span class="w"> </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Evan Zheran Liu and Kelvin Guu and Panupong Pasupat and Tianlin Shi and Percy Liang}</span><span class="p">,</span>
-<span class="w"> </span><span class="na">title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Reinforcement Learning on Web Interfaces using Workflow-Guided Exploration}</span><span class="p">,</span>
-<span class="w"> </span><span class="na">booktitle</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{International Conference on Learning Representations ({ICLR})}</span><span class="p">,</span>
-<span class="w"> </span><span class="na">url</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{https://arxiv.org/abs/1802.08802}</span><span class="p">,</span>
-<span class="w"> </span><span class="na">year</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{2018}</span><span class="p">,</span>
-<span class="p">}</span>
+Exploration</a>.</p>
+<p>The Gymnasium interface allows an agent to initialize and interact with a MiniWoB++ environment as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gymnasium</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;miniwob/click-test-2-v1&#39;</span><span class="p">,</span> <span class="n">render_mode</span><span class="o">=</span><span class="s1">&#39;human&#39;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+  <span class="n">observation</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="n">action</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span>  <span class="c1"># User-defined policy function</span>
+    <span class="n">observation</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span> 
+    <span class="k">if</span> <span class="n">terminated</span><span class="p">:</span>
+      <span class="n">observation</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="k">finally</span><span class="p">:</span>
+  <span class="n">env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="toctree-wrapper compound">
@@ -463,7 +465,14 @@ If you use MiniWoB++ in your research, please use the following citation:</p>
             </div>
             <div class="right-details">
               <div class="icons">
-                
+                <a class="muted-link" href="https://github.com/Farama-Foundation/miniwob-plusplus/"
+                  aria-label="On GitHub">
+                  <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                      d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z">
+                    </path>
+                  </svg>
+                </a>
               </div>
             </div>
           </div>
@@ -505,6 +514,7 @@ If you use MiniWoB++ in your research, please use the following citation:</p>
     <script src="_static/scripts/furo.js"></script>
     
     <script>
+      // Create menu with Farama projects by using the API at farama.org/api/projects.json
       const createCORSRequest = (method, url) => {
         let xhr = new XMLHttpRequest();
         xhr.responseType = 'json';
@@ -619,8 +629,8 @@ If you use MiniWoB++ in your research, please use the following citation:</p>
     
     <script>
       const versioningConfig = {
-        githubUser: '',
-        githubRepo: '',
+        githubUser: 'Farama-Foundation',
+        githubRepo: 'miniwob-plusplus',
       };
       fetch('/main/_static/versioning/versioning_menu.html').then(response => {
         if (response.status === 200) {
