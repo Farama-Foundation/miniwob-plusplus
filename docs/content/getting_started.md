@@ -1,4 +1,4 @@
-# Installation
+# Getting Started
 
 ## Install the MiniWoB++ Library
 
@@ -32,3 +32,8 @@ For Chromium, the driver may also be available in a software package; for exampl
 ```sh
 sudo apt install chromium-driver
 ```
+
+## Development Environment
+
+For information about setting up a development environment,
+see [`CONTRIBUTING.md`](https://github.com/Farama-Foundation/miniwob-plusplus/blob/master/CONTRIBUTING.md)

@@ -6,9 +6,10 @@ lastpage:
 
 # MiniWoB++
 
-<video width="100%" controls muted autoplay loop>
-  <source src="_static/videos/miniwob.mp4" type="video/mp4">
-</video>
+```{image} /_static/img/showcase.gif
+:width: 100%
+:align: center
+```
 
 The MiniWoB++ library contains a collection of over 100 **web interaction environments**,
 along with JavaScript and Python interfaces for programmatically interacting with them.
@@ -35,19 +36,12 @@ If you use MiniWoB++ in your research, please use the following citation:
 
 ```{toctree}
 :hidden:
-:caption: Python Interface
+:caption: Introduction
 
-content/installation
-content/python_usage
+content/getting_started
+content/basic_usage
 content/observation_space
 content/action_space
-```
-
-```{toctree}
-:hidden:
-:caption: Javascript Interface
-
-content/javascript_api
 ```
 
 ```{toctree}
@@ -56,6 +50,7 @@ content/javascript_api
 
 content/viewing
 environments/list
+content/javascript_api
 content/demonstrations
 ```
 
@@ -63,7 +58,6 @@ content/demonstrations
 :hidden:
 :caption: Development
 
-content/dev_environment
 Github <https://github.com/Farama-Foundation/miniwob-plusplus>
 Contribute to the Docs <https://github.com/Farama-Foundation/miniwob-plusplus/blob/master/docs/README.md>
 ```
