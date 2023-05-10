@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Find Word Task</title>
+
+        <!-- stylesheets -->
+        <link rel="stylesheet" type="text/css" href="../core/core.css">
+        <style>
+         #query .bold { font-weight: bold; }
+         #answer-input { width: 150px; margin: 3px 0 3px 0; }
+        </style>
+
+        <!-- JS -->
+        <script src="../core/core.js"></script>
+        <script src="../core/d3.v3.min.js"></script>
+        <script src="../common/ui_utils.js"></script>
+
+        <script>
+         var TARGET_TEXT;
+
+         var regex_NONLETTERS = /[^a-zA-Z]+/g;
+         var POSITIONS = ['1st', '2nd', '3rd'];
+
+         var determinePosition = function(pos){
+             if(pos < POSITIONS.length) return POSITIONS[pos];
+             return (pos+1) + 'th';
+         }
+
+         var randomText = function() {
+             // generate paragraph of text
+             var firstWord = true;
+             var txt = '';
+             var n = core.randi(1, 6);
+
+             for(var i=0;i<n;i++) {
+                 var w;
+                 if(Math.random() < 0.8) {
+                     var ri = core.randi(0, ui_utils.lorem_words.length);
+                     w = ui_utils.lorem_words[ri];
+                 } else {
+                     w = ui_utils.generateString(1, 6)
+                 }
+
+                 if(firstWord) { w = ui_utils.txtCapitalize(w); firstWord = false;}
+                 if(Math.random() < 0.2) { txt += w.replace(regex_NONLETTERS, '') + '. '; firstWord = true; }
+                 else { txt += w + ' '; }
+             }
+
+             txt = txt.trim();
+             TARGET_TEXT = txt;
+             return {
+                 text: txt,
+                 fontSize: core.randi(7, 16),
+                 fontWeight: core.randi(100, 1000),
+                 margin: core.randi(0, 16),
+             };
+         }
+
+         var displayProblem = function(problemSet){
+             d3.select('#area p').html(problemSet.text);
+             d3.select('#query').html('Type the text below into the textarea and press the "Submit" button.');
+         }
+
+         var bindClickEvent = function(problemSet){
+             d3.select('#subbtn').on('click', function(){
+                 var ans = document.getElementById('answer-input').value;
+
+                 // don't penalize for whitespace or punctuation.
+                 var r = ans === problemSet.text ? 1.0 : -1.0;
+                 core.endEpisode(r, r>0);
+             });
+         }
+
+         var genProblem = function() {
+             // reset the UI
+             document.getElementById('answer-input').value = '';
+             var problemSet = randomText();
+             fontSize = 'font-size: ' + problemSet.fontSize.toString() + 'px;';
+             fontWeight = 'font-weight: ' + problemSet.fontWeight.toString() + ';';
+             margin = 'margin: ' + problemSet.margin + 'px;';
+
+             console.log(fontSize + fontWeight)
+             document.getElementById('target-text').style = fontSize + fontWeight + margin;
+
+             displayProblem(problemSet);
+             bindClickEvent(problemSet);
+         }
+
+         window.onload = function() {
+             core.startEpisode();
+         }
+        </script>
+    </head>
+    <body>
+        <div id="wrap">
+            <div id="query"></div>
+            <div id="area">
+                <p id="target-text"></p>
+                <textarea id="answer-input" type="text"> </textarea>
+                <button id="subbtn" class="secondary-action">Submit</button>
+            </div>
+        </div>
+    </body>
+</html>
