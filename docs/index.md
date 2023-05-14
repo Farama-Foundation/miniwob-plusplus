@@ -4,9 +4,12 @@ firstpage:
 lastpage:
 ---
 
-# MiniWoB++
 
-```{image} /_static/img/showcase.gif
+```{project-logo} _static/img/miniwobplusplus-text.svg
+:alt: Miniwob plus plus Logo
+```
+
+```{image} _static/img/showcase.gif
 :width: 100%
 :align: center
 ```
@@ -15,7 +18,7 @@ The MiniWoB++ library contains a collection of over 100 **web interaction enviro
 along with JavaScript and Python interfaces for programmatically interacting with them.
 The Python interface follows the [Gymnasium](https://gymnasium.farama.org/) API
 and uses [Selenium WebDriver](https://www.selenium.dev/documentation/webdriver/)
-to perform actions on the web browser. 
+to perform actions on the web browser.
 
 MiniWoB++ is an extension of the
 [OpenAI MiniWoB benchmark](http://proceedings.mlr.press/v70/shi17a/shi17a.pdf),
@@ -31,7 +34,7 @@ try:
   observation, info = env.reset(seed=42)
   for _ in range(1000):
     action = policy(observation)  # User-defined policy function
-    observation, reward, terminated, truncated, info = env.step(action) 
+    observation, reward, terminated, truncated, info = env.step(action)
     if terminated:
       observation, info = env.reset()
 finally:
