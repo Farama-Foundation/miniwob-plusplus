@@ -433,11 +433,7 @@
       <span class="k">break</span>
 
   <span class="c1"># Click on the element.</span>
-  <span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>     <span class="c1"># Template for the action.</span>
-  <span class="n">action</span><span class="p">[</span><span class="s2">&quot;action_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space_config</span><span class="o">.</span><span class="n">action_types</span><span class="o">.</span><span class="n">index</span><span class="p">(</span>
-      <span class="n">ActionTypes</span><span class="o">.</span><span class="n">CLICK_ELEMENT</span>
-  <span class="p">)</span>
-  <span class="n">action</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">element</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">]</span>
+  <span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">create_action</span><span class="p">(</span><span class="n">ActionTypes</span><span class="o">.</span><span class="n">CLICK_ELEMENT</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">element</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">])</span>
   <span class="n">observation</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
 
   <span class="c1"># Check if the action was correct. </span>
@@ -493,24 +489,45 @@ return an observation, which is a <code class="docutils literal notranslate"><sp
 <li><p><strong><code class="docutils literal notranslate"><span class="pre">screenshot</span></code>:</strong> A numpy array of shape <code class="docutils literal notranslate"><span class="pre">(height,</span> <span class="pre">width,</span> <span class="pre">3)</span></code> containing the RGB values.</p></li>
 <li><p><strong><code class="docutils literal notranslate"><span class="pre">dom_elements</span></code>:</strong> A list of dicts, each listing properties like the geometry and HTML attributes of a visible DOM element.</p></li>
 </ul>
+<p>For example, the <code class="docutils literal notranslate"><span class="pre">observation</span></code> from the <code class="docutils literal notranslate"><span class="pre">reset</span></code> command above is</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s1">&#39;utterance&#39;</span><span class="p">:</span> <span class="s1">&#39;Click button ONE.&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;target&#39;</span><span class="p">,</span> <span class="s1">&#39;ONE&#39;</span><span class="p">)],</span>
+  <span class="s1">&#39;screenshot&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([[[</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span>   <span class="mi">0</span><span class="p">],</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">uint8</span><span class="p">),</span>
+  <span class="s1">&#39;dom_elements&#39;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s1">&#39;ref&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;body&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;ref&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;ref&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;ref&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;button&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;ONE&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;ref&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;button&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;TWO&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">},</span>
+  <span class="p">],</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <p>See the <a class="reference internal" href="../observation_space/"><span class="doc std std-doc">Observation Space</span></a> page for more details.</p>
 </section>
 <section id="action-space">
 <h2>Action Space<a class="headerlink" href="#action-space" title="Permalink to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>     <span class="c1"># Template for the action.</span>
-<span class="n">action</span><span class="p">[</span><span class="s2">&quot;action_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space_config</span><span class="o">.</span><span class="n">action_types</span><span class="o">.</span><span class="n">index</span><span class="p">(</span>
-    <span class="n">ActionTypes</span><span class="o">.</span><span class="n">CLICK_ELEMENT</span>
-<span class="p">)</span>
-<span class="n">action</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">element</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">create_action</span><span class="p">(</span><span class="n">ActionTypes</span><span class="o">.</span><span class="n">CLICK_ELEMENT</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">element</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">])</span>
 <span class="n">observation</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The <a class="reference external" href="https://gymnasium.farama.org/api/env/#gymnasium.Env.step"><code class="docutils literal notranslate"><span class="pre">step</span></code></a> method
 takes an <code class="docutils literal notranslate"><span class="pre">action</span></code> object, which should be a <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following fields:</p>
 <ul class="simple">
-<li><p><strong><code class="docutils literal notranslate"><span class="pre">action_type</span></code>:</strong> The action type index from the <code class="docutils literal notranslate"><span class="pre">action_types</span></code> list in the action connfig.</p></li>
-<li><p>Other fields such as <code class="docutils literal notranslate"><span class="pre">ref</span></code>, <code class="docutils literal notranslate"><span class="pre">coords</span></code>, <code class="docutils literal notranslate"><span class="pre">text</span></code>, etc. should be specified based on the action type.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">action_type</span></code>:</strong> The action type index from <code class="docutils literal notranslate"><span class="pre">env.action_space_config.action_types</span></code>.</p></li>
+<li><p>Other fields such as <code class="docutils literal notranslate"><span class="pre">ref</span></code>, <code class="docutils literal notranslate"><span class="pre">coords</span></code>, <code class="docutils literal notranslate"><span class="pre">text</span></code>, etc. should be specified based on the action type.
+The action space <code class="docutils literal notranslate"><span class="pre">env.action_space</span></code> specifies which fields should be included.</p></li>
 </ul>
+<p>For example, the <code class="docutils literal notranslate"><span class="pre">action</span></code> from the <code class="docutils literal notranslate"><span class="pre">create_action</span></code> command above is</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s1">&#39;action_type&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>     <span class="c1"># ActionTypes.CLICK_ELEMENT in the default action config.</span>
+  <span class="s1">&#39;ref&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>             <span class="c1"># The button with text &#39;ONE&#39; from observation[&#39;dom_elements&#39;].</span>
+  <span class="o">...</span>                   <span class="c1"># Other fields are ignored for CLICK_ELEMENT.</span>
+<span class="p">}</span>  
+</pre></div>
+</div>
+<p>In actual code, the web agent should generate an action based on the observation.</p>
 <p>See the <a class="reference internal" href="../action_space/"><span class="doc std std-doc">Action Space</span></a> page for more details.</p>
 </section>
 </section>
