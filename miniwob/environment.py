@@ -228,14 +228,16 @@ class MiniWoBEnvironment(gym.Env):
             An action from the action space.
         """
         action = self.action_space.sample()
-        if isinstance(action_type, int):
+        if isinstance(action_type, (str, ActionTypes)):
+            action["action_type"] = self.action_space_config.action_types.index(
+                action_type
+            )
+        elif isinstance(action_type, int):
             action["action_type"] = action_type
         elif isinstance(action_type, np.ndarray):
             action["action_type"] = action_type.item()
         else:
-            action["action_type"] = self.action_space_config.action_types.index(
-                action_type
-            )
+            raise ValueError(f"Unknown action_type: {repr(action_type)}")
         for key, value in kwargs.items():
             if key not in action:
                 raise KeyError(f"Key {key} not in valid action keys {list(action)}.")
