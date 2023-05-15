@@ -60,10 +60,7 @@ class RepeatedTester:
 
     def create_click_element_action(self, env, element):
         """Create an action that clicks in the specified element."""
-        action = env.action_space.sample()
-        action["action_type"] = self._action_idx(env, ActionTypes.CLICK_ELEMENT)
-        action["ref"] = element["ref"]
-        return action
+        return env.create_action(ActionTypes.CLICK_ELEMENT, ref=element["ref"])
 
     def create_click_button_action(self, env, obs, button_text):
         """Create an action that clicks on the button with the specified text."""
@@ -74,10 +71,9 @@ class RepeatedTester:
 
     def create_coords_action(self, env, left, top, action_type):
         """Create an action on the specified coordinates."""
-        action = env.action_space.sample()
-        action["action_type"] = self._action_idx(env, action_type)
-        action["coords"] = np.array([left, top], dtype=np.float32)
-        return action
+        return env.create_action(
+            action_type, coords=np.array([left, top], dtype=np.float32)
+        )
 
     def create_click_coords_action(self, env, left, top):
         """Create an action that clicks on the specified coordinates."""
@@ -94,44 +90,29 @@ class RepeatedTester:
     def create_press_key_action(self, env, key):
         """Create an action that presses the key combination."""
         key_idx = env.action_space_config.allowed_keys.index(key)
-        action = env.action_space.sample()
-        action["action_type"] = self._action_idx(env, ActionTypes.PRESS_KEY)
-        action["key"] = key_idx
-        return action
+        return env.create_action(ActionTypes.PRESS_KEY, key=key_idx)
 
     def create_type_action(self, env, text):
         """Create an action that types text."""
-        action = env.action_space.sample()
-        action["action_type"] = self._action_idx(env, ActionTypes.TYPE_TEXT)
-        action["text"] = text
-        return action
+        return env.create_action(ActionTypes.TYPE_TEXT, text=text)
 
     def create_focus_and_type_action(self, env, element, text):
         """Create an action that focuses on the element and types text."""
-        action = env.action_space.sample()
-        action["action_type"] = self._action_idx(
-            env, ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT
+        return env.create_action(
+            ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT, ref=element["ref"], text=text
         )
-        action["ref"] = element["ref"]
-        action["text"] = text
-        return action
 
     def create_type_field_action(self, env, field_idx):
         """Create an action that types text from a field."""
-        action = env.action_space.sample()
-        action["action_type"] = self._action_idx(env, ActionTypes.TYPE_FIELD)
-        action["field"] = field_idx
-        return action
+        return env.create_action(ActionTypes.TYPE_FIELD, field=field_idx)
 
     def create_focus_and_type_field_action(self, env, element, field_idx):
         """Create an action that focuses on the element and types a field."""
-        action = env.action_space.sample()
-        action["action_type"] = self._action_idx(
-            env, ActionTypes.FOCUS_ELEMENT_AND_TYPE_FIELD
+        return env.create_action(
+            ActionTypes.FOCUS_ELEMENT_AND_TYPE_FIELD,
+            ref=element["ref"],
+            field=field_idx,
         )
-        action["ref"] = element["ref"]
-        action["field"] = field_idx
-        return action
 
 
 ################################################
