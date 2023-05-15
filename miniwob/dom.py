@@ -307,7 +307,7 @@ class DOMElement:
         """
 
         def element_diff(first, second, diff_list):
-            """Diffs two DOMElements, and adds them to list l if they differ."""
+            """Diffs two DOMElements, and adds them to list diff_list if they differ."""
             # Base cases
             if second is None:
                 diff_list.append(first)
