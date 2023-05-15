@@ -1,17 +1,78 @@
+# Package ######################################################################
+
+[build-system]
+requires = ["setuptools >= 61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "miniwob"
+description = "A web interaction benchmark for reinforcement learning."
+readme = "README.md"
+requires-python = ">= 3.7"
+authors = [{ name = "Farama Foundation", email = "contact@farama.org" }]
+license = { text = "MIT License" }
+keywords = ["Reinforcement Learning", "game", "RL", "AI", "gymnasium"]
+classifiers = [
+    "Development Status :: 4 - Beta",  # change to `5 - Production/Stable` when ready
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    'Intended Audience :: Science/Research',
+    'Topic :: Scientific/Engineering :: Artificial Intelligence',
+]
+dependencies = [
+		"Gymnasium==0.27.1",
+		"Pillow>=9.0.0",
+		"selenium>=4.5.0",
+		"numpy>=1.18.0",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+testing = [
+		"pytest>=7.0.0",
+		"pytest-timeout>=2.1.0",
+]
+
+[project.urls]
+Homepage = "https://farama.org"
+Repository = "https://github.com/Farama-Foundation/miniwob-plusplus"
+Documentation = "https://miniwob.farama.org"
+"Bug Report" = "https://github.com/Farama-Foundation/miniwob-plusplus/issues"
+
+[project.entry-points."gymnasium.envs"]
+__root__ = "miniwob.registration:register_miniwob_envs"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["miniwob", "miniwob.*"]
+
+[tool.setuptools.package-data]
+miniwob = ["html/**"]
+
+# Linters and Test tools #######################################################
+
+[tool.black]
+safe = true
+
+[tool.isort]
+atomic = true
+profile = "black"
+src_paths = ["miniwob", "tests", "docs/_scripts"]
+extra_standard_library = ["typing_extensions"]
+indent = 4
+lines_after_imports = 2
+multi_line_output = 3
+
 [tool.pyright]
-
-include = [
-    "miniwob/**",
-    "tests/**",
-]
-
-exclude = [
-    "**/__pycache__",
-]
-
-strict = [
-
-]
+include = ["miniwob/**", "tests/**"]
+strict = []
 
 typeCheckingMode = "basic"
 pythonVersion = "3.7"
@@ -26,7 +87,6 @@ reportMissingImports = "none"
 reportMissingTypeStubs = false
 
 [tool.pytest.ini_options]
-
 filterwarnings = [
     # Turn warnings into errors
     "error",

@@ -38,7 +38,8 @@ from miniwob.observation import (
 from miniwob.reward import RewardPreprocessor, get_original_reward
 from miniwob.screenshot import get_screenshot, pil_to_numpy_array
 
-HTML_DIR = pathlib.Path(__file__).parent.parent / "html"
+
+HTML_DIR = pathlib.Path(__file__).parent / "html"
 DEFAULT_BASE_URL = f"file://{HTML_DIR}/"
 
 
