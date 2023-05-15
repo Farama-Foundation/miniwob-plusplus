@@ -4,9 +4,9 @@ import os
 import shutil
 
 import gymnasium as gym
+
 from utils import trim
 
-import miniwob  # noqa: F401
 
 LAYOUT = "env"
 
@@ -16,11 +16,12 @@ all_envs = list(gym.envs.registry.values())
 filtered_envs = []
 
 
-# Copy MiniWoB-plusplus/html to /docs/demos/
+# Copy MiniWoB-plusplus/miniwob/html to /docs/demos/
 source_path = os.path.join(
     os.path.dirname(__file__),
     "..",
     "..",
+    "miniwob",
     "html",
 )
 # Sphinx copies everything inside the first demos/ directory to the root
