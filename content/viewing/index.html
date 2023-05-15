@@ -415,14 +415,15 @@
 <ul>
 <li><p><strong>Node.js:</strong> Install and run <code class="docutils literal notranslate"><span class="pre">http-server</span></code> using</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">npm</span> <span class="n">install</span> <span class="n">http</span><span class="o">-</span><span class="n">server</span> <span class="o">-</span><span class="n">g</span>      <span class="c1"># Requires Node.js</span>
-<span class="n">cd</span> <span class="n">html</span><span class="o">/</span>
+<span class="n">cd</span> <span class="n">miniwob</span><span class="o">/</span><span class="n">html</span><span class="o">/</span>
 <span class="n">http</span><span class="o">-</span><span class="n">server</span>
 </pre></div>
 </div>
 <p>The tasks should now be accessible at <code class="docutils literal notranslate"><span class="pre">http://localhost:8080/miniwob/</span></code>.</p>
 </li>
 <li><p><strong>Python:</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">http</span><span class="o">.</span><span class="n">server</span> <span class="mi">8080</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">miniwob</span><span class="o">/</span><span class="n">html</span><span class="o">/</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">http</span><span class="o">.</span><span class="n">server</span> <span class="mi">8080</span>
 </pre></div>
 </div>
 <p>We found this method to be less stable with a large amount of access,
@@ -430,10 +431,10 @@ which is required by reinforcement learning.</p>
 </li>
 </ul>
 </li>
-<li><p><strong>Use the <code class="docutils literal notranslate"><span class="pre">file://</span></code> protocol:</strong> open <code class="docutils literal notranslate"><span class="pre">miniwob-plusplus/html/miniwob/</span></code> in the browser.</p>
+<li><p><strong>Use the <code class="docutils literal notranslate"><span class="pre">file://</span></code> protocol:</strong> open <code class="docutils literal notranslate"><span class="pre">miniwob/html/miniwob/</span></code> in the browser.</p>
 <ul>
 <li><p>The URL should now be something like</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>file:///path/to/miniwob-plusplus/html/miniwob/
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>file:///path/to/miniwob/html/miniwob/
 </pre></div>
 </div>
 </li>
