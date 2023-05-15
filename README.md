@@ -86,11 +86,7 @@ try:
       break
 
   # Click on the element.
-  action = env.action_space.sample()     # Template for the action.
-  action["action_type"] = env.action_space_config.action_types.index(
-      ActionTypes.CLICK_ELEMENT
-  )
-  action["ref"] = element["ref"]
+  action = env.create_action(ActionTypes.CLICK_ELEMENT, ref=element["ref"])
   obs, reward, terminated, truncated, info = env.step(action)
 
   # Check if the action was correct. 

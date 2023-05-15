@@ -26,11 +26,7 @@ try:
       break
 
   # Click on the element.
-  action = env.action_space.sample()     # Template for the action.
-  action["action_type"] = env.action_space_config.action_types.index(
-      ActionTypes.CLICK_ELEMENT
-  )
-  action["ref"] = element["ref"]
+  action = env.create_action(ActionTypes.CLICK_ELEMENT, ref=element["ref"])
   observation, reward, terminated, truncated, info = env.step(action)
 
   # Check if the action was correct. 
@@ -91,23 +87,46 @@ return an observation, which is a `dict` with the following fields:
 * **`screenshot`:** A numpy array of shape `(height, width, 3)` containing the RGB values.
 * **`dom_elements`:** A list of dicts, each listing properties like the geometry and HTML attributes of a visible DOM element.
 
+For example, the `observation` from the `reset` command above is
+```python
+{
+  'utterance': 'Click button ONE.',
+  'fields': [('target', 'ONE')],
+  'screenshot': array([[[255, 255,   0], ...], ...], dtype=uint8),
+  'dom_elements': [
+    {'ref': 1, 'parent': 0, 'tag': 'body', ...},
+    {'ref': 2, 'parent': 1, 'tag': 'div', ...},
+    {'ref': 3, 'parent': 2, 'tag': 'div', ...},
+    {'ref': 4, 'parent': 3, 'tag': 'button', 'text': 'ONE', ...},
+    {'ref': 5, 'parent': 3, 'tag': 'button', 'text': 'TWO', ...},
+  ],
+}
+```
+
 See the [Observation Space](/content/observation_space) page for more details.
 
 ## Action Space
 
 ```python
-action = env.action_space.sample()     # Template for the action.
-action["action_type"] = env.action_space_config.action_types.index(
-    ActionTypes.CLICK_ELEMENT
-)
-action["ref"] = element["ref"]
+action = env.create_action(ActionTypes.CLICK_ELEMENT, ref=element["ref"])
 observation, reward, terminated, truncated, info = env.step(action)
 ```
 
 The [`step`](https://gymnasium.farama.org/api/env/#gymnasium.Env.step) method
 takes an `action` object, which should be a `dict` with the following fields:
 
-* **`action_type`:** The action type index from the `action_types` list in the action connfig.
+* **`action_type`:** The action type index from `env.action_space_config.action_types`.
 * Other fields such as `ref`, `coords`, `text`, etc. should be specified based on the action type.
+  The action space `env.action_space` specifies which fields should be included.
+
+For example, the `action` from the `create_action` command above is
+```python
+{
+  'action_type': 8,     # ActionTypes.CLICK_ELEMENT in the default action config.
+  'ref': 4,             # The button with text 'ONE' from observation['dom_elements'].
+  ...                   # Other fields are ignored for CLICK_ELEMENT.
+}  
+```
+In actual code, the web agent should generate an action based on the observation.
 
 See the [Action Space](/content/action_space) page for more details.

@@ -16,6 +16,7 @@ from miniwob.constants import (
 )
 from miniwob.dom import DOMElement
 
+
 Observation = Dict[str, Any]
 
 

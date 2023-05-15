@@ -27,12 +27,7 @@ class MiniWoBTester:
 
     def create_click_element_action(self, env, element):
         """Create an action that clicks in the specified element."""
-        action = env.action_space.sample()
-        action["action_type"] = env.action_space_config.action_types.index(
-            ActionTypes.CLICK_ELEMENT
-        )
-        action["ref"] = element["ref"]
-        return action
+        return env.create_action(ActionTypes.CLICK_ELEMENT, ref=element["ref"])
 
     def create_click_button_action(self, env, obs, button_text):
         """Create an action that clicks on the button with the specified text."""
