@@ -1,28 +1,28 @@
 """MiniWoB environment."""
 import logging
-from abc import ABC
 from typing import Any, Dict, Mapping, Optional, Tuple, Union
 
 import gymnasium as gym
 import numpy as np
 
-from miniwob.action import Action, ActionSpaceConfig
+from miniwob.action import Action, ActionSpaceConfig, ActionTypes
 from miniwob.instance import MiniWoBInstance
 from miniwob.observation import Observation, get_observation_space
 from miniwob.reward import RewardPreprocessor
 
 
-class MiniWoBEnvironment(gym.Env, ABC):
+class MiniWoBEnvironment(gym.Env):
     """Abstract class for MiniWoB environments."""
 
     metadata = {"render_modes": ["human"], "render_fps": None}
     reward_range = (-1, 1)
 
-    # MiniWoB task name, which should be specified by the child class.
+    # MiniWoB task name, which can be specified in the child class.
     subdomain = None
 
     def __init__(
         self,
+        subdomain: Optional[str] = None,
         render_mode: Optional[str] = None,
         base_url: Optional[str] = None,
         action_space_config: Union[str, ActionSpaceConfig] = "all_supported",
@@ -35,7 +35,9 @@ class MiniWoBEnvironment(gym.Env, ABC):
         """Creates a new MiniWoBEnvironment.
 
         Args:
-            subdomain: MiniWoB task name (e.g., "click-test")
+            subdomain: MiniWoB task name (e.g., "click-test") corresponding
+                to the HTML filename. This should be left as None for child
+                classes of MiniWoBEnvironment.
             render_mode: Render mode. Supported values are:
                 - None: Headless Chrome (default)
                 - "human": Show the Chrome screen
@@ -55,7 +57,13 @@ class MiniWoBEnvironment(gym.Env, ABC):
                 *** Must specify `seeds` at each reset call.
             data_mode: Data mode (e.g., "train", "test"). Used in some tasks.
         """
-        assert self.subdomain, "`self.subdomain` cannot be empty."
+        if self.subdomain:
+            if subdomain:
+                raise ValueError("`subdomain` is already specified.")
+        else:
+            if not subdomain:
+                raise ValueError("`subdomain` is not specified.")
+            self.subdomain = subdomain
         if render_mode and render_mode not in self.metadata["render_modes"]:
             raise ValueError(f"Invalid render mode: {render_mode}")
         self.render_mode = render_mode
@@ -201,3 +209,35 @@ class MiniWoBEnvironment(gym.Env, ABC):
         """Close the instance."""
         self.instance.call(self.instance.close)
         self.instance.wait()
+
+    def create_action(
+        self,
+        action_type: Union[int, np.ndarray, str, ActionTypes],
+        **kwargs,
+    ) -> Action:
+        """Initializes an action with the specified type and random values.
+
+        Args:
+            action_type: Action type, which can be an index of the
+                action_space_config.action_types array (int or scalar np.ndarray)
+                or an action name (str of ActionTypes enum).
+            kwargs: Additional key-value pairs to set. An error will be raised
+                if the key is not in the action space.
+
+        Returns:
+            An action from the action space.
+        """
+        action = self.action_space.sample()
+        if isinstance(action_type, int):
+            action["action_type"] = action_type
+        elif isinstance(action_type, np.ndarray):
+            action["action_type"] = action_type.item()
+        else:
+            action["action_type"] = self.action_space_config.action_types.index(
+                action_type
+            )
+        for key, value in kwargs.items():
+            if key not in action:
+                raise KeyError(f"Key {key} not in valid action keys {list(action)}.")
+            action[key] = value
+        return action
