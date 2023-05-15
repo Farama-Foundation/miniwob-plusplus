@@ -16,6 +16,7 @@
 # -- Project information -----------------------------------------------------
 import miniwob
 
+
 project = "MiniWoB++"
 copyright = "2023 Farama Foundation"
 author = "Farama Foundation"
