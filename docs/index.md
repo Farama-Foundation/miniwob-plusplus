@@ -5,8 +5,8 @@ lastpage:
 ---
 
 
-```{project-logo} _static/img/miniwobplusplus-text.svg
-:alt: Miniwob plus plus Logo
+```{project-logo} _static/img/miniwobplusplus-text.png
+:alt: MiniWoB logo
 ```
 
 ```{image} _static/img/showcase.gif
