@@ -1,4 +1,7 @@
 """Root `__init__` of the miniwob module."""
+import sys
+
+
 __version__ = "0.0.1"
 
 try:
