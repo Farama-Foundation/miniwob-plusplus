@@ -431,3 +431,15 @@ def register_miniwob_envs():
         id="miniwob/visual-addition-v1",
         entry_point="miniwob.envs.miniwob_envs:VisualAdditionEnv",
     )
+    register(
+        id="miniwob/flight.Alaska-v1",
+        entry_point="miniwob.envs.flightwob_envs:FlightAlaskaEnv",
+    )
+    register(
+        id="miniwob/flight.Alaska-auto-v1",
+        entry_point="miniwob.envs.flightwob_envs:FlightAlaskaAutoEnv",
+    )
+    register(
+        id="miniwob/flight.AA-v1",
+        entry_point="miniwob.envs.flightwob_envs:FlightAAEnv",
+    )

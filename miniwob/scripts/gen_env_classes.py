@@ -21,10 +21,6 @@ class {camel_name}Env(MiniWoBEnvironment):
     ## Utterance fields
 
     {fields}
-
-    ## Custom settings
-
-    None
     \"\"\"
 
     subdomain = "{name}"
@@ -103,21 +99,22 @@ def main():
     )
     args = parser.parse_args()
 
-    # Read environment descriptions from a
+    # Read environment descriptions from a TSV file.
     env_descs = {}
-    with open(args.env_desc_tsv) as fin:
-        for line in fin:
-            env_id, desc = line.strip().split("\t")
-            env_descs[env_id] = desc
+    if args.env_desc_tsv:
+        with open(args.env_desc_tsv) as fin:
+            for line in fin:
+                env_id, desc = line.strip().split("\t")
+                env_descs[env_id] = desc
 
     # Get the list of all miniwob environments.
     envs = []
     for env_id, env_spec in gymnasium.registry.items():
-        if env_spec.namespace == "miniwob" and "flight." not in env_id:
+        if env_spec.namespace == "miniwob" and "flight." in env_id:
             envs.append(env_id)
     envs.sort(key=lambda env_id: _raw_env_name(env_id))
 
-    # Run 10 samples.
+    # Sample the environment.
     seeds = list(range(args.num_seeds))
     for env_id in envs:
         desc = env_descs.get(_raw_env_name(env_id), "TODO")
