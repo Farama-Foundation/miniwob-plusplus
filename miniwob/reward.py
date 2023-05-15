@@ -8,6 +8,7 @@ Then it returns a reward (float).
 """
 from typing import Any, Callable, Mapping
 
+
 Metadata = Mapping[str, Any]
 RewardPreprocessor = Callable[[Metadata], float]
 

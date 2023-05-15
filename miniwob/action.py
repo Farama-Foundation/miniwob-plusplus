@@ -18,6 +18,7 @@ from miniwob.constants import (
     TYPING_MAX_LENGTH,
 )
 
+
 Action = Dict[str, Any]
 
 

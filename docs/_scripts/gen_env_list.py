@@ -7,6 +7,7 @@ import pandas as pd
 
 import miniwob  # noqa: F401
 
+
 gym.logger.set_level(gym.logger.DISABLED)
 
 ENV_TYPES = [

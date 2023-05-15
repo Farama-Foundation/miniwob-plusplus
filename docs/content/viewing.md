@@ -7,22 +7,23 @@ There are 2 ways to view the environments:
   * **Node.js:** Install and run `http-server` using
     ```
     npm install http-server -g      # Requires Node.js
-    cd html/
+    cd miniwob/html/
     http-server
     ```
     The tasks should now be accessible at `http://localhost:8080/miniwob/`.
 
   * **Python:**
     ```
+    cd miniwob/html/
     python -m http.server 8080
     ```
     We found this method to be less stable with a large amount of access,
     which is required by reinforcement learning.
 
-* **Use the `file://` protocol:** open `miniwob-plusplus/html/miniwob/` in the browser.
+* **Use the `file://` protocol:** open `miniwob/html/miniwob/` in the browser.
   * The URL should now be something like
   
-        file:///path/to/miniwob-plusplus/html/miniwob/
+        file:///path/to/miniwob/html/miniwob/
               
   * This should show the directory listing of all task HTML files.
 
