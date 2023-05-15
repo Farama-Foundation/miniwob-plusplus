@@ -27,7 +27,7 @@ repos:
       - id: isort
         args: ["--profile", "black"]
   - repo: https://github.com/pycqa/pydocstyle
-    rev: 6.1.1  # pick a git hash / tag to point to
+    rev: 6.3.0  # pick a git hash / tag to point to
     hooks:
       - id: pydocstyle
         exclude: ^(tests/)|(miniwob/envs/)
