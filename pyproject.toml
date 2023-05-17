@@ -21,21 +21,22 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    'Intended Audience :: Science/Research',
-    'Topic :: Scientific/Engineering :: Artificial Intelligence',
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = [
-		"Gymnasium==0.27.1",
-		"Pillow>=9.0.0",
-		"selenium>=4.5.0",
-		"numpy>=1.18.0",
+    "Gymnasium==0.27.1",
+    "Pillow>=9.0.0",
+    "selenium>=4.5.0",
+    "numpy>=1.18.0",
+    "farama-notifications >=0.0.1",
 ]
 dynamic = ["version"]
 
 [project.optional-dependencies]
 testing = [
-		"pytest>=7.0.0",
-		"pytest-timeout>=2.1.0",
+    "pytest>=7.0.0",
+    "pytest-timeout>=2.1.0",
 ]
 
 [project.urls]
@@ -91,6 +92,6 @@ filterwarnings = [
     # Turn warnings into errors
     "error",
     # ... except for the following warnings:
-    'ignore:.*For Box action spaces, we recommend using a symmetric and normalized space.*',
-    'ignore:.*No render fps was declared in the environment.*',
+    "ignore:.*For Box action spaces, we recommend using a symmetric and normalized space.*",
+    "ignore:.*No render fps was declared in the environment.*",
 ]

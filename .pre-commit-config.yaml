@@ -1,23 +1,22 @@
 ---
 repos:
   - repo: https://github.com/python/black
-    rev: 22.3.0
+    rev: 23.3.0
     hooks:
       - id: black
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.1.0
+    rev: v2.2.4
     hooks:
       - id: codespell
         exclude: ^(miniwob/html/)|(viewer/)|(.*\.svg$)
         args:
-          - --ignore-words-list=sur,
+          - --ignore-words-list=sur,vally,nam
   - repo: https://github.com/PyCQA/flake8
-    rev: 4.0.1
+    rev: 6.0.0
     hooks:
       - id: flake8
         args:
           - '--per-file-ignores=*/__init__.py:F401'
-          - --ignore=E203,W503,E741
           - --max-complexity=30
           - --max-line-length=456
           - --show-source
@@ -28,7 +27,7 @@ repos:
       - id: isort
         args: ["--profile", "black"]
   - repo: https://github.com/pycqa/pydocstyle
-    rev: 6.1.1  # pick a git hash / tag to point to
+    rev: 6.3.0  # pick a git hash / tag to point to
     hooks:
       - id: pydocstyle
         exclude: ^(tests/)|(miniwob/envs/)
@@ -38,7 +37,7 @@ repos:
           - --convention=google
         additional_dependencies: ["toml"]
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.32.0
+    rev: v3.4.0
     hooks:
       - id: pyupgrade
         args: ["--py37-plus"]
