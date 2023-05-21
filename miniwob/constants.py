@@ -102,7 +102,7 @@ ALL_POSSIBLE_KEYS = tuple(
     "".join(combo)
     for combo in itertools.product(
         *[("", modifier) for modifier in WEBDRIVER_MODIFIER_KEYS],
-        (list(WEBDRIVER_SPECIAL_KEYS) + list(ASCII_CHARSET))
+        (list(WEBDRIVER_SPECIAL_KEYS) + list(ASCII_CHARSET)),
     )
 )
 

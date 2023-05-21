@@ -306,23 +306,23 @@ class DOMElement:
             The elements that differ.
         """
 
-        def element_diff(first, second, l):
-            """Diffs two DOMElements, and adds them to list l if they differ."""
+        def element_diff(first, second, diff_list):
+            """Diffs two DOMElements, and adds them to list diff_list if they differ."""
             # Base cases
             if second is None:
-                l.append(first)
+                diff_list.append(first)
                 for child in first.children:
-                    element_diff(child, None, l)
+                    element_diff(child, None, diff_list)
                 return
             elif first is None:
-                l.append(second)
+                diff_list.append(second)
                 for child in second.children:
-                    element_diff(child, None, l)
+                    element_diff(child, None, diff_list)
                 return
 
             if first.ref != second.ref:
-                l.append(first)
-                l.append(second)
+                diff_list.append(first)
+                diff_list.append(second)
             else:
                 if (
                     first.text != second.text
@@ -339,7 +339,7 @@ class DOMElement:
                     or first.bg_color != second.bg_color
                     or first.is_leaf != second.is_leaf
                 ):
-                    l.append(first)
+                    diff_list.append(first)
 
             # Pad the children with None and diff them
             first_children = list(first.children)  # Make copy to not trash old
@@ -349,7 +349,7 @@ class DOMElement:
             elif len(first_children) > len(second_children):
                 second_children += [None] * (len(first_children) - len(second_children))
             for first_child, second_child in zip(first_children, second_children):
-                element_diff(first_child, second_child, l)
+                element_diff(first_child, second_child, diff_list)
 
         different_elements = []
         element_diff(self, other_dom, different_elements)
