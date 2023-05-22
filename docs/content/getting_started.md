@@ -2,9 +2,13 @@
 
 ## Install the MiniWoB++ Library
 
-Inside the repository directory, run
+To install the MiniWoB++ library, use `pip install miniwob`.
+
+Alternatively, clone the repository from GitHub:
 
 ```sh
+git clone https://github.com/Farama-Foundation/miniwob-plusplus.git
+cd miniwob-plusplus
 pip install -e .
 ```
 

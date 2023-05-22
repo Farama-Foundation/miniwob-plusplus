@@ -26,16 +26,11 @@ Development on MiniWoB++ is currently ongoing to bring it up to [Farama Standard
 
 # Installation
 
-MiniWoB++ supports Python 3.6+ on Linux and macOS.
+MiniWoB++ supports Python 3.7+ on Linux and macOS.
 
 ## Installing the MiniWoB++ Library
 
-MiniWoB++ will soon be available on PyPI and can be installed via `pip`. For now, clone the repository and install using
-
-```sh
-cd miniwob-plusplus
-pip install -e .
-```
+To install the MiniWoB++ library, use `pip install miniwob`.
 
 ## Installing Chrome/Chromium and ChromeDriver
 
