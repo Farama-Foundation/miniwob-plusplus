@@ -16,6 +16,7 @@
 </style>
 
 <script>
+var POINT_X0, POINT_Y0, POINT_X1, POINT_Y1;
 var RADIUS_PADDING = 3; // 3px for circle radius
 var QUERY_PADDING = 50; // 50px for #query height
 
@@ -119,10 +120,15 @@ var startingPoints = function(){
   while(jsonCircles.length < 3){
     var newCircle = { cx: core.randi(5,135), cy: core.randi(10, 120), fill : 'black', class: 'init-black', r: 3.5 };
     var usablePoint = pointsSpacedOut(newCircle, jsonCircles)
-    console.log
     if(!usablePoint) continue;
     else jsonCircles.push(newCircle);
+
   }
+
+  POINT_X0 = jsonCircles[1]["cx"];
+  POINT_Y0 = jsonCircles[1]["cy"];
+  POINT_X1 = jsonCircles[2]["cx"];
+  POINT_Y1 = jsonCircles[2]["cy"];
 
   return jsonCircles;
 }

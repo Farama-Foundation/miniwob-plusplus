@@ -22,6 +22,7 @@
 </style>
 
 <script>
+var TARGET_TEXT;
 core.EPISODE_MAX_TIME = 15000; // set episode interval to 15 seconds
 var PROBLEM_TEMPLATE =
 `
@@ -41,6 +42,7 @@ var genProblem = function(){
   var digitTwo = core.sample(DIGITS);
 
   var expectedAnswer = (digitOne + digitTwo).toString();
+  TARGET_TEXT = expectedAnswer;
 
   var visualOne = '';
   for(var i=0;i<digitOne;i++) visualOne += VISUAL_TEMPLATE;

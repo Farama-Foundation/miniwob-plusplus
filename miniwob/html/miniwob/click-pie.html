@@ -33,6 +33,9 @@
 <script src="../common/special/click-pie/wheelnav.min.js"></script>
 <script src="../common/ui_utils.js"></script>
 <script>
+var TARGET_ITEM;
+var NUM_ITEMS;
+
 var createItems = function(){
   var alphanumericList = core.shuffle(ui_utils.alphanumericList.slice());
   var setLength = core.randi(4,9)*-1;
@@ -49,6 +52,8 @@ var createItems = function(){
 
 var genProblem = function() {
   var wheel = createItems();
+  TARGET_ITEM = wheel.items.navItems.findIndex((x) => wheel.problemSet[x.itemIndex] == wheel.expectedItem) + 1;
+  NUM_ITEMS = wheel.problemSet.length;
 
   d3.select('#query').html('Expand the pie menu below and click on the item labeled "<span class="bold">' + wheel.expectedItem + '</span>".');
 

@@ -20,6 +20,8 @@
 </style>
 
 <script>
+var TARGET_TEXT;
+
 var createLinks = function(div){
   for(var i=0;i<3;i++){
     var header = '<h3> Section #' + (i+1) + '</h3>';
@@ -61,6 +63,7 @@ var genProblem = function() {
   createLinks(div);
   var any = core.getOpt(core.QueryString, 'any', false); // click any link?
   var correctText = bindClickEvents();
+  TARGET_TEXT = correctText;
 
   // generate query text in the UI
   d3.select('#query').html('Expand the sections below, to find and click on the link "' + correctText + '".');

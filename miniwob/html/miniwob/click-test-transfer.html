@@ -15,8 +15,11 @@
 </style>
 
 <script>
+var TARGET_BUTTON;
+
 var genProblem = function() {
   var correct = (WOB_DATA_MODE == 'test') ? 'TWO' : 'ONE';
+  TARGET_BUTTON = correct;
 
   var L = core.randi(0, 118); var U = core.randi(0, 118) + 50;
   var btn = d3.select('#subbtn');

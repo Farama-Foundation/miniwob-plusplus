@@ -16,6 +16,8 @@
 </style>
 
 <script>
+var TARGET_COLOR_BOX;
+
 var COLORS = ['red', 'blue', 'olive', 'lime', 'black', 'white', 'grey', 'purple', 'orange', 'yellow', 'cyan', 'pink', 'magenta'];
 var QUERY_COLOR = `<div id="query-color"></div>`
 var MAX_COLORS = 4;
@@ -60,6 +62,7 @@ var genProblem = function() {
 
   var currentColors = generateColors();
   var expectedColor = core.sample(currentColors);
+  TARGET_COLOR_BOX = expectedColor;
   displayProblem(expectedColor);
 
   d3.selectAll('.color').on('click', function(){

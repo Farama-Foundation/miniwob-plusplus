@@ -35,6 +35,8 @@
 </style>
 
 <script>
+var EXPECTED_CIRCLE_ID;
+
 var MAX_X = 2; // x on grid will range from -2 to 2.
 var MAX_Y = 2; // y on grid will range from -2 to 2.
 
@@ -84,6 +86,7 @@ var genProblem = function() {
   d3.select('#query').html('Click on the grid coordinate <span class="bold">' + expectedCoords + '</span>.');
 
   drawCartesianGrid(svg);
+  EXPECTED_CIRCLE_ID = CSS.escape(expectedCoords);
 
   d3.selectAll('circle').on('click', function(){
     var circleId = this.getAttribute('id');

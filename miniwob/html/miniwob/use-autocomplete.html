@@ -21,6 +21,9 @@
 </style>
 
 <script>
+var TARGET_ITEM;
+var TARGET_PREFIX;
+
 var genProblem = function() {
   ITEMS = ui_utils.COUNTRIES;
   d3.select('#tags')[0][0].value ='';
@@ -37,9 +40,11 @@ var genProblem = function() {
   });
 
   var gtitem = ITEMS[gtix];
+  TARGET_ITEM = gtitem;
 
   var nf = core.randi(2, 5);
   var f = gtitem.slice(0,nf);
+  TARGET_PREFIX = f;
 
   var ne = core.randi(2, 5);
   var e = gtitem.slice(gtitem.length - ne);

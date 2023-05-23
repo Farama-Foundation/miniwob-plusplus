@@ -9,6 +9,7 @@
 <script src="../core/d3.v3.min.js"></script>
 <script src="../common/ui_utils.js"></script>
 <script>
+var TARGET_BUTTON;
 var buttons = ['ÖK', 'Cancél', '♥♥♥', '确定', '取消', 'ヘルプ'];
 
 var genProblem = function() {
@@ -47,6 +48,7 @@ var genProblem = function() {
   }
 
   var correct_text = core.sample(elements).html();
+  TARGET_BUTTON = correct_text;
   for(var i = 0, len = elements.length; i < len; i++) {
     var e = elements[i];
     if(e.html() === correct_text) {

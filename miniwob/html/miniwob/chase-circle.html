@@ -21,7 +21,7 @@ var MAX_TRANSLATES = 4;
 // eventually ends the episode.
 var translateCircle = function(translates) {
   if(translates !== 0){
-    d3.select('#circ').transition().duration(2000)
+    d3.select('#circ').transition().duration(core.EPISODE_MAX_TIME / 5)
       .attr('cx', Math.random() * 120 + 20) // change this to random 2px
       .attr('cy', Math.random() * 120 + 20) // change this to random 2px
       .each('end', function(){
@@ -30,7 +30,7 @@ var translateCircle = function(translates) {
   } else {
     // end this episode slightly earlier, otherwise if set to 2000ms
     // the episode will automatically end and give a -1.0 score.
-    d3.select('#circ').transition().duration(1900)
+    d3.select('#circ').transition().duration(core.EPISODE_MAX_TIME / 5.5)
       .attr('cx', Math.random() * 120 + 20)
       .attr('cy', Math.random() * 120 + 20)
       .each('end', function(){
@@ -38,7 +38,7 @@ var translateCircle = function(translates) {
           missedFrames += new Date().getTime() - exitTime;
           exitTime = null;
         }
-        var score = (10000 - missedFrames)/10000;
+        var score = (core.EPISODE_MAX_TIME - missedFrames) / core.EPISODE_MAX_TIME;
         missedFrames = 0;
         core.endEpisode(score);
       });
