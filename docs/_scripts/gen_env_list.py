@@ -284,6 +284,8 @@ list_md_path = os.path.join(os.path.dirname(__file__), "..", "environments", "li
 with open(list_md_path, "w") as fp:
     content = file_start_content
     for env_type in ENV_TYPES:
+        if env_type["name"] == "Flight Search Tasks":
+            continue
         df = pd.DataFrame(
             {
                 "Name": [f"[{env}](./{env})" for env in env_type["envs"]],
