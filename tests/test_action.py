@@ -14,6 +14,8 @@ class RepeatedTester:
 
     # Environment name; subclasses should set this field
     ENV_NAME = ""
+    # Action space config preset name
+    ACTION_SPACE_PRESET_NAME = "all_supported"
     # Number of times to run the test
     N = 10
     # Maximum number of steps for each episode
@@ -24,7 +26,9 @@ class RepeatedTester:
     @pytest.fixture
     def env(self):
         """Yield an environment for the task."""
-        action_space_config = ActionSpaceConfig.get_preset("all_supported")
+        action_space_config = ActionSpaceConfig.get_preset(
+            self.ACTION_SPACE_PRESET_NAME
+        )
         if self.FRAGILE:
             env = gymnasium.make(
                 self.ENV_NAME, action_space_config=action_space_config, wait_ms=300
@@ -79,13 +83,16 @@ class RepeatedTester:
         """Create an action that clicks on the specified coordinates."""
         return self.create_coords_action(env, left, top, ActionTypes.CLICK_COORDS)
 
-    def create_click_element_center_action(self, env, element):
+    def create_click_element_center_action(self, env, element, bin_sizes=None):
         """Create an action that clicks the element's center."""
-        left, top = element["left"].item(), element["top"].item()
-        width, height = element["width"].item(), element["height"].item()
-        return self.create_click_coords_action(
-            env, left + (width / 2), top + (height / 2)
-        )
+        x = element["left"].item() + element["width"].item() / 2
+        y = element["top"].item() + element["height"].item() / 2
+        if bin_sizes:
+            print(x, y)
+            x = int(x / bin_sizes[0])
+            y = int(y / bin_sizes[1])
+            print(x, y)
+        return self.create_click_coords_action(env, x, y)
 
     def create_press_key_action(self, env, key):
         """Create an action that presses the key combination."""
@@ -673,3 +680,88 @@ class TestScrollText2WithPressKey(RepeatedTester):
         else:
             # Submit.
             return self.create_click_button_action(env, obs, "Submit")
+
+
+################################################
+# Test action space presets
+
+
+class TestShi17Preset(RepeatedTester):
+    """Tests for preset shi17."""
+
+    ACTION_SPACE_PRESET_NAME = "shi17"
+    ENV_NAME = "miniwob/enter-text-v1"
+    MAX_STEPS = 12
+    N = 5
+
+    def _get_action(self, env, obs, info, step):
+        target = field_lookup(obs["fields"], "target")
+        if step == 0:
+            # Click on the textbox
+            for element in obs["dom_elements"]:
+                if element["tag"] == "input_text":
+                    return self.create_click_element_center_action(env, element)
+            assert False, "Input text not found"
+        elif 1 <= step <= len(target):
+            # Type the text
+            return self.create_press_key_action(env, target[step - 1])
+        else:
+            # Click submit
+            for element in obs["dom_elements"]:
+                if element["tag"] == "button":
+                    return self.create_click_element_center_action(env, element)
+            assert False, "Submit button not found"
+
+
+class TestLiu18Preset(RepeatedTester):
+    """Tests for preset liu18."""
+
+    ACTION_SPACE_PRESET_NAME = "liu18"
+    ENV_NAME = "miniwob/enter-text-v1"
+    MAX_STEPS = 2
+    N = 5
+
+    def _get_action(self, env, obs, info, step):
+        if step == 0:
+            # Click on the textbox and type the text
+            for element in obs["dom_elements"]:
+                if element["tag"] == "input_text":
+                    return self.create_focus_and_type_field_action(env, element, 0)
+            assert False, "Input text not found"
+        else:
+            # Click submit
+            for element in obs["dom_elements"]:
+                if element["tag"] == "button":
+                    return self.create_click_element_action(env, element)
+            assert False, "Submit button not found"
+
+
+class TestHumphreys22Preset(RepeatedTester):
+    """Tests for preset humphreys22."""
+
+    ACTION_SPACE_PRESET_NAME = "humphreys22"
+    ENV_NAME = "miniwob/enter-text-v1"
+    MAX_STEPS = 3
+    N = 5
+    BIN_SIZES = (160 / 51, 210 / 51)
+
+    def _get_action(self, env, obs, info, step):
+        if step == 0:
+            # Click on the textbox
+            for element in obs["dom_elements"]:
+                if element["tag"] == "input_text":
+                    return self.create_click_element_center_action(
+                        env, element, bin_sizes=self.BIN_SIZES
+                    )
+            assert False, "Input text not found"
+        elif step == 1:
+            # Type the text
+            return self.create_type_field_action(env, 0)
+        else:
+            # Click submit
+            for element in obs["dom_elements"]:
+                if element["tag"] == "button":
+                    return self.create_click_element_center_action(
+                        env, element, bin_sizes=self.BIN_SIZES
+                    )
+            assert False, "Submit button not found"

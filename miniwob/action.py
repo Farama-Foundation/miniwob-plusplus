@@ -127,6 +127,55 @@ class ActionSpaceConfig:
                     ActionTypes.FOCUS_ELEMENT_AND_TYPE_FIELD,
                 ]
             )
+        elif name == "shi17":
+            # Action space from (Shi et al., 2017) "World of Bits:
+            # An Open-Domain Platform for Web-Based Agents."
+            # They use coordinate mouse actions and the press key action.
+            # The "drag" action is approximated with mousedown + mouseup.
+            return cls(
+                action_types=[
+                    ActionTypes.NONE,
+                    ActionTypes.CLICK_COORDS,
+                    ActionTypes.DBLCLICK_COORDS,
+                    ActionTypes.MOUSEDOWN_COORDS,
+                    ActionTypes.MOUSEUP_COORDS,
+                    ActionTypes.SCROLL_UP_COORDS,
+                    ActionTypes.SCROLL_DOWN_COORDS,
+                    ActionTypes.PRESS_KEY,
+                ]
+            )
+        elif name == "liu18":
+            # Action space from (Liu et al., 2018) "Reinforcement Learning
+            # on Web Interfaces Using Workflow-Guided Exploration."
+            # They use element click and element click-and-type actions.
+            # Only texts from input fields can be typed.
+            return cls(
+                action_types=[
+                    ActionTypes.NONE,
+                    ActionTypes.CLICK_ELEMENT,
+                    ActionTypes.FOCUS_ELEMENT_AND_TYPE_FIELD,
+                ]
+            )
+        elif name == "humphreys22":
+            # Action space from (Humphreys et al., 2022) "A data-driven
+            # approach for learning to control computers."
+            # The main model uses binned coordinate mouse actions, plus the
+            # press key and type field actions.
+            return cls(
+                action_types=[
+                    ActionTypes.NONE,
+                    ActionTypes.MOVE_COORDS,
+                    ActionTypes.CLICK_COORDS,
+                    ActionTypes.DBLCLICK_COORDS,
+                    ActionTypes.MOUSEDOWN_COORDS,
+                    ActionTypes.MOUSEUP_COORDS,
+                    ActionTypes.SCROLL_UP_COORDS,
+                    ActionTypes.SCROLL_DOWN_COORDS,
+                    ActionTypes.PRESS_KEY,
+                    ActionTypes.TYPE_FIELD,
+                ],
+                coord_bins=(51, 51),
+            )
         else:
             raise ValueError(f"Unknown preset name {name}")
 
