@@ -1,7 +1,8 @@
 """HTTP server for serving environment HTMLs."""
 import functools
-from http.server import HTTPServer, SimpleHTTPRequestHandler
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from threading import Thread
+
 
 SERVER_SINGLETON = None
 
@@ -19,7 +20,7 @@ def start_http_server(html_dir: str):
     if SERVER_SINGLETON:
         httpd = SERVER_SINGLETON
     else:
-        httpd = HTTPServer(
+        httpd = ThreadingHTTPServer(
             ("localhost", 0),
             functools.partial(SimpleHTTPRequestHandler, directory=html_dir),
         )
