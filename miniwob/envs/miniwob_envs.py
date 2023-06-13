@@ -16,10 +16,6 @@ class BisectAngleEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "bisect-angle"
@@ -45,10 +41,6 @@ class BookFlightEnv(MiniWoBEnvironment):
     * date
     * from
     * to
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "book-flight"
@@ -58,7 +50,7 @@ class BookFlightNodelayEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [book-flight]
+    [book-flight] Removed animation.
 
     ## Example utterances
 
@@ -74,10 +66,6 @@ class BookFlightNodelayEnv(MiniWoBEnvironment):
     * date
     * from
     * to
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "book-flight-nodelay"
@@ -102,10 +90,6 @@ class ChooseDateEnv(MiniWoBEnvironment):
     * day
     * month
     * year
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "choose-date"
@@ -115,7 +99,7 @@ class ChooseDateEasyEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [choose-date] December only
+    [choose-date] December only.
 
     ## Example utterances
 
@@ -130,10 +114,6 @@ class ChooseDateEasyEnv(MiniWoBEnvironment):
     * day
     * month
     * year
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "choose-date-easy"
@@ -143,7 +123,7 @@ class ChooseDateMediumEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [choose-date] December or November only
+    [choose-date] December or November only.
 
     ## Example utterances
 
@@ -158,10 +138,6 @@ class ChooseDateMediumEnv(MiniWoBEnvironment):
     * day
     * month
     * year
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "choose-date-medium"
@@ -171,7 +147,7 @@ class ChooseDateNodelayEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [choose-date]
+    [choose-date] Removed animation.
 
     ## Example utterances
 
@@ -186,10 +162,6 @@ class ChooseDateNodelayEnv(MiniWoBEnvironment):
     * day
     * month
     * year
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "choose-date-nodelay"
@@ -212,10 +184,6 @@ class ChooseListEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "choose-list"
@@ -234,10 +202,6 @@ class CircleCenterEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "circle-center"
@@ -260,10 +224,6 @@ class ClickButtonEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-button"
@@ -282,10 +242,6 @@ class ClickButtonSequenceEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-button-sequence"
@@ -312,10 +268,6 @@ class ClickCheckboxesEnv(MiniWoBEnvironment):
     * target 1
     * target 2
     * target 3
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-checkboxes"
@@ -325,7 +277,7 @@ class ClickCheckboxesLargeEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [click-checkboxes] Click at least 5 out of up to 12 checkboxes
+    [click-checkboxes] Click at least 5 out of up to 12 checkboxes.
 
     ## Example utterances
 
@@ -350,10 +302,6 @@ class ClickCheckboxesLargeEnv(MiniWoBEnvironment):
     * target 7
     * target 8
     * target 9
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-checkboxes-large"
@@ -363,7 +311,7 @@ class ClickCheckboxesSoftEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [click-checkboxes] Paraphrased entries
+    [click-checkboxes] Paraphrased entries.
 
     ## Example utterances
 
@@ -381,10 +329,6 @@ class ClickCheckboxesSoftEnv(MiniWoBEnvironment):
     * target 2
     * target 3
     * target 4
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-checkboxes-soft"
@@ -394,7 +338,7 @@ class ClickCheckboxesTransferEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [click-checkboxes] Train and test on different number of targets
+    [click-checkboxes] Train and test on different number of targets.
 
     ## Example utterances
 
@@ -410,10 +354,6 @@ class ClickCheckboxesTransferEnv(MiniWoBEnvironment):
     * target 0
     * target 1
     * target 2
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-checkboxes-transfer"
@@ -432,10 +372,6 @@ class ClickCollapsibleEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-collapsible"
@@ -458,10 +394,6 @@ class ClickCollapsible2Env(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-collapsible-2"
@@ -471,7 +403,7 @@ class ClickCollapsible2NodelayEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [click-collapsible-2]
+    [click-collapsible-2] Removed animation.
 
     ## Example utterances
 
@@ -484,10 +416,6 @@ class ClickCollapsible2NodelayEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-collapsible-2-nodelay"
@@ -497,7 +425,7 @@ class ClickCollapsibleNodelayEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [click-collapsible]
+    [click-collapsible] Removed animation.
 
     ## Example utterances
 
@@ -506,10 +434,6 @@ class ClickCollapsibleNodelayEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-collapsible-nodelay"
@@ -532,10 +456,6 @@ class ClickColorEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-color"
@@ -554,10 +474,6 @@ class ClickDialogEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-dialog"
@@ -578,10 +494,6 @@ class ClickDialog2Env(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-dialog-2"
@@ -604,10 +516,6 @@ class ClickLinkEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-link"
@@ -630,10 +538,6 @@ class ClickMenuEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-menu"
@@ -656,10 +560,6 @@ class ClickMenu2Env(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-menu-2"
@@ -682,10 +582,6 @@ class ClickOptionEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-option"
@@ -708,10 +604,6 @@ class ClickPieEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-pie"
@@ -721,7 +613,7 @@ class ClickPieNodelayEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [click-pie]
+    [click-pie] Removed animation.
 
     ## Example utterances
 
@@ -734,10 +626,6 @@ class ClickPieNodelayEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-pie-nodelay"
@@ -747,7 +635,7 @@ class ClickScrollListEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    Click multiple items from a scroll list. (also require Shift + click)
+    Click multiple items from a scroll list.
 
     ## Example utterances
 
@@ -760,10 +648,6 @@ class ClickScrollListEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-scroll-list"
@@ -784,10 +668,6 @@ class ClickShadesEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-shades"
@@ -813,10 +693,6 @@ class ClickShapeEnv(MiniWoBEnvironment):
     * size
     * target
     * type
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-shape"
@@ -837,10 +713,6 @@ class ClickTabEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-tab"
@@ -863,10 +735,6 @@ class ClickTab2Env(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-tab-2"
@@ -876,7 +744,7 @@ class ClickTab2EasyEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [click-tab-2] One 1 tab
+    [click-tab-2] One 1 tab.
 
     ## Example utterances
 
@@ -889,10 +757,6 @@ class ClickTab2EasyEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-tab-2-easy"
@@ -902,7 +766,7 @@ class ClickTab2HardEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [click-tab-2] Varying number of tabs from 2 to 6
+    [click-tab-2] Varying number of tabs from 2 to 6.
 
     ## Example utterances
 
@@ -915,10 +779,6 @@ class ClickTab2HardEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-tab-2-hard"
@@ -928,7 +788,7 @@ class ClickTab2MediumEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [click-tab-2] Choose between a link or "no match"
+    [click-tab-2] Choose between a link or ‘no match’.
 
     ## Example utterances
 
@@ -941,10 +801,6 @@ class ClickTab2MediumEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-tab-2-medium"
@@ -963,10 +819,6 @@ class ClickTestEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-test"
@@ -985,10 +837,6 @@ class ClickTest2Env(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-test-2"
@@ -998,7 +846,7 @@ class ClickTestTransferEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [click-test] Different buttons during train and test
+    [click-test] Different buttons during train and test.
 
     ## Example utterances
 
@@ -1007,10 +855,6 @@ class ClickTestTransferEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-test-transfer"
@@ -1033,10 +877,6 @@ class ClickWidgetEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "click-widget"
@@ -1055,10 +895,6 @@ class CopyPasteEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "copy-paste"
@@ -1079,10 +915,6 @@ class CopyPaste2Env(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "copy-paste-2"
@@ -1108,10 +940,6 @@ class CountShapeEnv(MiniWoBEnvironment):
     * size
     * target
     * type
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "count-shape"
@@ -1130,10 +958,6 @@ class CountSidesEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "count-sides"
@@ -1152,10 +976,6 @@ class DragBoxEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "drag-box"
@@ -1177,10 +997,6 @@ class DragCircleEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "drag-circle"
@@ -1203,10 +1019,6 @@ class DragCubeEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "drag-cube"
@@ -1229,10 +1041,6 @@ class DragItemsEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "drag-items"
@@ -1255,10 +1063,6 @@ class DragItemsGridEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "drag-items-grid"
@@ -1279,10 +1083,6 @@ class DragShapesEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "drag-shapes"
@@ -1301,10 +1101,6 @@ class DragSortNumbersEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "drag-sort-numbers"
@@ -1330,10 +1126,6 @@ class EmailInboxEnv(MiniWoBEnvironment):
     * message
     * task
     * to
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "email-inbox"
@@ -1343,7 +1135,7 @@ class EmailInboxDeleteEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [email-inbox] No scrolling + 1 subtask
+    [email-inbox] No scrolling + 1 subtask.
 
     ## Example utterances
 
@@ -1357,10 +1149,6 @@ class EmailInboxDeleteEnv(MiniWoBEnvironment):
 
     * by
     * task
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "email-inbox-delete"
@@ -1370,7 +1158,7 @@ class EmailInboxForwardEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [email-inbox] No scrolling + 1 subtask
+    [email-inbox] No scrolling + 1 subtask.
 
     ## Example utterances
 
@@ -1385,10 +1173,6 @@ class EmailInboxForwardEnv(MiniWoBEnvironment):
     * by
     * task
     * to
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "email-inbox-forward"
@@ -1398,7 +1182,7 @@ class EmailInboxForwardNlEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [email-inbox-forward] NL instruction (30 templates)
+    [email-inbox-forward] NL instruction (30 templates).
 
     ## Example utterances
 
@@ -1412,10 +1196,6 @@ class EmailInboxForwardNlEnv(MiniWoBEnvironment):
 
     * by
     * to
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "email-inbox-forward-nl"
@@ -1425,7 +1205,7 @@ class EmailInboxForwardNlTurkEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [email-inbox-forward] NL instruction (100 templates)
+    [email-inbox-forward] NL instruction (100 templates).
 
     ## Example utterances
 
@@ -1439,10 +1219,6 @@ class EmailInboxForwardNlTurkEnv(MiniWoBEnvironment):
 
     * by
     * to
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "email-inbox-forward-nl-turk"
@@ -1452,7 +1228,7 @@ class EmailInboxImportantEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [email-inbox] No scrolling + 1 subtask
+    [email-inbox] No scrolling + 1 subtask.
 
     ## Example utterances
 
@@ -1466,10 +1242,6 @@ class EmailInboxImportantEnv(MiniWoBEnvironment):
 
     * by
     * task
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "email-inbox-important"
@@ -1479,7 +1251,7 @@ class EmailInboxNlTurkEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [email-inbox] NL instruction (100 templates for each subtask)
+    [email-inbox] NL instruction (100 templates for each subtask).
 
     ## Example utterances
 
@@ -1495,10 +1267,6 @@ class EmailInboxNlTurkEnv(MiniWoBEnvironment):
     * message
     * task
     * to
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "email-inbox-nl-turk"
@@ -1508,7 +1276,7 @@ class EmailInboxNoscrollEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [email-inbox] No scrolling
+    [email-inbox] No scrolling.
 
     ## Example utterances
 
@@ -1524,10 +1292,6 @@ class EmailInboxNoscrollEnv(MiniWoBEnvironment):
     * message
     * task
     * to
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "email-inbox-noscroll"
@@ -1537,7 +1301,7 @@ class EmailInboxReplyEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [email-inbox] No scrolling + 1 subtask
+    [email-inbox] No scrolling + 1 subtask.
 
     ## Example utterances
 
@@ -1552,10 +1316,6 @@ class EmailInboxReplyEnv(MiniWoBEnvironment):
     * by
     * message
     * task
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "email-inbox-reply"
@@ -1565,7 +1325,7 @@ class EmailInboxStarReplyEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [email-inbox] No scrolling + 2 subtasks
+    [email-inbox] No scrolling + 2 subtasks.
 
     ## Example utterances
 
@@ -1580,10 +1340,6 @@ class EmailInboxStarReplyEnv(MiniWoBEnvironment):
     * by
     * message
     * task
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "email-inbox-star-reply"
@@ -1606,10 +1362,6 @@ class EnterDateEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "enter-date"
@@ -1632,10 +1384,6 @@ class EnterPasswordEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "enter-password"
@@ -1658,10 +1406,6 @@ class EnterTextEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "enter-text"
@@ -1685,10 +1429,6 @@ class EnterText2Env(MiniWoBEnvironment):
 
     * case
     * text
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "enter-text-2"
@@ -1711,10 +1451,6 @@ class EnterTextDynamicEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "enter-text-dynamic"
@@ -1737,10 +1473,6 @@ class EnterTimeEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "enter-time"
@@ -1759,10 +1491,6 @@ class FindMidpointEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "find-midpoint"
@@ -1785,10 +1513,6 @@ class FindWordEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "find-word"
@@ -1807,10 +1531,6 @@ class FocusTextEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "focus-text"
@@ -1831,10 +1551,6 @@ class FocusText2Env(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "focus-text-2"
@@ -1858,10 +1574,6 @@ class GridCoordinateEnv(MiniWoBEnvironment):
 
     * x
     * y
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "grid-coordinate"
@@ -1880,10 +1592,6 @@ class GuessNumberEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "guess-number"
@@ -1902,10 +1610,6 @@ class HighlightTextEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "highlight-text"
@@ -1926,10 +1630,6 @@ class HighlightText2Env(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "highlight-text-2"
@@ -1948,10 +1648,6 @@ class IdentifyShapeEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "identify-shape"
@@ -1975,10 +1671,6 @@ class LoginUserEnv(MiniWoBEnvironment):
 
     * password
     * username
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "login-user"
@@ -1988,7 +1680,7 @@ class LoginUserPopupEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [login-user] Random popup
+    [login-user] Random popup.
 
     ## Example utterances
 
@@ -2002,10 +1694,6 @@ class LoginUserPopupEnv(MiniWoBEnvironment):
 
     * password
     * username
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "login-user-popup"
@@ -2030,10 +1718,6 @@ class MultiLayoutsEnv(MiniWoBEnvironment):
     * director
     * genre
     * year
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "multi-layouts"
@@ -2058,10 +1742,6 @@ class MultiOrderingsEnv(MiniWoBEnvironment):
     * director
     * genre
     * year
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "multi-orderings"
@@ -2084,10 +1764,6 @@ class NavigateTreeEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "navigate-tree"
@@ -2110,10 +1786,6 @@ class NumberCheckboxesEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "number-checkboxes"
@@ -2136,10 +1808,6 @@ class ReadTableEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "read-table"
@@ -2158,10 +1826,6 @@ class ReadTable2Env(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "read-table-2"
@@ -2183,10 +1847,6 @@ class ResizeTextareaEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "resize-textarea"
@@ -2205,10 +1865,6 @@ class RightAngleEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "right-angle"
@@ -2227,10 +1883,6 @@ class ScrollTextEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "scroll-text"
@@ -2250,10 +1902,6 @@ class ScrollText2Env(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "scroll-text-2"
@@ -2277,10 +1925,6 @@ class SearchEngineEnv(MiniWoBEnvironment):
 
     * query
     * rank
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "search-engine"
@@ -2299,10 +1943,6 @@ class SimpleAlgebraEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "simple-algebra"
@@ -2321,10 +1961,6 @@ class SimpleArithmeticEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "simple-arithmetic"
@@ -2348,10 +1984,6 @@ class SocialMediaEnv(MiniWoBEnvironment):
 
     * button
     * user
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "social-media"
@@ -2361,7 +1993,7 @@ class SocialMediaAllEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [social-media] Do some action on all matching entries
+    [social-media] Do some action on all matching entries.
 
     ## Example utterances
 
@@ -2376,10 +2008,6 @@ class SocialMediaAllEnv(MiniWoBEnvironment):
     * button
     * submit
     * user
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "social-media-all"
@@ -2389,7 +2017,7 @@ class SocialMediaSomeEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [social-media] Do some action on some matching entries
+    [social-media] Do some action on some matching entries.
 
     ## Example utterances
 
@@ -2405,10 +2033,6 @@ class SocialMediaSomeEnv(MiniWoBEnvironment):
     * button
     * submit
     * user
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "social-media-some"
@@ -2431,10 +2055,6 @@ class TerminalEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "terminal"
@@ -2457,10 +2077,6 @@ class TextEditorEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "text-editor"
@@ -2479,10 +2095,6 @@ class TextTransformEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "text-transform"
@@ -2501,10 +2113,6 @@ class TicTacToeEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "tic-tac-toe"
@@ -2528,10 +2136,6 @@ class UseAutocompleteEnv(MiniWoBEnvironment):
 
     * end
     * start
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "use-autocomplete"
@@ -2541,7 +2145,7 @@ class UseAutocompleteNodelayEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [use-autocomplete]
+    [use-autocomplete] Removed delay.
 
     ## Example utterances
 
@@ -2555,10 +2159,6 @@ class UseAutocompleteNodelayEnv(MiniWoBEnvironment):
 
     * end
     * start
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "use-autocomplete-nodelay"
@@ -2581,10 +2181,6 @@ class UseColorwheelEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "use-colorwheel"
@@ -2603,10 +2199,6 @@ class UseColorwheel2Env(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "use-colorwheel-2"
@@ -2629,10 +2221,6 @@ class UseSliderEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "use-slider"
@@ -2657,10 +2245,6 @@ class UseSlider2Env(MiniWoBEnvironment):
     * n1
     * n2
     * n3
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "use-slider-2"
@@ -2683,10 +2267,6 @@ class UseSpinnerEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "use-spinner"
@@ -2705,10 +2285,6 @@ class VisualAdditionEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
-
-    ## Custom settings
-
-    None
     """
 
     subdomain = "visual-addition"

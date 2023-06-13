@@ -29,6 +29,7 @@ from miniwob.constants import (
 )
 from miniwob.dom import DOMElement
 from miniwob.fields import get_field_extractor
+from miniwob.http_server import start_http_server
 from miniwob.observation import (
     Observation,
     create_empty_observation,
@@ -68,7 +69,10 @@ class MiniWoBInstance(Thread):
             base_url: Base URL, which is usually one of the following
                 - http://localhost:8000/     (served by http-serve)
                 - file:///path/to/miniwob-plusplus/html/
-                If None, infers the file:// path from this module's location.
+                If None, set the default value as follows:
+                - For FlightWoB tasks, starts a HTTP server and use
+                http://localhost:[port]/ as base_url.
+                - For other tasks, use the inferred file:// path as base_url.
             threading: Whether to run this instance as a Thread
             reward_processor: A function that takes the metadata and return
                 a reward (see miniwob.reward)
@@ -87,11 +91,11 @@ class MiniWoBInstance(Thread):
         self.died = False
         self.index = index
         self.headless = headless
-        base_url = base_url or DEFAULT_BASE_URL
         if subdomain.startswith("flight."):
+            if not base_url:
+                base_url = start_http_server(str(HTML_DIR))
             assert not base_url.startswith("file://"), (
-                "For {} domain, MINIWOB_BASE_URL cannot be file://. "
-                ' See "Run a simple server" in README'
+                "For {} domain, MINIWOB_BASE_URL cannot be file://."
             ).format(subdomain)
             self.url = urllib.parse.urljoin(
                 base_url, subdomain.replace(".", "/") + "/wrapper.html"
@@ -101,6 +105,8 @@ class MiniWoBInstance(Thread):
             self.task_width = FLIGHT_TASK_WIDTH
             self.task_height = FLIGHT_TASK_HEIGHT
         else:
+            if not base_url:
+                base_url = DEFAULT_BASE_URL
             self.url = urllib.parse.urljoin(base_url, f"miniwob/{subdomain}.html")
             self.window_width = WINDOW_WIDTH
             self.window_height = WINDOW_HEIGHT
@@ -188,7 +194,7 @@ class MiniWoBInstance(Thread):
                 EC.element_to_be_clickable((By.ID, self.SYNC_SCREEN_ID))
             )
         except TimeoutException as e:
-            logging.error("Page did not load properly. Wrong MINIWOB_BASE_URL?")
+            logging.error("Page did not load properly. Wrong URL?")
             raise e
         self.inner_width, self.inner_height = self.driver.execute_script(
             "return [window.innerWidth, window.innerHeight];"
