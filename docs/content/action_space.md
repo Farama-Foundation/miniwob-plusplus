@@ -92,7 +92,6 @@ An `ActionSpaceConfig` object has the following fields:
 ### Presets
 
 The following preset names can be specified in place of the `ActionSpaceConfig` object:
-(**TODO**: Implement this in code)
 
 * `"all_supported"`: Select all supported actions, including redundant ones.
 * `"shi17"`: The action space from (Shi et al., 2017)
