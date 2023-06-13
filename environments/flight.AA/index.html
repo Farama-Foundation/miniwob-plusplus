@@ -7,12 +7,12 @@
     <meta property="og:title" content="MiniWoB++ Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="A collection of over 100 web interaction environments, along with JavaScript and Python interfaces." />
-    <meta property="og:url" content="https://miniwob.farama.org/environments/find-midpoint.html" /><meta property="og:image" content="https://miniwob.farama.org/_static/img/miniwobplusplus-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Find Word" href="../find-word/" /><link rel="prev" title="Enter Time" href="../enter-time/" />
-        <link rel="canonical" href="https://miniwob.farama.org/environments/find-midpoint.html" />
+    <meta property="og:url" content="https://miniwob.farama.org/environments/flight.AA.html" /><meta property="og:image" content="https://miniwob.farama.org/_static/img/miniwobplusplus-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Flight.Alaska" href="../flight.Alaska/" /><link rel="prev" title="Find Word" href="../find-word/" />
+        <link rel="canonical" href="https://miniwob.farama.org/environments/flight.AA.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.2.1 and Furo 2022.12.07.dev1 -->
-        <title>Find Midpoint - MiniWoB++ Documentation</title>
+        <title>Flight.Aa - MiniWoB++ Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=cfd2cc3354364f303ef4a892d279bfffada5835d" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=6342a809aabeb35cfac296000cfa245808bc1d78" />
@@ -303,9 +303,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../enter-text-2/">Enter Text 2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../enter-text-dynamic/">Enter Text Dynamic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../enter-time/">Enter Time</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Find Midpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../find-midpoint/">Find Midpoint</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../find-word/">Find Word</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../flight.AA/">Flight.Aa</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Flight.Aa</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../flight.Alaska/">Flight.Alaska</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../flight.Alaska-auto/">Flight.Alaska Auto</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../focus-text/">Focus Text</a></li>
@@ -401,26 +401,36 @@
           </div>
           <article role="main">
             
-            <section id="find-midpoint">
-<h1>Find Midpoint<a class="headerlink" href="#find-midpoint" title="Permalink to this heading">#</a></h1>
+            <section id="flight-aa">
+<h1>Flight.Aa<a class="headerlink" href="#flight-aa" title="Permalink to this heading">#</a></h1>
 <center>
-    <iframe src="../../demos/miniwob/find-midpoint.html" width="325" height="210" scrolling="no" style="overflow:hidden;">
+    <iframe src="../../demos/miniwob/flight.AA.html" width="325" height="210" scrolling="no" style="overflow:hidden;">
     </iframe><br>
-    <a href="../../demos/miniwob/find-midpoint.html" target="_blank"><button>Open demo in a separate tab.</button></a>
+    <a href="../../demos/miniwob/flight.AA.html" target="_blank"><button>Open demo in a separate tab.</button></a>
 </center>
 <section id="description">
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this heading">#</a></h2>
-<p>Find the shortest mid-point of two points.</p>
+<p>Search for flights on the American Airlines website.</p>
 </section>
-<section id="example-utterances">
-<h2>Example utterances<a class="headerlink" href="#example-utterances" title="Permalink to this heading">#</a></h2>
-<ul class="simple">
-<li><p>Find and click on the shortest mid-point between the two points, then press submit.</p></li>
-</ul>
+<section id="utterance">
+<h2>Utterance<a class="headerlink" href="#utterance" title="Permalink to this heading">#</a></h2>
+<p>The utterance is the JSON serialization of the utterance fields.</p>
 </section>
 <section id="utterance-fields">
 <h2>Utterance fields<a class="headerlink" href="#utterance-fields" title="Permalink to this heading">#</a></h2>
-<p>(none)</p>
+<ul class="simple">
+<li><p>Departure City</p></li>
+<li><p>Departure Day</p></li>
+<li><p>Departure Month</p></li>
+<li><p>Destination City</p></li>
+<li><p>One Way or Round Trip</p></li>
+<li><p>Returning Day</p></li>
+<li><p>Returning Month</p></li>
+</ul>
+</section>
+<section id="custom-settings">
+<h2>Custom settings<a class="headerlink" href="#custom-settings" title="Permalink to this heading">#</a></h2>
+<p>None</p>
 </section>
 </section>
 
@@ -429,18 +439,18 @@
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../find-word/">
+            <a class="next-page" href="../flight.Alaska/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Find Word</div>
+                <div class="title">Flight.Alaska</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
             </a>
-            <a class="prev-page" href="../enter-time/">
+            <a class="prev-page" href="../find-word/">
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
@@ -449,7 +459,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Enter Time</div>
+                <div class="title">Find Word</div>
                 
               </div>
             </a>
@@ -493,10 +503,11 @@
           <div class="toc-tree-container">
             <div class="toc-tree">
               <ul>
-<li><a class="reference internal" href="#">Find Midpoint</a><ul>
+<li><a class="reference internal" href="#">Flight.Aa</a><ul>
 <li><a class="reference internal" href="#description">Description</a></li>
-<li><a class="reference internal" href="#example-utterances">Example utterances</a></li>
+<li><a class="reference internal" href="#utterance">Utterance</a></li>
 <li><a class="reference internal" href="#utterance-fields">Utterance fields</a></li>
+<li><a class="reference internal" href="#custom-settings">Custom settings</a></li>
 </ul>
 </li>
 </ul>
