@@ -26,7 +26,7 @@ Development on MiniWoB++ is currently ongoing to bring it up to [Farama Standard
 
 # Installation
 
-MiniWoB++ supports Python 3.7+ on Linux and macOS.
+MiniWoB++ supports Python 3.8+ on Linux and macOS.
 
 ## Installing the MiniWoB++ Library
 
