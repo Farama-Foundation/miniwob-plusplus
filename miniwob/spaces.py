@@ -1,7 +1,5 @@
 """Custom spaces for MiniWoB++."""
-from __future__ import annotations
-
-from typing import Any
+from typing import Any, FrozenSet, Optional, Tuple, Union
 
 import numpy as np
 from gymnasium.spaces import Box
@@ -29,8 +27,8 @@ class Unicode(Space[str]):
         max_length: int,
         *,
         min_length: int = 1,
-        sample_charset: frozenset[str] | str = alphanumeric,
-        seed: int | np.random.Generator | None = None,
+        sample_charset: Union[FrozenSet[str], str] = alphanumeric,
+        seed: Union[int, np.random.Generator, None] = None,
     ):
         """Constructor for the `Unicode` space.
 
@@ -55,12 +53,12 @@ class Unicode(Space[str]):
 
         self.min_length: int = int(min_length)
         self.max_length: int = int(max_length)
-        self._sample_charlist: tuple[str, ...] = tuple(sample_charset)
+        self._sample_charlist: Tuple[str, ...] = tuple(sample_charset)
         super().__init__(dtype=str, seed=seed)
 
     def sample(
         self,
-        mask: None | (tuple[int | None, NDArray[np.int8] | None]) = None,
+        mask: Optional[Tuple[Optional[int], Optional[NDArray[np.int8]]]] = None,
     ):
         """Generates a single random sample from this space.
 

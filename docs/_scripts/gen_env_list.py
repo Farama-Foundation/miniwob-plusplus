@@ -142,6 +142,7 @@ Some are harder versions of the existing tasks, while some are completely new.""
             "email-inbox-noscroll",
             "email-inbox-reply",
             "email-inbox-star-reply",
+            "unicode-test",
         ],
     },
     {
@@ -267,6 +268,7 @@ ENVS_DESCRIPTIONS = {
     "chase-circle": "Keep your mouse inside a moving circle.",
     "moving-items": "Click moving items before they disappear.",
     "simon-says": "Push the buttons in the order shown.",
+    "unicode-test": "Click on the button with the correct Unicode text.",
 }
 
 file_start_content = """# Environments List
