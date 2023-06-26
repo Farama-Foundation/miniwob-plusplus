@@ -645,8 +645,8 @@ class TestScrollText2(RepeatedTester):
             }[target]
             for element in obs["dom_elements"]:
                 if element["tag"] == "textarea":
-                    left = int(element["left"]) + 5
-                    top = int(element["top"]) + 5
+                    left = int(element["left"].item()) + 5
+                    top = int(element["top"].item()) + 5
                     return self.create_coords_action(env, left, top, action_type)
             assert False, "Textarea not found"
         else:
@@ -665,8 +665,8 @@ class TestScrollText2WithPressKey(RepeatedTester):
             # Click on the textarea.
             for element in obs["dom_elements"]:
                 if element["tag"] == "textarea":
-                    left = int(element["left"]) + 5
-                    top = int(element["top"]) + 5
+                    left = int(element["left"].item()) + 5
+                    top = int(element["top"].item()) + 5
                     return self.create_click_coords_action(env, left, top)
             assert False, "Textarea not found"
         elif step < self.MAX_STEPS - 1:
