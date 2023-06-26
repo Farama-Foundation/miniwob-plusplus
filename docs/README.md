@@ -16,8 +16,8 @@ pip install -e .
 To generate the environment pages:
 
 ```
-python docs/scripts/gen_mds.py
-python docs/scripts/gen_env_list.py
+python docs/_scripts/gen_mds.py
+python docs/_scripts/gen_env_list.py
 ```
 
 To build the documentation once:
