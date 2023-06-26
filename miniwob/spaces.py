@@ -40,6 +40,19 @@ class Unicode(Space[str]):
             sample_charset: Character set for sampling from the space.
             seed: The seed for sampling from the space.
         """
+        assert np.issubdtype(
+            type(min_length), np.integer
+        ), f"Expects the min_length to be an integer, actual type: {type(min_length)}"
+        assert np.issubdtype(
+            type(max_length), np.integer
+        ), f"Expects the max_length to be an integer, actual type: {type(max_length)}"
+        assert (
+            0 <= min_length
+        ), f"Minimum text length must be non-negative, actual value: {min_length}"
+        assert (
+            min_length <= max_length
+        ), f"The min_length must be less than or equal to the max_length, min_length: {min_length}, max_length: {max_length}"
+
         self.min_length: int = int(min_length)
         self.max_length: int = int(max_length)
         self._sample_charlist: tuple[str, ...] = tuple(sample_charset)
@@ -47,9 +60,20 @@ class Unicode(Space[str]):
 
     def sample(
         self,
-        mask: None | Any = None,
+        mask: None | (tuple[int | None, NDArray[np.int8] | None]) = None,
     ):
-        """Generates a single random sample from this space."""
+        """Generates a single random sample from this space.
+
+        Args:
+            mask: An optional tuples of length and mask for the text.
+                The length is expected to be between the `min_length` and `max_length`.
+                Otherwise, a random integer between `min_length` and `max_length` is selected.
+                The mask is expected to be a numpy array of length of the charset passed with `dtype == np.int8`.
+                If the charlist mask is all zero then an empty string is returned no matter the `min_length`
+
+        Returns:
+            A sampled string from the space
+        """
         if mask is not None:
             assert isinstance(
                 mask, tuple
