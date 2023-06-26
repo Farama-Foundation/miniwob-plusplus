@@ -36,7 +36,7 @@ for i, env_spec in enumerate(filtered_envs):
         split = env_spec.entry_point.split(":")
         mod = __import__(split[0], fromlist=[split[1]])
         env_class = getattr(mod, split[1])
-        docstring = trim_docstring(env_class.__doc__)
+        docstring = env_class.__doc__
 
         if not docstring:
             docstring = env_class.__class__.__doc__
