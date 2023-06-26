@@ -20,10 +20,9 @@ class TestGymAPI:
 
     def test_gym_api(self, env):
         """Check that the environment follows Gym API."""
+        # Run check_env to check space containment, determinism, etc.
         check_env(env.unwrapped, skip_render_check=True)
-
-    def test_flattened_observation_space(self, env):
-        """Verify the flattened observation space."""
+        # Check the spaces and flattened spaces.
         assert isinstance(env.observation_space, spaces.Dict)
         assert set(env.observation_space) == {
             "utterance",
