@@ -1,7 +1,19 @@
 """Utilities for documentation generation."""
+import logging
+
+import gymnasium as gym
 
 
-def trim(docstring):
+def get_all_registered_miniwob_envs():
+    """Return all registered MiniWoB environments."""
+    envs = []
+    for env_spec in gym.registry.values():
+        if env_spec.namespace == "miniwob":
+            envs.append(env_spec)
+    return sorted(envs, key=lambda x: x.name)
+
+
+def trim_docstring(docstring):
     """Format whitespaces in the docstring."""
     if not docstring:
         return ""
@@ -26,3 +38,14 @@ def trim(docstring):
         trimmed.pop(0)
     # Return a single string:
     return "\n".join(trimmed)
+
+
+def extract_description_from_docstring(docstring):
+    """Extract the task description for the docstring."""
+    if not docstring:
+        return ""
+    lines = [line.strip() for line in docstring.splitlines() if line.strip()]
+    if lines[0] != "## Description":
+        logging.warning(f"Invalid docstring header: {lines[0]}")
+        return ""
+    return lines[1]
