@@ -1,6 +1,6 @@
 """Test the custom spaces."""
 import numpy as np
-from gymnasium.spaces import Box
+from gymnasium.spaces import Box, Text
 from gymnasium.spaces.utils import flatdim, flatten, flatten_space, unflatten
 
 from miniwob.spaces import Unicode
@@ -35,4 +35,16 @@ class TestUnicode:
         x = "你好世界"
         flattened_x = flatten(space, x)
         assert np.all(flattened_x == np.array([20320, 22909, 19990, 30028] + [0] * 6))
+        assert x == unflatten(space, flattened_x)
+
+    def test_text_flatten(self):
+        """Test that the space utilities still work with Text."""
+        space = Text(10, min_length=4, charset="abc")
+        assert not space.contains("Hello, world!")
+        assert flatdim(space) == 10
+        flattened_space = flatten_space(space)
+        assert isinstance(flattened_space, Box)
+        x = "baca"
+        flattened_x = flatten(space, x)
+        assert np.all(flattened_x == np.array([1, 0, 2, 0] + [3] * 6))
         assert x == unflatten(space, flattened_x)
