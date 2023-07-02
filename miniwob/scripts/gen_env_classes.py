@@ -69,7 +69,7 @@ def print_class(env_id: str, desc: str, seeds: Sequence[int], max_utterances: in
             camel_name=_camel_case(_raw_env_name(env_id)),
             desc=desc,
             utterances=(_markdown_bullets(sorted(utterances)).strip() or "TODO"),
-            fields=(_markdown_bullets(sorted(fields)).strip() or "TODO"),
+            fields=(_markdown_bullets(sorted(fields)).strip() or "(none)"),
             name=_raw_env_name(env_id),
         ).strip()
     )
@@ -111,7 +111,7 @@ def main():
     # Get the list of all miniwob environments.
     envs = []
     for env_id, env_spec in gymnasium.registry.items():
-        if env_spec.namespace == "miniwob" and "flight." in env_id:
+        if env_spec.namespace == "miniwob":
             envs.append(env_id)
     envs.sort(key=lambda env_id: _raw_env_name(env_id))
 
