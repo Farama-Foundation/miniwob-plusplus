@@ -11,7 +11,7 @@ class TestUnicode:
 
     def test_unicode_contains(self):
         """Test the `contains` method."""
-        space = Unicode(20, min_length=4, sample_charset=frozenset("abc"))
+        space = Unicode(20, min_length=4, charset="abc")
         assert space.contains("Hello, World!")
         assert space.contains("Привет мир!")
         assert space.contains("This has 20 letters.")
@@ -20,7 +20,7 @@ class TestUnicode:
 
     def test_unicode_sample(self):
         """Test the `sample` method."""
-        space = Unicode(20, min_length=4, sample_charset=frozenset("abc"))
+        space = Unicode(20, min_length=4, charset="abc")
         for _ in range(5):
             x = space.sample()
             assert all(char in "abc" for char in x)
@@ -28,7 +28,7 @@ class TestUnicode:
 
     def test_unicode_flatten(self):
         """Test the flatten utilities for Unicode."""
-        space = Unicode(10, min_length=4, sample_charset=frozenset("abc"))
+        space = Unicode(10, min_length=4, charset="abc")
         assert flatdim(space) == 10
         flattened_space = flatten_space(space)
         assert isinstance(flattened_space, Box)

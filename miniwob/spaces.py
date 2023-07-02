@@ -1,10 +1,8 @@
 """Custom spaces for MiniWoB++."""
-from typing import Any, FrozenSet, Optional, Tuple, Union
+from typing import Any
 
 import numpy as np
-from gymnasium.spaces import Box
-from gymnasium.spaces.space import Space
-from gymnasium.spaces.text import alphanumeric
+from gymnasium.spaces import Box, Text
 from gymnasium.spaces.utils import flatdim, flatten, flatten_space, unflatten
 from numpy.typing import NDArray
 
@@ -12,7 +10,7 @@ from numpy.typing import NDArray
 MAX_UNICODE_CODEPOINT = 0x10FFFF
 
 
-class Unicode(Space[str]):
+class Unicode(Text):
     """A space representing a unicode string.
 
     Unicode is a replacement for the Text space in Gymnasium, with the
@@ -22,115 +20,9 @@ class Unicode(Space[str]):
     - The sample method samples from the specified character set.
     """
 
-    def __init__(
-        self,
-        max_length: int,
-        *,
-        min_length: int = 1,
-        sample_charset: Union[FrozenSet[str], str] = alphanumeric,
-        seed: Union[int, np.random.Generator, None] = None,
-    ):
-        """Constructor for the `Unicode` space.
-
-        Args:
-            max_length: Maximum text length (in characters).
-            min_length: Minimum text length (in characters). Defaults to 1.
-            sample_charset: Character set for sampling from the space.
-            seed: The seed for sampling from the space.
-        """
-        assert np.issubdtype(
-            type(min_length), np.integer
-        ), f"Expects the min_length to be an integer, actual type: {type(min_length)}"
-        assert np.issubdtype(
-            type(max_length), np.integer
-        ), f"Expects the max_length to be an integer, actual type: {type(max_length)}"
-        assert (
-            0 <= min_length
-        ), f"Minimum text length must be non-negative, actual value: {min_length}"
-        assert (
-            min_length <= max_length
-        ), f"The min_length must be less than or equal to the max_length, min_length: {min_length}, max_length: {max_length}"
-
-        self.min_length: int = int(min_length)
-        self.max_length: int = int(max_length)
-        self._sample_charlist: Tuple[str, ...] = tuple(sample_charset)
-        super().__init__(dtype=str, seed=seed)
-
-    def sample(
-        self,
-        mask: Optional[Tuple[Optional[int], Optional[NDArray[np.int8]]]] = None,
-    ):
-        """Generates a single random sample from this space.
-
-        Args:
-            mask: An optional tuples of length and mask for the text.
-                The length is expected to be between the `min_length` and `max_length`.
-                Otherwise, a random integer between `min_length` and `max_length` is selected.
-                The mask is expected to be a numpy array of length of the charset passed with `dtype == np.int8`.
-                If the charlist mask is all zero then an empty string is returned no matter the `min_length`
-
-        Returns:
-            A sampled string from the space
-        """
-        if mask is not None:
-            assert isinstance(
-                mask, tuple
-            ), f"Expects the mask type to be a tuple, actual type: {type(mask)}"
-            assert (
-                len(mask) == 2
-            ), f"Expects the mask length to be two, actual length: {len(mask)}"
-            length, charlist_mask = mask
-
-            if length is not None:
-                assert np.issubdtype(
-                    type(length), np.integer
-                ), f"Expects the Text sample length to be an integer, actual type: {type(length)}"
-                assert (
-                    self.min_length <= length <= self.max_length
-                ), f"Expects the Text sample length be between {self.min_length} and {self.max_length}, actual length: {length}"
-
-            if charlist_mask is not None:
-                assert isinstance(
-                    charlist_mask, np.ndarray
-                ), f"Expects the Text sample mask to be an np.ndarray, actual type: {type(charlist_mask)}"
-                assert (
-                    charlist_mask.dtype == np.int8
-                ), f"Expects the Text sample mask to be an np.ndarray, actual dtype: {charlist_mask.dtype}"
-                assert charlist_mask.shape == (
-                    len(self._sample_charlist),
-                ), f"expects the Text sample mask to be {(len(self._sample_charlist),)}, actual shape: {charlist_mask.shape}"
-                assert np.all(
-                    np.logical_or(charlist_mask == 0, charlist_mask == 1)
-                ), f"Expects all masks values to 0 or 1, actual values: {charlist_mask}"
-        else:
-            length, charlist_mask = None, None
-
-        if length is None:
-            length = self.np_random.integers(self.min_length, self.max_length + 1)
-
-        if charlist_mask is None:
-            string = self.np_random.choice(self._sample_charlist, size=length)
-        else:
-            valid_mask = charlist_mask == 1
-            valid_indexes = np.where(valid_mask)[0]
-            if len(valid_indexes) == 0:
-                if self.min_length == 0:
-                    string = ""
-                else:
-                    # Otherwise the string will not be contained in the space
-                    raise ValueError(
-                        f"Trying to sample with a minimum length > 0 ({self.min_length}) but the character mask is all zero meaning that no character could be sampled."
-                    )
-            else:
-                string = "".join(
-                    self._sample_charlist[index]
-                    for index in self.np_random.choice(valid_indexes, size=length)
-                )
-
-        return "".join(string)
-
     def contains(self, x: Any) -> bool:
         """Return boolean specifying if x is a valid member of this space."""
+        # Do not check the character set.
         return isinstance(x, str) and self.min_length <= len(x) <= self.max_length
 
     def __repr__(self) -> str:
@@ -144,11 +36,6 @@ class Unicode(Space[str]):
             and self.min_length == other.min_length
             and self.max_length == other.max_length
         )
-
-    @property
-    def is_np_flattenable(self) -> bool:
-        """The flattened version is the array of unicode codepoints, padded with 0 to the max character length."""
-        return True
 
 
 @flatdim.register(Unicode)
