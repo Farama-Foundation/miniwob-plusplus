@@ -89,26 +89,6 @@ class BookFlightNodelayEnv(MiniWoBEnvironment):
     subdomain = "book-flight-nodelay"
 
 
-class ButtonDelayEnv(MiniWoBEnvironment):
-    """
-    ## Description
-
-    Wait a certain period of time before clicking the second button.
-
-    ## Example utterances
-
-    * Click button ONE, wait 1 seconds, then click button TWO.
-    * Click button ONE, wait 2 seconds, then click button TWO.
-    * Click button ONE, wait 3 seconds, then click button TWO.
-
-    ## Utterance fields
-
-    TODO
-    """
-
-    subdomain = "button-delay"
-
-
 class BuyTicketEnv(MiniWoBEnvironment):
     """
     ## Description
@@ -1918,24 +1898,6 @@ class HotColdEnv(MiniWoBEnvironment):
     """
 
     subdomain = "hot-cold"
-
-
-class HoverShapeEnv(MiniWoBEnvironment):
-    """
-    ## Description
-
-    Hover over the colored shape.
-
-    ## Example utterances
-
-    * Keep the mouse hovered over the colored square.
-
-    ## Utterance fields
-
-    TODO
-    """
-
-    subdomain = "hover-shape"
 
 
 class IdentifyShapeEnv(MiniWoBEnvironment):

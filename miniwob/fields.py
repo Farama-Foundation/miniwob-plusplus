@@ -1134,7 +1134,6 @@ FIELD_EXTRACTORS["flight.United"] = _extract_flight_subtasks
 
 # TODO: Define the field extractors
 _add("ascending-numbers", r".*", [])
-_add("button-delay", r".*", [])
 _add("buy-ticket", r".*", [])
 _add("daily-calendar", r".*", [])
 _add("drag-shape", r".*", [])
@@ -1147,7 +1146,6 @@ _add("form-sequence-2", r".*", [])
 _add("form-sequence-3", r".*", [])
 _add("generate-number", r".*", [])
 _add("hot-cold", r".*", [])
-_add("hover-shape", r".*", [])
 _add("odd-or-even", r".*", [])
 _add("order-food", r".*", [])
 _add("phone-book", r".*", [])

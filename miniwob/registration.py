@@ -450,10 +450,6 @@ def register_miniwob_envs():
         entry_point="miniwob.envs.miniwob_envs:AscendingNumbersEnv",
     )
     register(
-        id="miniwob/button-delay-v1",
-        entry_point="miniwob.envs.miniwob_envs:ButtonDelayEnv",
-    )
-    register(
         id="miniwob/buy-ticket-v1",
         entry_point="miniwob.envs.miniwob_envs:BuyTicketEnv",
     )
@@ -502,10 +498,6 @@ def register_miniwob_envs():
         entry_point="miniwob.envs.miniwob_envs:HotColdEnv",
     )
     register(
-        id="miniwob/hover-shape-v1",
-        entry_point="miniwob.envs.miniwob_envs:HoverShapeEnv",
-    )
-    register(
         id="miniwob/odd-or-even-v1",
         entry_point="miniwob.envs.miniwob_envs:OddOrEvenEnv",
     )
@@ -524,4 +516,5 @@ def register_miniwob_envs():
     register(
         id="miniwob/stock-market-v1",
         entry_point="miniwob.envs.miniwob_envs:StockMarketEnv",
+        nondeterministic=True,
     )
