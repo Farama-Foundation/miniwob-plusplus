@@ -152,6 +152,30 @@ Some are harder versions of the existing tasks, while some are completely new.""
 * Otherwise, the reward is the fraction of key-value pairs that are satisfied.""",
         "envs": ["flight.Alaska", "flight.Alaska-auto", "flight.AA"],
     },
+    {
+        "name": "Hidden Test Tasks",
+        "description": "These are tasks intended to be used as the hidden test set. They were originally not available from the OpenAI website.",
+        "envs": [
+            "ascending-numbers",
+            "buy-ticket",
+            "daily-calendar",
+            "drag-single-shape",
+            "drag-shapes-2",
+            "draw-circle",
+            "draw-line",
+            "find-greatest",
+            "form-sequence",
+            "form-sequence-2",
+            "form-sequence-3",
+            "generate-number",
+            "hot-cold",
+            "odd-or-even",
+            "order-food",
+            "phone-book",
+            "sign-agreement",
+            "stock-market",
+        ],
+    },
 ]
 
 
@@ -209,35 +233,12 @@ with open(list_md_path, "w") as fp:
 The following tasks require the agent to wait for events to happen before acting,
 and a 'no-delay' version is impossible to make.
 
-| Name         | Description                               |
-|:------------ |:----------------------------------------- |
-| chase-circle | Keep your mouse inside a moving circle.   |
-| moving-items | Click moving items before they disappear. |
-| simon-says   | Push the buttons in the order shown.      |
-
-The following tasks are listed in the original paper but were missing from the OpenAI website.
-
-| Name              | Description                                                      |
-|:----------------- |:---------------------------------------------------------------- |
-| ascending-numbers | Click on the numbers in ascending order.                         |
-| button-delay      | Wait a certain period of time before clicking the second button. |
-| buy-ticket        | Buy a ticket that matches the requested criteria.                |
-| daily-calendar    | Create an event on a daily calendar.                             |
-| drag-shape        | Drag a randomly generated shape in a specified direction.        |
-| drag-shapes-2     | Drag shapes into boxes, categorized by type.                     |
-| draw-circle       | Draw a circle around a marked point.                             |
-| draw-line         | Draw a line through a marked point.                              |
-| find-greatest     | Find the card with the greatest number.                          |
-| form-sequence     | Perform a series of instructions on a form.                      |
-| form-sequence-2   | Perform a series of instructions on a form.                      |
-| form-sequence-3   | Perform a series of instructions on a form.                      |
-| generate-number   | Generate a random number that meets certain criteria.            |
-| hot-cold          | Find and click on the hot area.                                  |
-| hover-shape       | Hover over the colored shape.                                    |
-| odd-or-even       | Mark each number as odd or even.                                 |
-| order-food        | Order food items from a menu.                                    |
-| phone-book        | Find a contact in a phone book.                                  |
-| sign-agreement    | Sign a user agreement.                                           |
-| stock-market      | Buy from the stock market below a specified price.               |
+| Name         | Description                                                      |
+|:------------ |:---------------------------------------------------------------- |
+| chase-circle | Keep your mouse inside a moving circle.                          |
+| moving-items | Click moving items before they disappear.                        |
+| simon-says   | Push the buttons in the order shown.                             |
+| button-delay | Wait a certain period of time before clicking the second button. |
+| hover-shape  | Hover over the colored shape.                                    |
 """
     fp.write(content)

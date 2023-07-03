@@ -435,6 +435,7 @@ def register_miniwob_envs():
         id="miniwob/visual-addition-v1",
         entry_point="miniwob.envs.miniwob_envs:VisualAdditionEnv",
     )
+    # FlightWoB tasks
     register(
         id="miniwob/flight.Alaska-v1",
         entry_point="miniwob.envs.flightwob_envs:FlightAlaskaEnv",
@@ -446,4 +447,78 @@ def register_miniwob_envs():
     register(
         id="miniwob/flight.AA-v1",
         entry_point="miniwob.envs.flightwob_envs:FlightAAEnv",
+    )
+    # MiniWoB test set
+    register(
+        id="miniwob/ascending-numbers-v1",
+        entry_point="miniwob.envs.miniwob_envs:AscendingNumbersEnv",
+    )
+    register(
+        id="miniwob/buy-ticket-v1",
+        entry_point="miniwob.envs.miniwob_envs:BuyTicketEnv",
+    )
+    register(
+        id="miniwob/daily-calendar-v1",
+        entry_point="miniwob.envs.miniwob_envs:DailyCalendarEnv",
+    )
+    register(
+        id="miniwob/drag-shapes-2-v1",
+        entry_point="miniwob.envs.miniwob_envs:DragShapes2Env",
+    )
+    register(
+        id="miniwob/drag-single-shape-v1",
+        entry_point="miniwob.envs.miniwob_envs:DragSingleShapeEnv",
+    )
+    register(
+        id="miniwob/draw-circle-v1",
+        entry_point="miniwob.envs.miniwob_envs:DrawCircleEnv",
+    )
+    register(
+        id="miniwob/draw-line-v1",
+        entry_point="miniwob.envs.miniwob_envs:DrawLineEnv",
+    )
+    register(
+        id="miniwob/find-greatest-v1",
+        entry_point="miniwob.envs.miniwob_envs:FindGreatestEnv",
+    )
+    register(
+        id="miniwob/form-sequence-v1",
+        entry_point="miniwob.envs.miniwob_envs:FormSequenceEnv",
+    )
+    register(
+        id="miniwob/form-sequence-2-v1",
+        entry_point="miniwob.envs.miniwob_envs:FormSequence2Env",
+    )
+    register(
+        id="miniwob/form-sequence-3-v1",
+        entry_point="miniwob.envs.miniwob_envs:FormSequence3Env",
+    )
+    register(
+        id="miniwob/generate-number-v1",
+        entry_point="miniwob.envs.miniwob_envs:GenerateNumberEnv",
+    )
+    register(
+        id="miniwob/hot-cold-v1",
+        entry_point="miniwob.envs.miniwob_envs:HotColdEnv",
+    )
+    register(
+        id="miniwob/odd-or-even-v1",
+        entry_point="miniwob.envs.miniwob_envs:OddOrEvenEnv",
+    )
+    register(
+        id="miniwob/order-food-v1",
+        entry_point="miniwob.envs.miniwob_envs:OrderFoodEnv",
+    )
+    register(
+        id="miniwob/phone-book-v1",
+        entry_point="miniwob.envs.miniwob_envs:PhoneBookEnv",
+    )
+    register(
+        id="miniwob/sign-agreement-v1",
+        entry_point="miniwob.envs.miniwob_envs:SignAgreementEnv",
+    )
+    register(
+        id="miniwob/stock-market-v1",
+        entry_point="miniwob.envs.miniwob_envs:StockMarketEnv",
+        nondeterministic=True,
     )

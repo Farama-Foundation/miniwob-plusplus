@@ -69,7 +69,7 @@ def print_class(env_id: str, desc: str, seeds: Sequence[int], max_utterances: in
             camel_name=_camel_case(_raw_env_name(env_id)),
             desc=desc,
             utterances=(_markdown_bullets(sorted(utterances)).strip() or "TODO"),
-            fields=(_markdown_bullets(sorted(fields)).strip() or "TODO"),
+            fields=(_markdown_bullets(sorted(fields)).strip() or "(none)"),
             name=_raw_env_name(env_id),
         ).strip()
     )

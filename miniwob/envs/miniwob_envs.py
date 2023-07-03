@@ -3,6 +3,24 @@
 from miniwob.environment import MiniWoBEnvironment
 
 
+class AscendingNumbersEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Click on the numbers in ascending order.
+
+    ## Example utterances
+
+    * Click on the numbers in ascending order.
+
+    ## Utterance fields
+
+    (none)
+    """
+
+    subdomain = "ascending-numbers"
+
+
 class BisectAngleEnv(MiniWoBEnvironment):
     """
     ## Description
@@ -69,6 +87,27 @@ class BookFlightNodelayEnv(MiniWoBEnvironment):
     """
 
     subdomain = "book-flight-nodelay"
+
+
+class BuyTicketEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Buy a ticket that matches the requested criteria.
+
+    ## Example utterances
+
+    * Buy the ticket with the cheapest cost.
+    * Buy the ticket with the longest duration.
+    * Buy the ticket with the most expensive cost.
+    * Buy the ticket with the shortest duration.
+
+    ## Utterance fields
+
+    * target
+    """
+
+    subdomain = "buy-ticket"
 
 
 class ChooseDateEnv(MiniWoBEnvironment):
@@ -963,6 +1002,31 @@ class CountSidesEnv(MiniWoBEnvironment):
     subdomain = "count-sides"
 
 
+class DailyCalendarEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Create an event on a daily calendar.
+
+    ## Example utterances
+
+    * Create a 0.5 hours event named "Food", between 8AM and 12PM.
+    * Create a 1.5 hours event named "Food", between 4PM and 8PM.
+    * Create a 30 mins event named "Meeting", between 4PM and 8PM.
+    * Create a 60 mins event named "Meeting", between 4PM and 8PM.
+    * Create a 90 mins event named "Phonecall", between 12PM and 4PM.
+
+    ## Utterance fields
+
+    * between from
+    * between to
+    * length
+    * name
+    """
+
+    subdomain = "daily-calendar"
+
+
 class DragBoxEnv(MiniWoBEnvironment):
     """
     ## Description
@@ -1088,6 +1152,49 @@ class DragShapesEnv(MiniWoBEnvironment):
     subdomain = "drag-shapes"
 
 
+class DragShapes2Env(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Drag shapes into boxes, categorized by type.
+
+    ## Example utterances
+
+    * Drag all circles into the left box, and everything else into the right box.
+    * Drag all magenta shapes into the left box, and everything else into the right box.
+    * Drag all rectangles into the left box, and everything else into the right box.
+    * Drag all red shapes into the left box, and everything else into the right box.
+    * Drag all yellow shapes into the left box, and everything else into the right box.
+
+    ## Utterance fields
+
+    * target
+    """
+
+    subdomain = "drag-shapes-2"
+
+
+class DragSingleShapeEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Drag a randomly generated shape in a specified direction.
+
+    ## Example utterances
+
+    * Drag the item down then press Submit.
+    * Drag the item left then press Submit.
+    * Drag the item right then press Submit.
+    * Drag the item up then press Submit.
+
+    ## Utterance fields
+
+    * target
+    """
+
+    subdomain = "drag-single-shape"
+
+
 class DragSortNumbersEnv(MiniWoBEnvironment):
     """
     ## Description
@@ -1104,6 +1211,43 @@ class DragSortNumbersEnv(MiniWoBEnvironment):
     """
 
     subdomain = "drag-sort-numbers"
+
+
+class DrawCircleEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Draw a circle around a marked point.
+
+    ## Example utterances
+
+    * Draw a circle centered around the marked point by dragging the mouse. Press submit when done.
+
+    ## Utterance fields
+
+    (none)
+    """
+
+    subdomain = "draw-circle"
+
+
+class DrawLineEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Draw a line through a marked point.
+
+    ## Example utterances
+
+    * Draw a horizontal line that runs through the dot, then press submit.
+    * Draw a vertical line that runs through the dot, then press submit.
+
+    ## Utterance fields
+
+    * direction
+    """
+
+    subdomain = "draw-line"
 
 
 class EmailInboxEnv(MiniWoBEnvironment):
@@ -1478,6 +1622,24 @@ class EnterTimeEnv(MiniWoBEnvironment):
     subdomain = "enter-time"
 
 
+class FindGreatestEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Find the card with the greatest number.
+
+    ## Example utterances
+
+    * Find and pick the card with the greatest number, then press submit.
+
+    ## Utterance fields
+
+    (none)
+    """
+
+    subdomain = "find-greatest"
+
+
 class FindMidpointEnv(MiniWoBEnvironment):
     """
     ## Description
@@ -1554,6 +1716,99 @@ class FocusText2Env(MiniWoBEnvironment):
     """
 
     subdomain = "focus-text-2"
+
+
+class FormSequenceEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Perform a series of instructions on a form.
+
+    ## Example utterances
+
+    * Select -4 with the slider, click the 1st checkbox, then hit Submit.
+    * Select 1 with the slider, click the 3rd checkbox, then hit Submit.
+    * Select 2 with the slider, click the 1st checkbox, then hit Submit.
+    * Select 7 with the slider, click the 2nd checkbox, then hit Submit.
+    * Select 9 with the slider, click the 1st checkbox, then hit Submit.
+
+    ## Utterance fields
+
+    * checkbox target
+    * slider target
+    """
+
+    subdomain = "form-sequence"
+
+
+class FormSequence2Env(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Perform a series of instructions on a form.
+
+    ## Example utterances
+
+    * Check the 1st radio button and enter the number "-5" into the 2nd textbox.
+    * Check the 1st radio button and enter the number "3" into the 2nd textbox.
+    * Check the 2nd radio button and enter the number "26" into the 1st textbox.
+    * Check the 2nd radio button and enter the number "48" into the 3rd textbox.
+    * Check the 3rd radio button and enter the number "27" into the 3rd textbox.
+
+    ## Utterance fields
+
+    * radio target
+    * textbox target
+    * textbox text
+    """
+
+    subdomain = "form-sequence-2"
+
+
+class FormSequence3Env(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Perform a series of instructions on a form.
+
+    ## Example utterances
+
+    * Choose 5ft 10in from the dropdown, then click the button labeled "Maybe".
+    * Choose 5ft 10in from the dropdown, then click the button labeled "No".
+    * Choose 5ft 9in from the dropdown, then click the button labeled "Yes".
+    * Choose 6 ft from the dropdown, then click the button labeled "No".
+    * Choose 6ft 1in from the dropdown, then click the button labeled "Yes".
+
+    ## Utterance fields
+
+    * button target
+    * dropdown target
+    """
+
+    subdomain = "form-sequence-3"
+
+
+class GenerateNumberEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Generate a random number that meets certain criteria.
+
+    ## Example utterances
+
+    * Generate a number greater than 4, then press submit.
+    * Generate a number greater than 5, then press submit.
+    * Generate a number less than 5, then press submit.
+    * Generate a number less than 8, then press submit.
+    * Generate an even number, then press submit.
+
+    ## Utterance fields
+
+    * criterion
+    * number
+    """
+
+    subdomain = "generate-number"
 
 
 class GridCoordinateEnv(MiniWoBEnvironment):
@@ -1633,6 +1888,24 @@ class HighlightText2Env(MiniWoBEnvironment):
     """
 
     subdomain = "highlight-text-2"
+
+
+class HotColdEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Find and click on the hot area.
+
+    ## Example utterances
+
+    * Find and click on the HOT area.
+
+    ## Utterance fields
+
+    * target
+    """
+
+    subdomain = "hot-cold"
 
 
 class IdentifyShapeEnv(MiniWoBEnvironment):
@@ -1791,6 +2064,73 @@ class NumberCheckboxesEnv(MiniWoBEnvironment):
     subdomain = "number-checkboxes"
 
 
+class OddOrEvenEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Mark each number as odd or even.
+
+    ## Example utterances
+
+    * Mark the numbers below as odd or even and press submit when done.
+
+    ## Utterance fields
+
+    (none)
+    """
+
+    subdomain = "odd-or-even"
+
+
+class OrderFoodEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Order food items from a menu.
+
+    ## Example utterances
+
+    * Order 3 items that are vegan
+    * Order one of each item: Coconut mango tart, Ice cream sundae
+    * Order one of each item: Garlic bread, Spaghetti and Meatballs
+    * Order one of each item: Spaghetti and Meatballs, Spinach and goat cheese dip
+    * Order one of each item: Spinach and goat cheese dip, Grilled Pork Tenderloin
+
+    ## Utterance fields
+
+    * amount
+    * criterion
+    * target 0
+    * target 1
+    * type
+    """
+
+    subdomain = "order-food"
+
+
+class PhoneBookEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Find a contact in a phone book.
+
+    ## Example utterances
+
+    * Find Casie in the contact book and click on their address.
+    * Find Eadith in the contact book and click on their email.
+    * Find Sayre in the contact book and click on their address.
+    * Find Verile in the contact book and click on their phone number.
+    * Find Wilow in the contact book and click on their address.
+
+    ## Utterance fields
+
+    * name
+    * target
+    """
+
+    subdomain = "phone-book"
+
+
 class ReadTableEnv(MiniWoBEnvironment):
     """
     ## Description
@@ -1930,6 +2270,29 @@ class SearchEngineEnv(MiniWoBEnvironment):
     subdomain = "search-engine"
 
 
+class SignAgreementEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Sign a user agreement.
+
+    ## Example utterances
+
+    * Click the cancel button.
+    * Scroll to the bottom of the textarea, enter the name "Cristin" then press "Cancel"
+    * Scroll to the bottom of the textarea, enter the name "Juan" then press "Cancel"
+    * Scroll to the bottom of the textarea, enter the name "Olin" then press "Agree"
+    * Scroll to the bottom of the textarea, enter the name "Vanda" then press "Agree"
+
+    ## Utterance fields
+
+    * button
+    * name
+    """
+
+    subdomain = "sign-agreement"
+
+
 class SimpleAlgebraEnv(MiniWoBEnvironment):
     """
     ## Description
@@ -2038,6 +2401,29 @@ class SocialMediaSomeEnv(MiniWoBEnvironment):
     subdomain = "social-media-some"
 
 
+class StockMarketEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Buy from the stock market below a specified price.
+
+    ## Example utterances
+
+    * Buy ACP stock when the price is less than $56.60.
+    * Buy EFN stock when the price is less than $49.60.
+    * Buy JPF stock when the price is less than $45.20.
+    * Buy JYV stock when the price is less than $62.10.
+    * Buy TPZ stock when the price is less than $48.20.
+
+    ## Utterance fields
+
+    * name
+    * target
+    """
+
+    subdomain = "stock-market"
+
+
 class TerminalEnv(MiniWoBEnvironment):
     """
     ## Description
@@ -2064,7 +2450,7 @@ class TextEditorEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    Modify a text"s style in a text-editor.
+    Modify a text's style in a text-editor.
 
     ## Example utterances
 
