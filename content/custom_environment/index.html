@@ -7,12 +7,12 @@
     <meta property="og:title" content="MiniWoB++ Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="A collection of over 100 web interaction environments, along with JavaScript and Python interfaces." />
-    <meta property="og:url" content="https://miniwob.farama.org/content/observation_space.html" /><meta property="og:image" content="https://miniwob.farama.org/_static/img/miniwobplusplus-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Action Space" href="../action_space/" /><link rel="prev" title="Basic Usage" href="../basic_usage/" />
-        <link rel="canonical" href="https://miniwob.farama.org/content/observation_space.html" />
+    <meta property="og:url" content="https://miniwob.farama.org/content/custom_environment.html" /><meta property="og:image" content="https://miniwob.farama.org/_static/img/miniwobplusplus-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Javascript API" href="../javascript_api/" /><link rel="prev" title="visual-addition" href="../../environments/visual-addition/" />
+        <link rel="canonical" href="https://miniwob.farama.org/content/custom_environment.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20.dev1 -->
-        <title>Observation Space - MiniWoB++ Documentation</title>
+        <title>Creating a Custom Environment - MiniWoB++ Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=a022fd11c0d7e10ac71ac296890386cea7a2fa24" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=093e2efd5a2c7b46ab7c7157e45f5f05a1e0a463" />
@@ -228,12 +228,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../basic_usage/">Basic Usage</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
-<ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Observation Space</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../observation_space/">Observation Space</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../action_space/">Action Space</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../viewing/">Viewing the Environments</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../environments/list/">Environments List</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Environments List</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../environments/bisect-angle/">bisect-angle</a></li>
@@ -348,7 +348,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../environments/visual-addition/">visual-addition</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../custom_environment/">Creating a Custom Environment</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Creating a Custom Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../javascript_api/">Javascript API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demonstrations/">Demonstrations</a></li>
 </ul>
@@ -381,7 +381,7 @@
             <span>Back to top</span>
           </a>
           <div class="content-icon-container"><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/Farama-Foundation/miniwob-plusplus/edit/master/docs/content/observation_space.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/miniwob-plusplus/edit/master/docs/content/custom_environment.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -412,148 +412,158 @@
           </div>
           <article role="main">
             
-            <section id="observation-space">
-<h1>Observation Space<a class="headerlink" href="#observation-space" title="Permalink to this heading">#</a></h1>
-<section id="observation-object">
-<h2>Observation Object<a class="headerlink" href="#observation-object" title="Permalink to this heading">#</a></h2>
-<p>In all MiniWoB++ environments, an observation is a <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following fields:</p>
-<div class="table-wrapper docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Key</p></th>
-<th class="head"><p>Type</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">utterance</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
-<td><p>Task instruction string.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fields</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">list[tuple[str,</span> <span class="pre">str]]</span></code></p></td>
-<td><p>Environment-specific key-value pairs extracted from the utterance;
-e.g., “Click on the OK button” → <code class="docutils literal notranslate"><span class="pre">[(&quot;target&quot;,</span> <span class="pre">&quot;OK&quot;)]</span></code>.
-The fields are guaranteed to be the same during the same episode.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">screenshot</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(height,</span> <span class="pre">width,</span> <span class="pre">3)</span></code> and type <code class="docutils literal notranslate"><span class="pre">uint8</span></code></p></td>
-<td><p>Screenshot as RGB values for each pixel.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dom_elements</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">list[dict]</span></code></p></td>
-<td><p>List of dicts, each listing properties of a <em>visible</em> DOM elements (see below).</p></td>
-</tr>
-</tbody>
-</table>
+            <section id="creating-a-custom-environment">
+<h1>Creating a Custom Environment<a class="headerlink" href="#creating-a-custom-environment" title="Permalink to this heading">#</a></h1>
+<p>Creating a custom MiniWoB++ environment is as simple as creating a new task HTML page, and then specifying the URL to the HTML file when registering the environment.</p>
+<p>The following tutorial illustrates how to create a custom environment with the standard <a class="reference internal" href="../observation_space/"><span class="doc std std-doc">observation space</span></a> and <a class="reference internal" href="../action_space/"><span class="doc std std-doc">action space</span></a>. For more advanced needs (customizing the spaces, creating a package, etc.), see this <a class="reference external" href="https://gymnasium.farama.org/tutorials/gymnasium_basics/environment_creation/">Gymnasium tutorial</a>.</p>
+<section id="creating-the-task-html-page">
+<h2>Creating the Task HTML Page<a class="headerlink" href="#creating-the-task-html-page" title="Permalink to this heading">#</a></h2>
+<a class="reference internal image-reference" href="../../_images/custom-environment-1.png"><img alt="../../_images/custom-environment-1.png" class="align-center" src="../../_images/custom-environment-1.png" style="width: 50%;" /></a>
+<p>To properly interface with the MiniWoB++ library, the HTML file must include
+<a class="reference external" href="https://github.com/Farama-Foundation/miniwob-plusplus/blob/master/miniwob/html/core/core.css"><code class="docutils literal notranslate"><span class="pre">core.css</span></code></a>
+and
+<a class="reference external" href="https://github.com/Farama-Foundation/miniwob-plusplus/blob/master/miniwob/html/core/core.js"><code class="docutils literal notranslate"><span class="pre">core.js</span></code></a>.
+These files are also available from the Python package (under <code class="docutils literal notranslate"><span class="pre">html/core/</span></code>).</p>
+<p>Here is an example HTML file (<code class="docutils literal notranslate"><span class="pre">custom.html</span></code>):</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Custom Task<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+<span class="cm">&lt;!-- The following CSS and JS are required. --&gt;</span>
+<span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text/css&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;core.css&quot;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;core.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="c1">// genProblem() will be called at the start of each episode.</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">genProblem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// core.randi(a, b) (from core.js) samples an integer between a and b (inclusive).</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">targetAmount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">core</span><span class="p">.</span><span class="nx">randi</span><span class="p">(</span><span class="mf">2</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">),</span><span class="w"> </span><span class="nx">clickedAmount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// Set the task utterance. This will become the &quot;utterance&quot; in the observation.</span>
+<span class="w">  </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;query&quot;</span><span class="p">).</span><span class="nx">textContent</span><span class="w"> </span><span class="o">=</span>
+<span class="w">      </span><span class="sb">`Click Hello </span><span class="si">${</span><span class="nx">targetAmount</span><span class="si">}</span><span class="sb"> times, then click Submit.`</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// Create the task UI.</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">hello</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&quot;button&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">submit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&quot;button&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">amount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&quot;span&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;area&quot;</span><span class="p">).</span><span class="nx">replaceChildren</span><span class="p">(</span><span class="nx">hello</span><span class="p">,</span><span class="w"> </span><span class="nx">submit</span><span class="p">,</span><span class="w"> </span><span class="nx">amount</span><span class="p">);</span>
+
+<span class="w">  </span><span class="nx">hello</span><span class="p">.</span><span class="nx">textContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Hello&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">hello</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">clickedAmount</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">amount</span><span class="p">.</span><span class="nx">textContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">clickedAmount</span><span class="p">;</span>
+<span class="w">  </span><span class="p">});</span>
+
+<span class="w">  </span><span class="nx">submit</span><span class="p">.</span><span class="nx">textContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Submit&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">submit</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">clickedAmount</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">targetAmount</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// core.endEpisode(reward, timeProportional) ends the episode and sets</span>
+<span class="w">      </span><span class="c1">// the reward (which can be read by Selenium). If timeProportional is</span>
+<span class="w">      </span><span class="c1">// true, then the reward is scaled by the amount of time left.</span>
+<span class="w">      </span><span class="nx">core</span><span class="p">.</span><span class="nx">endEpisode</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">core</span><span class="p">.</span><span class="nx">endEpisode</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">}</span>
+
+<span class="nb">window</span><span class="p">.</span><span class="nx">onload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// core.startEpisode() prepares the web page for an episode by showing the &quot;START&quot;</span>
+<span class="w">  </span><span class="c1">// screen (it does not actually start the episode until &quot;START&quot; is clicked).</span>
+<span class="w">  </span><span class="c1">// core.startEpisode() will also be automatically called at the end of each episode.</span>
+<span class="w">  </span><span class="nx">core</span><span class="p">.</span><span class="nx">startEpisode</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="cm">&lt;!-- The following 3 divs are required. --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;wrap&quot;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;query&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;area&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
 </div>
 </section>
-<section id="dom-element-properties">
-<h2>DOM Element Properties<a class="headerlink" href="#dom-element-properties" title="Permalink to this heading">#</a></h2>
-<p>Each dict in <code class="docutils literal notranslate"><span class="pre">dom_elements</span></code> has the following fields:</p>
-<div class="table-wrapper docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Key</p></th>
-<th class="head"><p>Type</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ref</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
-<td><p>Non-zero integer ID.</p>
+<section id="registering-the-environment">
+<h2>Registering the Environment<a class="headerlink" href="#registering-the-environment" title="Permalink to this heading">#</a></h2>
+<p>The generic environment class <code class="docutils literal notranslate"><span class="pre">MiniWoBEnvironment</span></code> from <code class="docutils literal notranslate"><span class="pre">miniwob.environment</span></code> can be used as the entry point for the environment.
+The following keyword arguments should be specified:</p>
 <ul class="simple">
-<li><p>The <code class="docutils literal notranslate"><span class="pre">ref</span></code> for normal HTML elements start from 1.</p></li>
-<li><p>Each HTML element retains the same <code class="docutils literal notranslate"><span class="pre">ref</span></code> during the same episode.</p></li>
-<li><p>Non-empty text nodes are converted into pseudo-elements with <code class="docutils literal notranslate"><span class="pre">ref</span></code> counting down from -1.<a class="footnote-reference brackets" href="#id4" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">subdomain</span></code>: This should match the HTML filename.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">base_url</span></code>: This should point to where the HTML is; the URL <code class="docutils literal notranslate"><span class="pre">{base_url}/{subdomain}.html</span></code> should point to the task page.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">field_extractor</span></code>: This should be a function that takes the utterance string (that appears in the yellow box) and returns a list of fields as key-value tuples. One option is to not produce any field by specifying <code class="docutils literal notranslate"><span class="pre">lambda</span> <span class="pre">x:</span> <span class="pre">[]</span></code>.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">parent</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">ref</span></code> of the parent. For the root DOM element, <code class="docutils literal notranslate"><span class="pre">parent</span></code> will be 0.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">left</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(1,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
-<td><p>Left coordinate relative to the screen (can be negative).</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">top</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(1,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
-<td><p>Top coordinate relative to the screen (can be negative).</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">width</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(1,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
-<td><p>Element width.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">height</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(1,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
-<td><p>Element height.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">tag</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
-<td><p>HTML tag.</p>
-<ul class="simple">
-<li><p>For normal elements, this is the lowercased tag name (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;div&quot;</span></code>).</p></li>
-<li><p>For <code class="docutils literal notranslate"><span class="pre">&lt;input&gt;</span></code> elements, the input type is appended (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;input_text&quot;</span></code>).</p></li>
-<li><p>Non-empty text nodes become pseudo-elements with tag <code class="docutils literal notranslate"><span class="pre">&quot;t&quot;</span></code>.<a class="footnote-reference brackets" href="#id4" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></li>
-</ul>
-</td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">text</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
-<td><p>Text content, which is non-empty only for leaf elements.<a class="footnote-reference brackets" href="#id4" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">value</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
-<td><p>HTML <code class="docutils literal notranslate"><span class="pre">value</span></code> attribute (for an <code class="docutils literal notranslate"><span class="pre">&lt;input&gt;</span></code> element).</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
-<td><p>HTML <code class="docutils literal notranslate"><span class="pre">id</span></code> attribute.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">classes</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
-<td><p>HTML <code class="docutils literal notranslate"><span class="pre">class</span></code> attribute (multiple classes are separated by spaces).</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">bg_color</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(4,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
-<td><p>Background color as RGBA value.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fg_color</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(4,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">float32</span></code></p></td>
-<td><p>Foreground color as RGBA value.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">flags</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(4,)</span></code> and type <code class="docutils literal notranslate"><span class="pre">int8</span></code></p></td>
-<td><p>Binary flags:</p>
-<ul class="simple">
-<li><p>(<code class="docutils literal notranslate"><span class="pre">focused</span></code>) Whether the element is being focused on.</p></li>
-<li><p>(<code class="docutils literal notranslate"><span class="pre">tampered</span></code>) Whether the element has been tampered (clicked, focused, typed, etc.).</p></li>
-<li><p>(<code class="docutils literal notranslate"><span class="pre">targeted</span></code>) Whether the element is an event target (for recorded demonstrations).</p></li>
-<li><p>(<code class="docutils literal notranslate"><span class="pre">is_leaf</span></code>) Whether the element is a leaf.</p></li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<p>Here is example code (<code class="docutils literal notranslate"><span class="pre">custom_registry.py</span></code>):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">from</span> <span class="nn">gymnasium.envs.registration</span> <span class="kn">import</span> <span class="n">register</span>
+<span class="kn">from</span> <span class="nn">miniwob.fields</span> <span class="kn">import</span> <span class="n">create_regex_field_extractor</span>
+
+<span class="n">register</span><span class="p">(</span>
+  <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;miniwob/custom-v0&#39;</span><span class="p">,</span>
+  <span class="n">entry_point</span><span class="o">=</span><span class="s1">&#39;miniwob.environment:MiniWoBEnvironment&#39;</span><span class="p">,</span>
+  <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;subdomain&#39;</span><span class="p">:</span> <span class="s1">&#39;custom&#39;</span><span class="p">,</span>
+    <span class="c1"># Assuming that this file is in the same directory as `custom.html`:</span>
+    <span class="s1">&#39;base_url&#39;</span><span class="p">:</span> <span class="s1">&#39;file://</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">),</span>
+    <span class="c1"># This helper method will produce a function that takes a string and returns</span>
+    <span class="c1"># [(&#39;amount&#39;, ___)], where ___ is from the capturing group in the regex.</span>
+    <span class="s1">&#39;field_extractor&#39;</span><span class="p">:</span> <span class="n">create_regex_field_extractor</span><span class="p">(</span>
+      <span class="sa">r</span><span class="s1">&#39;Click Hello (\d+) times, then click Submit\.&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;amount&#39;</span><span class="p">],</span>
+    <span class="p">)</span>
+  <span class="p">},</span>
+<span class="p">)</span>
+</pre></div>
 </div>
-<hr class="footnotes docutils" />
-<aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id4" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>,<a role="doc-backlink" href="#id3">3</a>)</span>
-<p><strong>Note:</strong> Regarding text nodes:</p>
-<ul class="simple">
-<li><p>For an element with a single text node as its child (e.g., <code class="docutils literal notranslate"><span class="pre">&lt;button&gt;Submit&lt;/button&gt;</span></code>),
-a text pseudo-element will not be created. The element will become a leaf with the
-<code class="docutils literal notranslate"><span class="pre">text</span></code> feature filled in.</p></li>
-<li><p>For an element with a text node as one of its children (e.g., <code class="docutils literal notranslate"><span class="pre">&lt;button&gt;Submit</span> <span class="pre">&lt;b&gt;NOW&lt;/b&gt;&lt;/button&gt;</span></code>),
-a text pseudo-element (negative <code class="docutils literal notranslate"><span class="pre">ref</span></code> and <code class="docutils literal notranslate"><span class="pre">tag</span> <span class="pre">=</span> <span class="pre">&quot;t&quot;</span></code>) will be created for each line of text
-in the text node.</p></li>
-</ul>
-</aside>
-</aside>
+</section>
+<section id="using-the-environment">
+<h2>Using the Environment<a class="headerlink" href="#using-the-environment" title="Permalink to this heading">#</a></h2>
+<p>The following code is adapted from the example in the <a class="reference internal" href="../basic_usage/"><span class="doc std std-doc">Basic Usage</span></a> page:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">gymnasium</span>
+<span class="kn">from</span> <span class="nn">miniwob.action</span> <span class="kn">import</span> <span class="n">ActionTypes</span>
+<span class="kn">from</span> <span class="nn">miniwob.fields</span> <span class="kn">import</span> <span class="n">field_lookup</span>
+
+<span class="c1"># Import `custom_registry.py` above to register the task.</span>
+<span class="kn">import</span> <span class="nn">custom_registry</span>
+
+<span class="c1"># Create an environment.</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;miniwob/custom-v0&#39;</span><span class="p">,</span> <span class="n">render_mode</span><span class="o">=</span><span class="s1">&#39;human&#39;</span><span class="p">)</span>
+
+<span class="c1"># Wrap the code in try-finally to ensure proper cleanup.</span>
+<span class="k">try</span><span class="p">:</span>
+  <span class="c1"># Start a new episode.</span>
+  <span class="n">observation</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+  <span class="c1"># Find the relevant HTML elements.</span>
+  <span class="k">for</span> <span class="n">hello_button</span> <span class="ow">in</span> <span class="n">observation</span><span class="p">[</span><span class="s2">&quot;dom_elements&quot;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">hello_button</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Hello&quot;</span><span class="p">:</span>
+      <span class="k">break</span>
+  <span class="k">for</span> <span class="n">submit_button</span> <span class="ow">in</span> <span class="n">observation</span><span class="p">[</span><span class="s2">&quot;dom_elements&quot;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">submit_button</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Submit&quot;</span><span class="p">:</span>
+      <span class="k">break</span>
+
+  <span class="n">amount</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">field_lookup</span><span class="p">(</span><span class="n">observation</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">],</span> <span class="s1">&#39;amount&#39;</span><span class="p">))</span>
+  <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">amount</span><span class="p">):</span>
+    <span class="c1"># Click Hello.</span>
+    <span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">create_action</span><span class="p">(</span><span class="n">ActionTypes</span><span class="o">.</span><span class="n">CLICK_ELEMENT</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">hello_button</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">])</span>
+    <span class="n">observation</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+  <span class="c1"># Click Submit.</span>
+  <span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">create_action</span><span class="p">(</span><span class="n">ActionTypes</span><span class="o">.</span><span class="n">CLICK_ELEMENT</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">submit_button</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">])</span>
+  <span class="n">observation</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+  
+  <span class="c1"># Check if the action was correct. </span>
+  <span class="k">assert</span> <span class="n">reward</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+  <span class="k">assert</span> <span class="n">terminated</span> <span class="ow">is</span> <span class="kc">True</span>
+  <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="k">finally</span><span class="p">:</span>
+  <span class="n">env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -562,18 +572,18 @@ in the text node.</p></li>
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../action_space/">
+            <a class="next-page" href="../javascript_api/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Action Space</div>
+                <div class="title">Javascript API</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
             </a>
-            <a class="prev-page" href="../basic_usage/">
+            <a class="prev-page" href="../../environments/visual-addition/">
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
@@ -582,7 +592,7 @@ in the text node.</p></li>
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Basic Usage</div>
+                <div class="title">visual-addition</div>
                 
               </div>
             </a>
@@ -626,9 +636,10 @@ in the text node.</p></li>
           <div class="toc-tree-container">
             <div class="toc-tree">
               <ul>
-<li><a class="reference internal" href="#">Observation Space</a><ul>
-<li><a class="reference internal" href="#observation-object">Observation Object</a></li>
-<li><a class="reference internal" href="#dom-element-properties">DOM Element Properties</a></li>
+<li><a class="reference internal" href="#">Creating a Custom Environment</a><ul>
+<li><a class="reference internal" href="#creating-the-task-html-page">Creating the Task HTML Page</a></li>
+<li><a class="reference internal" href="#registering-the-environment">Registering the Environment</a></li>
+<li><a class="reference internal" href="#using-the-environment">Using the Environment</a></li>
 </ul>
 </li>
 </ul>
