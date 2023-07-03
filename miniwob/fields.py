@@ -1132,22 +1132,215 @@ FIELD_EXTRACTORS["flight.JetBlue"] = _extract_flight_subtasks
 FIELD_EXTRACTORS["flight.United"] = _extract_flight_subtasks
 
 
-# TODO: Define the field extractors
-_add("ascending-numbers", r".*", [])
-_add("buy-ticket", r".*", [])
-_add("daily-calendar", r".*", [])
-_add("drag-shape", r".*", [])
-_add("drag-shapes-2", r".*", [])
-_add("draw-circle", r".*", [])
-_add("draw-line", r".*", [])
-_add("find-greatest", r".*", [])
-_add("form-sequence", r".*", [])
-_add("form-sequence-2", r".*", [])
-_add("form-sequence-3", r".*", [])
-_add("generate-number", r".*", [])
-_add("hot-cold", r".*", [])
-_add("odd-or-even", r".*", [])
-_add("order-food", r".*", [])
-_add("phone-book", r".*", [])
-_add("sign-agreement", r".*", [])
-_add("stock-market", r".*", [])
+# Click on the numbers in ascending order.
+_add("ascending-numbers", r"Click on the numbers in ascending order\.", [])
+
+
+# Buy the ticket with the cheapest cost.
+# Buy the ticket with the longest duration.
+# Buy the ticket with the most expensive cost.
+# Buy the ticket with the shortest duration.
+_add("buy-ticket", r"Buy the ticket with the (.*)\.", ["target"])
+
+
+# Create a 0.5 hours event named "Food", between 8AM and 12PM.
+# Create a 1.5 hours event named "Food", between 4PM and 8PM.
+# Create a 30 mins event named "Meeting", between 4PM and 8PM.
+# Create a 60 mins event named "Meeting", between 4PM and 8PM.
+# Create a 90 mins event named "Phonecall", between 12PM and 4PM.
+_add(
+    "daily-calendar",
+    r'Create a (.*) event named "(.*)", between (.*) and (.*)\.',
+    ["length", "name", "between from", "between to"],
+)
+
+
+# Drag the item down then press Submit.
+# Drag the item left then press Submit.
+# Drag the item right then press Submit.
+# Drag the item up then press Submit.
+_add("drag-single-shape", r"Drag the item (.*) then press Submit\.", ["target"])
+
+
+# Drag all circles into the left box, and everything else into the right box.
+# Drag all magenta shapes into the left box, and everything else into the right box.
+# Drag all rectangles into the left box, and everything else into the right box.
+# Drag all red shapes into the left box, and everything else into the right box.
+# Drag all yellow shapes into the left box, and everything else into the right box.
+_add(
+    "drag-shapes-2",
+    r"Drag all (.*) into the left box, and everything else into the right box\.",
+    ["target"],
+)
+
+
+# Draw a circle centered around the marked point by dragging the mouse. Press submit when done.
+_add(
+    "draw-circle",
+    r"Draw a circle centered around the marked point by dragging the mouse\. Press submit when done\.",
+    [],
+)
+
+
+# Draw a horizontal line that runs through the dot, then press submit.
+# Draw a vertical line that runs through the dot, then press submit.
+_add(
+    "draw-line",
+    r"Draw a (.*) line that runs through the dot, then press submit\.",
+    ["direction"],
+)
+
+
+# Find and pick the card with the greatest number, then press submit.
+_add(
+    "find-greatest",
+    r"Find and pick the card with the greatest number, then press submit\.",
+    [],
+)
+
+
+# Select -4 with the slider, click the 1st checkbox, then hit Submit.
+# Select 1 with the slider, click the 3rd checkbox, then hit Submit.
+# Select 2 with the slider, click the 1st checkbox, then hit Submit.
+# Select 7 with the slider, click the 2nd checkbox, then hit Submit.
+# Select 9 with the slider, click the 1st checkbox, then hit Submit.
+_add(
+    "form-sequence",
+    r"Select (.*) with the slider, click the (\d*).. checkbox, then hit Submit\.",
+    ["slider target", "checkbox target"],
+)
+
+
+# Check the 1st radio button and enter the number "-5" into the 2nd textbox.
+# Check the 1st radio button and enter the number "3" into the 2nd textbox.
+# Check the 2nd radio button and enter the number "26" into the 1st textbox.
+# Check the 2nd radio button and enter the number "48" into the 3rd textbox.
+# Check the 3rd radio button and enter the number "27" into the 3rd textbox.
+_add(
+    "form-sequence-2",
+    r'Check the (\d*).. radio button and enter the number "(.*)" into the (\d*).. textbox\.',
+    ["radio target", "textbox text", "textbox target"],
+)
+
+
+# Choose 5ft 10in from the dropdown, then click the button labeled "Maybe".
+# Choose 5ft 10in from the dropdown, then click the button labeled "No".
+# Choose 5ft 9in from the dropdown, then click the button labeled "Yes".
+# Choose 6 ft from the dropdown, then click the button labeled "No".
+# Choose 6ft 1in from the dropdown, then click the button labeled "Yes".
+_add(
+    "form-sequence-3",
+    r'Choose (.*) from the dropdown, then click the button labeled "(.*)"\.',
+    ["dropdown target", "button target"],
+)
+
+
+# Generate a number greater than 4, then press submit.
+# Generate a number greater than 5, then press submit.
+# Generate a number less than 5, then press submit.
+# Generate a number less than 8, then press submit.
+# Generate an even number, then press submit.
+
+
+def _extract_generate_number(utterance):
+    match = re.match(
+        r"Generate (?:an (odd|even) number|"
+        r"a number (greater than|less than) (.+)), "
+        r"then press submit\.",
+        utterance,
+    )
+    if not match:
+        raise ValueError(f"Invalid utterance: {utterance}")
+    if match.group(1):
+        return [("criterion", match.group(1))]
+    else:
+        return [("criterion", match.group(2)), ("number", match.group(3))]
+
+
+FIELD_EXTRACTORS["generate-number"] = _extract_generate_number
+
+
+# Find and click on the HOT area.
+_add("hot-cold", r"Find and click on the (.*) area\.", ["target"])
+
+
+# Mark the numbers below as odd or even and press submit when done.
+_add(
+    "odd-or-even",
+    r"Mark the numbers below as odd or even and press submit when done\.",
+    [],
+)
+
+
+# Order 3 items that are vegan
+# Order one of each item: Coconut mango tart, Ice cream sundae
+# Order one of each item: Garlic bread, Spaghetti and Meatballs
+# Order one of each item: Spaghetti and Meatballs, Spinach and goat cheese dip
+# Order one of each item: Spinach and goat cheese dip, Grilled Pork Tenderloin
+
+
+def _extract_order_food(utterance):
+    match = re.match(r"Order one of each item: (.*)", utterance)
+    if match:
+        fields = []
+        fields.append(("criterion", "name"))
+        for i, target in enumerate(match.group(1).split(", ")):
+            fields.append((f"target {i}", target))
+        return fields
+    match = re.match(r"Order (.*) items? that are (.*)", utterance)
+    if match:
+        return [
+            ("criterion", "type"),
+            ("amount", match.group(1)),
+            ("type", match.group(2)),
+        ]
+    raise ValueError(f"Invalid utterance: {utterance}")
+
+
+FIELD_EXTRACTORS["order-food"] = _extract_order_food
+
+
+# Find Casie in the contact book and click on their address.
+# Find Eadith in the contact book and click on their email.
+# Find Sayre in the contact book and click on their address.
+# Find Verile in the contact book and click on their phone number.
+# Find Wilow in the contact book and click on their address.
+_add(
+    "phone-book",
+    r"Find (.*) in the contact book and click on their (.*)\.",
+    ["name", "target"],
+)
+
+
+# Click the cancel button.
+# Scroll to the bottom of the textarea, enter the name "Cristin" then press "Cancel"
+# Scroll to the bottom of the textarea, enter the name "Juan" then press "Cancel"
+# Scroll to the bottom of the textarea, enter the name "Olin" then press "Agree"
+# Scroll to the bottom of the textarea, enter the name "Vanda" then press "Agree"
+
+
+def _extract_sign_agreement(utterance):
+    if utterance == "Click the cancel button.":
+        return [("button", "Cancel")]
+    match = re.match(
+        r'Scroll to the bottom of the textarea, enter the name "(.*)" then press "(.*)"',
+        utterance,
+    )
+    if not match:
+        raise ValueError(f"Invalid utterance: {utterance}")
+    return [("button", match.group(2)), ("name", match.group(1))]
+
+
+FIELD_EXTRACTORS["sign-agreement"] = _extract_sign_agreement
+
+
+# Buy ACP stock when the price is less than $56.60.
+# Buy EFN stock when the price is less than $49.60.
+# Buy JPF stock when the price is less than $45.20.
+# Buy JYV stock when the price is less than $62.10.
+# Buy TPZ stock when the price is less than $48.20.
+_add(
+    "stock-market",
+    r"Buy (.*) stock when the price is less than $(.*)\.",
+    ["name", "target"],
+)

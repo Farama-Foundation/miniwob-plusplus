@@ -193,7 +193,7 @@ var genProblem = function() {
   var markedPoint = generateCenter();
 
   var problemType = core.sample([true, false]) ? 'horizontal' : 'vertical';
-  d3.select('#query').html('Draw a ' + problemType + ' line that runs through the dot, then press submit');
+  d3.select('#query').html('Draw a ' + problemType + ' line that runs through the dot, then press submit.');
 
   d3.select('#controls button').on('click', function(){
     if(d3.select('path')._groups[0][0] === null) core.endEpisode(-1.0);

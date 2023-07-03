@@ -1129,27 +1129,6 @@ class DragItemsGridEnv(MiniWoBEnvironment):
     subdomain = "drag-items-grid"
 
 
-class DragShapeEnv(MiniWoBEnvironment):
-    """
-    ## Description
-
-    Drag a randomly generated shape in a specified direction.
-
-    ## Example utterances
-
-    * Drag the item down then press Submit.
-    * Drag the item left then press Submit.
-    * Drag the item right then press Submit.
-    * Drag the item up then press Submit.
-
-    ## Utterance fields
-
-    TODO
-    """
-
-    subdomain = "drag-shape"
-
-
 class DragShapesEnv(MiniWoBEnvironment):
     """
     ## Description
@@ -1190,6 +1169,27 @@ class DragShapes2Env(MiniWoBEnvironment):
     """
 
     subdomain = "drag-shapes-2"
+
+
+class DragSingleShapeEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Drag a randomly generated shape in a specified direction.
+
+    ## Example utterances
+
+    * Drag the item down then press Submit.
+    * Drag the item left then press Submit.
+    * Drag the item right then press Submit.
+    * Drag the item up then press Submit.
+
+    ## Utterance fields
+
+    TODO
+    """
+
+    subdomain = "drag-single-shape"
 
 
 class DragSortNumbersEnv(MiniWoBEnvironment):
@@ -1236,8 +1236,8 @@ class DrawLineEnv(MiniWoBEnvironment):
 
     ## Example utterances
 
-    * Draw a horizontal line that runs through the dot, then press submit
-    * Draw a vertical line that runs through the dot, then press submit
+    * Draw a horizontal line that runs through the dot, then press submit.
+    * Draw a vertical line that runs through the dot, then press submit.
 
     ## Utterance fields
 
@@ -1789,11 +1789,11 @@ class GenerateNumberEnv(MiniWoBEnvironment):
 
     ## Example utterances
 
-    * Generate a number greater than 4, then press submit
-    * Generate a number greater than 5, then press submit
-    * Generate a number less than 5, then press submit
-    * Generate a number less than 8, then press submit
-    * Generate an even number, then press submit
+    * Generate a number greater than 4, then press submit.
+    * Generate a number greater than 5, then press submit.
+    * Generate a number less than 5, then press submit.
+    * Generate a number less than 8, then press submit.
+    * Generate an even number, then press submit.
 
     ## Utterance fields
 

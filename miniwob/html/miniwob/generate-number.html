@@ -21,16 +21,16 @@ var displayProblem = function(problemType){
   var reqs = {};
   if(problemType === 0) {
     reqs.lessThan = core.randi(5,9);
-    text = "Generate a number less than " + reqs.lessThan + ", then press submit";
+    text = "Generate a number less than " + reqs.lessThan + ", then press submit.";
   } else if (problemType === 1){
     reqs.greaterThan = core.randi(2,6);
-    text = "Generate a number greater than " + reqs.greaterThan + ", then press submit";
+    text = "Generate a number greater than " + reqs.greaterThan + ", then press submit.";
   } else if (problemType === 2){
     reqs.odd = true;
-    text = "Generate an odd number, then press submit";
+    text = "Generate an odd number, then press submit.";
   } else if (problemType === 3){
     reqs.even = true;
-    text = "Generate an even number, then press submit";
+    text = "Generate an even number, then press submit.";
   }
 
   $('#query').html(text);

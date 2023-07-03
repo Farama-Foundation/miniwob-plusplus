@@ -458,12 +458,12 @@ def register_miniwob_envs():
         entry_point="miniwob.envs.miniwob_envs:DailyCalendarEnv",
     )
     register(
-        id="miniwob/drag-shape-v1",
-        entry_point="miniwob.envs.miniwob_envs:DragShapeEnv",
-    )
-    register(
         id="miniwob/drag-shapes-2-v1",
         entry_point="miniwob.envs.miniwob_envs:DragShapes2Env",
+    )
+    register(
+        id="miniwob/drag-single-shape-v1",
+        entry_point="miniwob.envs.miniwob_envs:DragSingleShapeEnv",
     )
     register(
         id="miniwob/draw-circle-v1",
