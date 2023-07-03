@@ -15,7 +15,7 @@ class AscendingNumbersEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    (none)
     """
 
     subdomain = "ascending-numbers"
@@ -104,7 +104,7 @@ class BuyTicketEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    * target
     """
 
     subdomain = "buy-ticket"
@@ -1018,7 +1018,10 @@ class DailyCalendarEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    * between from
+    * between to
+    * length
+    * name
     """
 
     subdomain = "daily-calendar"
@@ -1165,7 +1168,7 @@ class DragShapes2Env(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    * target
     """
 
     subdomain = "drag-shapes-2"
@@ -1186,7 +1189,7 @@ class DragSingleShapeEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    * target
     """
 
     subdomain = "drag-single-shape"
@@ -1222,7 +1225,7 @@ class DrawCircleEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    (none)
     """
 
     subdomain = "draw-circle"
@@ -1241,7 +1244,7 @@ class DrawLineEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    * direction
     """
 
     subdomain = "draw-line"
@@ -1631,7 +1634,7 @@ class FindGreatestEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    (none)
     """
 
     subdomain = "find-greatest"
@@ -1731,7 +1734,8 @@ class FormSequenceEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    * checkbox target
+    * slider target
     """
 
     subdomain = "form-sequence"
@@ -1753,7 +1757,9 @@ class FormSequence2Env(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    * radio target
+    * textbox target
+    * textbox text
     """
 
     subdomain = "form-sequence-2"
@@ -1775,7 +1781,8 @@ class FormSequence3Env(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    * button target
+    * dropdown target
     """
 
     subdomain = "form-sequence-3"
@@ -1797,7 +1804,8 @@ class GenerateNumberEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    * criterion
+    * number
     """
 
     subdomain = "generate-number"
@@ -1894,7 +1902,7 @@ class HotColdEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    * target
     """
 
     subdomain = "hot-cold"
@@ -2068,7 +2076,7 @@ class OddOrEvenEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    (none)
     """
 
     subdomain = "odd-or-even"
@@ -2090,7 +2098,11 @@ class OrderFoodEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    * amount
+    * criterion
+    * target 0
+    * target 1
+    * type
     """
 
     subdomain = "order-food"
@@ -2112,7 +2124,8 @@ class PhoneBookEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    * name
+    * target
     """
 
     subdomain = "phone-book"
@@ -2273,7 +2286,8 @@ class SignAgreementEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    * button
+    * name
     """
 
     subdomain = "sign-agreement"
@@ -2403,7 +2417,8 @@ class StockMarketEnv(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    TODO
+    * name
+    * target
     """
 
     subdomain = "stock-market"

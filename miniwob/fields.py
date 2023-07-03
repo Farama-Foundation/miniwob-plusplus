@@ -1341,6 +1341,6 @@ FIELD_EXTRACTORS["sign-agreement"] = _extract_sign_agreement
 # Buy TPZ stock when the price is less than $48.20.
 _add(
     "stock-market",
-    r"Buy (.*) stock when the price is less than $(.*)\.",
+    r"Buy (.*) stock when the price is less than \$(.*)\.",
     ["name", "target"],
 )
