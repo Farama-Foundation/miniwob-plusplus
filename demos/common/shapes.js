@@ -219,6 +219,39 @@ shapes.drawCircles = function(circles, grid){
   }
 }
 
+// draw rectangles on a given grid.
+shapes.drawRectangles = function(rectangles, grid){
+  for(var i=0;i<rectangles.length;i++){
+    var rectangle = rectangles[i];
+    grid
+      .append('rect')
+      .attr('class', rectangle.class)
+      .attr('id', rectangle.id)
+      .attr('x', rectangle.x)
+      .attr('y', rectangle.y)
+      .attr('width', rectangle.w)
+      .attr('height', rectangle.h)
+      .attr('stroke', rectangle.stroke ? rectangle.stroke : '')
+      .attr('fill', rectangle.fill ? rectangle.fill : 'black');
+  }
+}
+
+shapes.drawTriangles = function(triangles, grid){
+  for(var i=0;i<triangles.length;i++){
+    var triangle = triangles[i];
+    var points = (triangle.x - triangle.size/2) + ',' + (triangle.y + triangle.size/2) + ' '
+            +(triangle.x) + ',' + (triangle.y - triangle.size/2) + ' '
+            +(triangle.x + triangle.size/2) + ',' + (triangle.y + triangle.size/2);
+    grid
+      .append('polygon')
+      .attr('class', triangle.class)
+      .attr('id', triangle.id)
+      .attr('points', points)
+      .attr('stroke', triangle.stroke ? triangle.stroke : '')
+      .attr('fill', triangle.fill ? triangle.fill : 'black');
+  }
+}
+
 // draw lines on a given grid.
 shapes.drawLines = function(lines, grid){
   for(var i=0;i<lines.length;i++){
