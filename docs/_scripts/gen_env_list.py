@@ -158,7 +158,7 @@ Some are harder versions of the existing tasks, while some are completely new.""
             "ascending-numbers",
             "buy-ticket",
             "daily-calendar",
-            "drag-shape",
+            "drag-single-shape",
             "drag-shapes-2",
             "draw-circle",
             "draw-line",
