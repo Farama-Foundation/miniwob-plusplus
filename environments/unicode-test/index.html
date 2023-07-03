@@ -7,12 +7,12 @@
     <meta property="og:title" content="MiniWoB++ Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="A collection of over 100 web interaction environments, along with JavaScript and Python interfaces." />
-    <meta property="og:url" content="https://miniwob.farama.org/environments/flight.Alaska.html" /><meta property="og:image" content="https://miniwob.farama.org/_static/img/miniwobplusplus-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="flight.Alaska-auto" href="../flight.Alaska-auto/" /><link rel="prev" title="flight.AA" href="../flight.AA/" />
-        <link rel="canonical" href="https://miniwob.farama.org/environments/flight.Alaska.html" />
+    <meta property="og:url" content="https://miniwob.farama.org/environments/unicode-test.html" /><meta property="og:image" content="https://miniwob.farama.org/_static/img/miniwobplusplus-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="use-autocomplete" href="../use-autocomplete/" /><link rel="prev" title="tic-tac-toe" href="../tic-tac-toe/" />
+        <link rel="canonical" href="https://miniwob.farama.org/environments/unicode-test.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20.dev1 -->
-        <title>flight.Alaska - MiniWoB++ Documentation</title>
+        <title>unicode-test - MiniWoB++ Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=a022fd11c0d7e10ac71ac296890386cea7a2fa24" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=093e2efd5a2c7b46ab7c7157e45f5f05a1e0a463" />
@@ -306,7 +306,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../find-midpoint/">find-midpoint</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../find-word/">find-word</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../flight.AA/">flight.AA</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">flight.Alaska</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flight.Alaska/">flight.Alaska</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../flight.Alaska-auto/">flight.Alaska-auto</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../focus-text/">focus-text</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../focus-text-2/">focus-text-2</a></li>
@@ -337,7 +337,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../text-editor/">text-editor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../text-transform/">text-transform</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tic-tac-toe/">tic-tac-toe</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../unicode-test/">unicode-test</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">unicode-test</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../use-autocomplete/">use-autocomplete</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../use-autocomplete-nodelay/">use-autocomplete-nodelay</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../use-colorwheel/">use-colorwheel</a></li>
@@ -402,29 +402,31 @@
           </div>
           <article role="main">
             
-            <section id="flight-alaska">
-<h1>flight.Alaska<a class="headerlink" href="#flight-alaska" title="Permalink to this heading">#</a></h1>
+            <section id="unicode-test">
+<h1>unicode-test<a class="headerlink" href="#unicode-test" title="Permalink to this heading">#</a></h1>
 <center>
-    <a href="../../demos/flight/Alaska/wrapper.html" target="_blank"><button>Open demo in a separate tab.</button></a>
+    <iframe src="../../demos/miniwob/unicode-test.html" width="325" height="210" scrolling="no" style="overflow:hidden;">
+    </iframe><br>
+    <a href="../../demos/miniwob/unicode-test.html" target="_blank"><button>Open demo in a separate tab.</button></a>
 </center>
 <section id="description">
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this heading">#</a></h2>
-<p>Search for flights on the Alaska Airlines website (original).</p>
+<p>Click on the button with the correct Unicode text.</p>
 </section>
-<section id="utterance">
-<h2>Utterance<a class="headerlink" href="#utterance" title="Permalink to this heading">#</a></h2>
-<p>The utterance is the JSON serialization of the utterance fields.</p>
+<section id="example-utterances">
+<h2>Example utterances<a class="headerlink" href="#example-utterances" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Click on the “Cancél” button.</p></li>
+<li><p>Click on the “ÖK” button.</p></li>
+<li><p>Click on the “ヘルプ” button.</p></li>
+<li><p>Click on the “取消” button.</p></li>
+<li><p>Click on the “确定” button.</p></li>
+</ul>
 </section>
 <section id="utterance-fields">
 <h2>Utterance fields<a class="headerlink" href="#utterance-fields" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
-<li><p>Departure City</p></li>
-<li><p>Departure Day</p></li>
-<li><p>Departure Month</p></li>
-<li><p>Destination City</p></li>
-<li><p>One Way or Round Trip</p></li>
-<li><p>Returning Day</p></li>
-<li><p>Returning Month</p></li>
+<li><p>target</p></li>
 </ul>
 </section>
 </section>
@@ -434,18 +436,18 @@
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../flight.Alaska-auto/">
+            <a class="next-page" href="../use-autocomplete/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">flight.Alaska-auto</div>
+                <div class="title">use-autocomplete</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
             </a>
-            <a class="prev-page" href="../flight.AA/">
+            <a class="prev-page" href="../tic-tac-toe/">
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
@@ -454,7 +456,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">flight.AA</div>
+                <div class="title">tic-tac-toe</div>
                 
               </div>
             </a>
@@ -498,9 +500,9 @@
           <div class="toc-tree-container">
             <div class="toc-tree">
               <ul>
-<li><a class="reference internal" href="#">flight.Alaska</a><ul>
+<li><a class="reference internal" href="#">unicode-test</a><ul>
 <li><a class="reference internal" href="#description">Description</a></li>
-<li><a class="reference internal" href="#utterance">Utterance</a></li>
+<li><a class="reference internal" href="#example-utterances">Example utterances</a></li>
 <li><a class="reference internal" href="#utterance-fields">Utterance fields</a></li>
 </ul>
 </li>
