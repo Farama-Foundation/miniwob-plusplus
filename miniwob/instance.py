@@ -28,7 +28,7 @@ from miniwob.constants import (
     WINDOW_WIDTH,
 )
 from miniwob.dom import DOMElement
-from miniwob.fields import get_field_extractor
+from miniwob.fields import FieldExtractor, get_field_extractor
 from miniwob.http_server import start_http_server
 from miniwob.observation import (
     Observation,
@@ -41,7 +41,7 @@ from miniwob.screenshot import get_screenshot, pil_to_numpy_array
 
 
 HTML_DIR = pathlib.Path(__file__).parent / "html"
-DEFAULT_BASE_URL = f"file://{HTML_DIR}/"
+DEFAULT_BASE_URL = f"file://{HTML_DIR}/miniwob/"
 
 
 class MiniWoBInstance(Thread):
@@ -54,6 +54,7 @@ class MiniWoBInstance(Thread):
         headless: bool = False,
         base_url: Optional[str] = None,
         threading: bool = False,
+        field_extractor: Optional[FieldExtractor] = None,
         reward_processor: Optional[RewardPreprocessor] = None,
         wait_ms: float = 0.0,
         block_on_reset: bool = True,
@@ -67,13 +68,16 @@ class MiniWoBInstance(Thread):
             subdomain: MiniWoB task name (e.g., "click-test")
             headless: Whether to render GUI
             base_url: Base URL, which is usually one of the following
-                - http://localhost:8000/     (served by http-serve)
-                - file:///path/to/miniwob-plusplus/html/
+                - http://localhost:8000/miniwob/     (served by http-serve)
+                - file:///path/to/miniwob-plusplus/html/miniwob/
                 If None, set the default value as follows:
                 - For FlightWoB tasks, starts a HTTP server and use
                 http://localhost:[port]/ as base_url.
                 - For other tasks, use the inferred file:// path as base_url.
             threading: Whether to run this instance as a Thread
+            field_extractor: A function that takes the utterance and returns
+                a list of fields as key-value tuples (see miniwob.fields).
+                If None, uses the default one for the task.
             reward_processor: A function that takes the metadata and return
                 a reward (see miniwob.reward)
             wait_ms: Pause the instance after each action for this amount
@@ -107,15 +111,18 @@ class MiniWoBInstance(Thread):
         else:
             if not base_url:
                 base_url = DEFAULT_BASE_URL
-            self.url = urllib.parse.urljoin(base_url, f"miniwob/{subdomain}.html")
+            self.url = urllib.parse.urljoin(base_url, f"{subdomain}.html")
             self.window_width = WINDOW_WIDTH
             self.window_height = WINDOW_HEIGHT
             self.task_width = TASK_WIDTH
             self.task_height = TASK_HEIGHT
         self.inner_height = self.window_height
         self.inner_height = self.window_width
-        self.field_extractor = get_field_extractor(subdomain)
         self.threading = threading
+        if not field_extractor:
+            self.field_extractor = get_field_extractor(subdomain)
+        else:
+            self.field_extractor = field_extractor
         if not reward_processor:
             self.reward_processor = get_original_reward
         else:

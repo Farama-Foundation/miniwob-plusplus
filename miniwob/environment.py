@@ -6,6 +6,7 @@ import gymnasium as gym
 import numpy as np
 
 from miniwob.action import Action, ActionSpaceConfig, ActionTypes
+from miniwob.fields import FieldExtractor
 from miniwob.instance import MiniWoBInstance
 from miniwob.observation import Observation, get_observation_space
 from miniwob.reward import RewardPreprocessor
@@ -26,6 +27,7 @@ class MiniWoBEnvironment(gym.Env):
         render_mode: Optional[str] = None,
         base_url: Optional[str] = None,
         action_space_config: Union[str, ActionSpaceConfig] = "all_supported",
+        field_extractor: Optional[FieldExtractor] = None,
         reward_processor: Optional[RewardPreprocessor] = None,
         wait_ms: float = 0.0,
         block_on_reset: bool = True,
@@ -42,10 +44,13 @@ class MiniWoBEnvironment(gym.Env):
                 - None: Headless Chrome (default)
                 - "human": Show the Chrome screen
             base_url: Base URL, which is usually one of the following
-                - http://localhost:8000/     (served by http-serve)
-                - file:///path/to/miniwob-plusplus/html/
+                - http://localhost:8000/miniwob/     (served by http-serve)
+                - file:///path/to/miniwob-plusplus/html/miniwob/
                 If None, infers the file:// path from this module's location.
             action_space_config: ActionSpaceConfig object or a preset name.
+            field_extractor: A function that takes the utterance and returns
+                a list of fields as key-value tuples (see miniwob.fields).
+                If None, uses the default one for the task.
             reward_processor: A function that takes the metadata and returns
                 a reward (see miniwob.reward)
             wait_ms: Pause the instance after each action for this amount of
@@ -71,6 +76,7 @@ class MiniWoBEnvironment(gym.Env):
             "subdomain": self.subdomain,
             "headless": (render_mode is None),
             "base_url": base_url,
+            "field_extractor": field_extractor,
             "reward_processor": reward_processor,
             "wait_ms": wait_ms,
             "block_on_reset": block_on_reset,
