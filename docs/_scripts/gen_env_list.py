@@ -141,6 +141,7 @@ Some are harder versions of the existing tasks, while some are completely new.""
             "email-inbox-noscroll",
             "email-inbox-reply",
             "email-inbox-star-reply",
+            "unicode-test",
         ],
     },
     {

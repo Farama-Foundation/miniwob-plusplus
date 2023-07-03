@@ -111,7 +111,7 @@ def main():
     # Get the list of all miniwob environments.
     envs = []
     for env_id, env_spec in gymnasium.registry.items():
-        if env_spec.namespace == "miniwob" and "flight." in env_id:
+        if env_spec.namespace == "miniwob":
             envs.append(env_id)
     envs.sort(key=lambda env_id: _raw_env_name(env_id))
 
