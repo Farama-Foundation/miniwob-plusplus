@@ -1,7 +1,7 @@
 """Task-specific key-value pairs extracted from the task instructions."""
 import json
 import re
-from typing import Callable, Dict, Sequence, Tuple
+from typing import Callable, Dict, Sequence, Tuple, Union
 
 
 Fields = Sequence[Tuple[str, str]]
@@ -27,24 +27,21 @@ def field_lookup(fields: Fields, key: str):
 FieldExtractor = Callable[[str], Fields]
 
 
-# The global registry mapping task_name to FieldExtractor.
-FIELD_EXTRACTORS: Dict[str, FieldExtractor] = {}
+def create_regex_field_extractor(
+    regex: Union[str, re.Pattern], keys: Sequence[str]
+) -> FieldExtractor:
+    """Creates a field extractor based on a regular expression.
 
+    Args:
+        regex: A regular expression to match the utterance with. The values of
+            the capturing groups will become field values.
+        keys: The field keys, with the same order as the capturing groups.
 
-def get_field_extractor(task_name: str) -> FieldExtractor:
-    """Return the field extractor for the given task."""
-    try:
-        return FIELD_EXTRACTORS[task_name]
-    except KeyError:
+    Returns:
+        A FieldExtractor.
+    """
 
-        def extractor(utterance):
-            raise ValueError(f"{task_name} does not have a field extractor.")
-
-        return extractor
-
-
-def _add(task_name: str, regex: str, keys: Sequence[str]):
-    def extractor(utterance):
+    def extractor(utterance: str) -> Fields:
         match = re.match(regex, utterance)
         if not match:
             raise ValueError(
@@ -52,7 +49,23 @@ def _add(task_name: str, regex: str, keys: Sequence[str]):
             )
         return list(zip(keys, match.groups()))
 
-    FIELD_EXTRACTORS[task_name] = extractor
+    return extractor
+
+
+# The global registry mapping task_name to FieldExtractor.
+FIELD_EXTRACTORS: Dict[str, FieldExtractor] = {}
+
+
+def get_field_extractor(task_name: str) -> FieldExtractor:
+    """Returns the field extractor for the given task."""
+    try:
+        return FIELD_EXTRACTORS[task_name]
+    except KeyError:
+        raise KeyError(f"{task_name} does not have a field extractor.")
+
+
+def _add(task_name: str, regex: Union[str, re.Pattern], keys: Sequence[str]):
+    FIELD_EXTRACTORS[task_name] = create_regex_field_extractor(regex, keys)
 
 
 _add(

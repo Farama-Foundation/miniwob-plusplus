@@ -2504,6 +2504,28 @@ class TicTacToeEnv(MiniWoBEnvironment):
     subdomain = "tic-tac-toe"
 
 
+class UnicodeTestEnv(MiniWoBEnvironment):
+    """
+    ## Description
+
+    Click on the button with the correct Unicode text.
+
+    ## Example utterances
+
+    * Click on the "Cancél" button.
+    * Click on the "ÖK" button.
+    * Click on the "ヘルプ" button.
+    * Click on the "取消" button.
+    * Click on the "确定" button.
+
+    ## Utterance fields
+
+    * target
+    """
+
+    subdomain = "unicode-test"
+
+
 class UseAutocompleteEnv(MiniWoBEnvironment):
     """
     ## Description

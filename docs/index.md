@@ -63,6 +63,7 @@ content/action_space
 
 content/viewing
 environments/list
+content/custom_environment
 content/javascript_api
 content/demonstrations
 ```

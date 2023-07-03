@@ -5,7 +5,6 @@ import numpy as np
 from gymnasium import spaces
 
 from miniwob.constants import (
-    ASCII_CHARSET,
     ATTRIBUTE_MAX_LENGTH,
     FIELD_KEY_MAX_LENGTH,
     FIELD_VALUE_MAX_LENGTH,
@@ -15,6 +14,7 @@ from miniwob.constants import (
     UTTERANCE_MAX_LENGTH,
 )
 from miniwob.dom import DOMElement
+from miniwob.spaces import Unicode
 
 
 Observation = Dict[str, Any]
@@ -22,10 +22,9 @@ Observation = Dict[str, Any]
 
 def get_observation_space(screen_width: int, screen_height: int) -> spaces.Space:
     """Return the space of observations."""
-    utterance_space = spaces.Text(
+    utterance_space = Unicode(
         min_length=0,
         max_length=UTTERANCE_MAX_LENGTH,
-        charset=ASCII_CHARSET,
     )
     element_space = spaces.Dict(
         {
@@ -44,22 +43,26 @@ def get_observation_space(screen_width: int, screen_height: int) -> spaces.Space
             # For normal elements, this is the uppercased tag name (e.g., "DIV").
             # For <input> elements, the input type is appended (e.g., "INPUT_text").
             # Non-empty text nodes become pseudo-elements with tag "t".
-            "tag": spaces.Text(max_length=ATTRIBUTE_MAX_LENGTH, charset=ASCII_CHARSET),
+            "tag": Unicode(max_length=ATTRIBUTE_MAX_LENGTH),
             # Text content of leaf nodes.
-            "text": spaces.Text(
-                min_length=0, max_length=TEXT_MAX_LENGTH, charset=ASCII_CHARSET
+            "text": Unicode(
+                min_length=0,
+                max_length=TEXT_MAX_LENGTH,
             ),
             # Value of <input> elements.
-            "value": spaces.Text(
-                min_length=0, max_length=TEXT_MAX_LENGTH, charset=ASCII_CHARSET
+            "value": Unicode(
+                min_length=0,
+                max_length=TEXT_MAX_LENGTH,
             ),
             # HTML id attribute
-            "id": spaces.Text(
-                min_length=0, max_length=ATTRIBUTE_MAX_LENGTH, charset=ASCII_CHARSET
+            "id": Unicode(
+                min_length=0,
+                max_length=ATTRIBUTE_MAX_LENGTH,
             ),
             # HTML class attribute (multiple classes are separated by spaces)
-            "classes": spaces.Text(
-                min_length=0, max_length=ATTRIBUTE_MAX_LENGTH, charset=ASCII_CHARSET
+            "classes": Unicode(
+                min_length=0,
+                max_length=ATTRIBUTE_MAX_LENGTH,
             ),
             # Colors (RGBA)
             "bg_color": spaces.Box(
@@ -87,13 +90,13 @@ def get_observation_space(screen_width: int, screen_height: int) -> spaces.Space
     fields_space = spaces.Sequence(
         spaces.Tuple(
             (
-                spaces.Text(
-                    min_length=0, max_length=FIELD_KEY_MAX_LENGTH, charset=ASCII_CHARSET
+                Unicode(
+                    min_length=0,
+                    max_length=FIELD_KEY_MAX_LENGTH,
                 ),
-                spaces.Text(
+                Unicode(
                     min_length=0,
                     max_length=FIELD_VALUE_MAX_LENGTH,
-                    charset=ASCII_CHARSET,
                 ),
             )
         )

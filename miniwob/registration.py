@@ -400,6 +400,10 @@ def register_miniwob_envs():
         entry_point="miniwob.envs.miniwob_envs:TicTacToeEnv",
     )
     register(
+        id="miniwob/unicode-test-v1",
+        entry_point="miniwob.envs.miniwob_envs:UnicodeTestEnv",
+    )
+    register(
         id="miniwob/use-autocomplete-v1",
         entry_point="miniwob.envs.miniwob_envs:UseAutocompleteEnv",
     )

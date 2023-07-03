@@ -1,7 +1,7 @@
 """MiniWoB action space."""
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional, Sequence, Set, Tuple, Union
+from typing import Any, Dict, Optional, Sequence, Tuple
 
 import numpy as np
 from gymnasium import spaces
@@ -9,7 +9,6 @@ from selenium.webdriver import Chrome as ChromeDriver
 
 from miniwob import selenium_actions
 from miniwob.constants import (
-    ASCII_CHARSET,
     DEFAULT_ALLOWED_KEYS,
     DEFAULT_SCROLL_AMOUNT,
     DEFAULT_SCROLL_TIME,
@@ -17,6 +16,7 @@ from miniwob.constants import (
     MAX_REF,
     TYPING_MAX_LENGTH,
 )
+from miniwob.spaces import Unicode
 
 
 Action = Dict[str, Any]
@@ -92,7 +92,6 @@ class ActionSpaceConfig:
             for the PRESS_KEY action. The order will be used for interpreting
             the Discrete space.
         text_max_len: Maximum text length for the TYPE_TEXT action.
-        text_charset: Character set for the TYPE_TEXT action.
     """
 
     action_types: Sequence[ActionTypes]
@@ -103,7 +102,6 @@ class ActionSpaceConfig:
     scroll_time: int = DEFAULT_SCROLL_TIME
     allowed_keys: Sequence[str] = DEFAULT_ALLOWED_KEYS
     text_max_len: int = TYPING_MAX_LENGTH
-    text_charset: Union[str, Set[str]] = ASCII_CHARSET
 
     @classmethod
     def get_preset(cls, name="all_supported"):
@@ -198,7 +196,7 @@ class ActionSpaceConfig:
         if ActionTypes.PRESS_KEY in self.action_types:
             space["key"] = spaces.Discrete(len(self.allowed_keys))
         if TEXT_ACTIONS.intersection(self.action_types):
-            space["text"] = spaces.Text(self.text_max_len, charset=self.text_charset)
+            space["text"] = Unicode(self.text_max_len)
         if FIELD_ACTIONS.intersection(self.action_types):
             space["field"] = spaces.Discrete(MAX_FIELDS)
         return spaces.Dict(space)
