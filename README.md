@@ -72,7 +72,7 @@ try:
   # Start a new episode.
   obs, info = env.reset()
   assert obs["utterance"] == "Click button ONE."
-  assert obs["fields"] == [("target", "ONE")]
+  assert obs["fields"] == (("target", "ONE"),)
   time.sleep(2)       # Only here to let you look at the environment.
   
   # Find the HTML element with text "ONE".
@@ -85,7 +85,7 @@ try:
   obs, reward, terminated, truncated, info = env.step(action)
 
   # Check if the action was correct. 
-  assert reward >= 0      # Should be around 0.8 since 2 seconds has passed.
+  print(reward)      # Should be around 0.8 since 2 seconds has passed.
   assert terminated is True
   time.sleep(2)
 
