@@ -447,7 +447,7 @@
   <span class="c1"># Start a new episode.</span>
   <span class="n">observation</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
   <span class="k">assert</span> <span class="n">observation</span><span class="p">[</span><span class="s2">&quot;utterance&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Click button ONE.&quot;</span>
-  <span class="k">assert</span> <span class="n">observation</span><span class="p">[</span><span class="s2">&quot;fields&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[(</span><span class="s2">&quot;target&quot;</span><span class="p">,</span> <span class="s2">&quot;ONE&quot;</span><span class="p">)]</span>
+  <span class="k">assert</span> <span class="n">observation</span><span class="p">[</span><span class="s2">&quot;fields&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="p">((</span><span class="s2">&quot;target&quot;</span><span class="p">,</span> <span class="s2">&quot;ONE&quot;</span><span class="p">),)</span>
   <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>       <span class="c1"># Only here to let you look at the environment.</span>
   
   <span class="c1"># Find the HTML element with text &quot;ONE&quot;.</span>
@@ -460,7 +460,7 @@
   <span class="n">observation</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
 
   <span class="c1"># Check if the action was correct. </span>
-  <span class="k">assert</span> <span class="n">reward</span> <span class="o">&gt;=</span> <span class="mi">0</span>      <span class="c1"># Should be around 0.8 since 2 seconds has passed.</span>
+  <span class="nb">print</span><span class="p">(</span><span class="n">reward</span><span class="p">)</span>      <span class="c1"># Should be around 0.8 since 2 seconds has passed.</span>
   <span class="k">assert</span> <span class="n">terminated</span> <span class="ow">is</span> <span class="kc">True</span>
   <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
@@ -508,22 +508,22 @@ and <a class="reference external" href="https://gymnasium.farama.org/api/env/#gy
 return an observation, which is a <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following fields:</p>
 <ul class="simple">
 <li><p><strong><code class="docutils literal notranslate"><span class="pre">utterance</span></code>:</strong> Task instruction string, such as <code class="docutils literal notranslate"><span class="pre">&quot;Click</span> <span class="pre">button</span> <span class="pre">ONE.&quot;</span></code>.</p></li>
-<li><p><strong><code class="docutils literal notranslate"><span class="pre">fields</span></code>:</strong> Environment-specific key-value pairs extracted from the utterance, such as <code class="docutils literal notranslate"><span class="pre">[(&quot;target&quot;,</span> <span class="pre">&quot;ONE&quot;)]</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">fields</span></code>:</strong> Environment-specific key-value pairs extracted from the utterance, such as <code class="docutils literal notranslate"><span class="pre">((&quot;target&quot;,</span> <span class="pre">&quot;ONE&quot;),)</span></code>.</p></li>
 <li><p><strong><code class="docutils literal notranslate"><span class="pre">screenshot</span></code>:</strong> A numpy array of shape <code class="docutils literal notranslate"><span class="pre">(height,</span> <span class="pre">width,</span> <span class="pre">3)</span></code> containing the RGB values.</p></li>
-<li><p><strong><code class="docutils literal notranslate"><span class="pre">dom_elements</span></code>:</strong> A list of dicts, each listing properties like the geometry and HTML attributes of a visible DOM element.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">dom_elements</span></code>:</strong> A tuple of dicts, each listing properties like the geometry and HTML attributes of a visible DOM element.</p></li>
 </ul>
 <p>For example, the <code class="docutils literal notranslate"><span class="pre">observation</span></code> from the <code class="docutils literal notranslate"><span class="pre">reset</span></code> command above is</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s1">&#39;utterance&#39;</span><span class="p">:</span> <span class="s1">&#39;Click button ONE.&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;target&#39;</span><span class="p">,</span> <span class="s1">&#39;ONE&#39;</span><span class="p">)],</span>
+  <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">((</span><span class="s1">&#39;target&#39;</span><span class="p">,</span> <span class="s1">&#39;ONE&#39;</span><span class="p">),),</span>
   <span class="s1">&#39;screenshot&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([[[</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span>   <span class="mi">0</span><span class="p">],</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">uint8</span><span class="p">),</span>
-  <span class="s1">&#39;dom_elements&#39;</span><span class="p">:</span> <span class="p">[</span>
+  <span class="s1">&#39;dom_elements&#39;</span><span class="p">:</span> <span class="p">(</span>
     <span class="p">{</span><span class="s1">&#39;ref&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;body&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">},</span>
     <span class="p">{</span><span class="s1">&#39;ref&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">},</span>
     <span class="p">{</span><span class="s1">&#39;ref&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">},</span>
     <span class="p">{</span><span class="s1">&#39;ref&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;button&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;ONE&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">},</span>
     <span class="p">{</span><span class="s1">&#39;ref&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;button&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;TWO&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">},</span>
-  <span class="p">],</span>
+  <span class="p">),</span>
 <span class="p">}</span>
 </pre></div>
 </div>

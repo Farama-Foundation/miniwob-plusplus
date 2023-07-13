@@ -449,9 +449,9 @@
 <td><p>Task instruction string.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fields</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">list[tuple[str,</span> <span class="pre">str]]</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tuple[tuple[str,</span> <span class="pre">str]]</span></code></p></td>
 <td><p>Environment-specific key-value pairs extracted from the utterance;
-e.g., “Click on the OK button” → <code class="docutils literal notranslate"><span class="pre">[(&quot;target&quot;,</span> <span class="pre">&quot;OK&quot;)]</span></code>.
+e.g., “Click on the OK button” → <code class="docutils literal notranslate"><span class="pre">((&quot;target&quot;,</span> <span class="pre">&quot;OK&quot;),)</span></code>.
 The fields are guaranteed to be the same during the same episode.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">screenshot</span></code></p></td>
@@ -459,8 +459,8 @@ The fields are guaranteed to be the same during the same episode.</p></td>
 <td><p>Screenshot as RGB values for each pixel.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dom_elements</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">list[dict]</span></code></p></td>
-<td><p>List of dicts, each listing properties of a <em>visible</em> DOM elements (see below).</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tuple[dict]</span></code></p></td>
+<td><p>Tuple of dicts, each listing properties of a <em>visible</em> DOM elements (see below).</p></td>
 </tr>
 </tbody>
 </table>
