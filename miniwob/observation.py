@@ -150,9 +150,9 @@ def create_empty_observation(screen_width: int, screen_height: int) -> Observati
     """Returns an empty observation for a terminated session."""
     observation = {
         "utterance": "",
-        "dom_elements": [],
+        "dom_elements": tuple(),
         "screenshot": create_empty_screenshot(screen_width, screen_height),
-        "fields": [],
+        "fields": tuple(),
     }
     return observation
 
@@ -178,8 +178,8 @@ def create_observation(
     serialized_elements = [serialize_dom_element(element) for element in dom_elements]
     observation = {
         "utterance": utterance[:UTTERANCE_MAX_LENGTH],
-        "dom_elements": serialized_elements,
+        "dom_elements": tuple(serialized_elements),
         "screenshot": screenshot,
-        "fields": fields,
+        "fields": tuple(fields),
     }
     return observation

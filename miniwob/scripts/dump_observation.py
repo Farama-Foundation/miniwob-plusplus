@@ -16,6 +16,8 @@ def check_obs(obs, env):
         print("BAD utterance: {}".format(obs["utterance"]))
     if obs["screenshot"] not in obs_space["screenshot"]:
         print("BAD screenshot: {}".format(obs["screenshot"]))
+    if obs["fields"] not in obs_space["fields"]:
+        print("BAD fields: {}".format(obs["fields"]))
     elt_space = obs_space["dom_elements"].feature_space
     for i, elt in enumerate(obs["dom_elements"]):
         if elt not in elt_space:
