@@ -17,7 +17,7 @@ try:
   # Start a new episode.
   observation, info = env.reset()
   assert observation["utterance"] == "Click button ONE."
-  assert observation["fields"] == [("target", "ONE")]
+  assert observation["fields"] == (("target", "ONE"),)
   time.sleep(2)       # Only here to let you look at the environment.
   
   # Find the HTML element with text "ONE".
@@ -30,7 +30,7 @@ try:
   observation, reward, terminated, truncated, info = env.step(action)
 
   # Check if the action was correct. 
-  assert reward >= 0      # Should be around 0.8 since 2 seconds has passed.
+  print(reward)      # Should be around 0.8 since 2 seconds has passed.
   assert terminated is True
   time.sleep(2)
 
@@ -83,23 +83,23 @@ and [`step`](https://gymnasium.farama.org/api/env/#gymnasium.Env.step) methods
 return an observation, which is a `dict` with the following fields:
 
 * **`utterance`:** Task instruction string, such as `"Click button ONE."`.
-* **`fields`:** Environment-specific key-value pairs extracted from the utterance, such as `[("target", "ONE")]`.
+* **`fields`:** Environment-specific key-value pairs extracted from the utterance, such as `(("target", "ONE"),)`.
 * **`screenshot`:** A numpy array of shape `(height, width, 3)` containing the RGB values.
-* **`dom_elements`:** A list of dicts, each listing properties like the geometry and HTML attributes of a visible DOM element.
+* **`dom_elements`:** A tuple of dicts, each listing properties like the geometry and HTML attributes of a visible DOM element.
 
 For example, the `observation` from the `reset` command above is
 ```python
 {
   'utterance': 'Click button ONE.',
-  'fields': [('target', 'ONE')],
+  'fields': (('target', 'ONE'),),
   'screenshot': array([[[255, 255,   0], ...], ...], dtype=uint8),
-  'dom_elements': [
+  'dom_elements': (
     {'ref': 1, 'parent': 0, 'tag': 'body', ...},
     {'ref': 2, 'parent': 1, 'tag': 'div', ...},
     {'ref': 3, 'parent': 2, 'tag': 'div', ...},
     {'ref': 4, 'parent': 3, 'tag': 'button', 'text': 'ONE', ...},
     {'ref': 5, 'parent': 3, 'tag': 'button', 'text': 'TWO', ...},
-  ],
+  ),
 }
 ```
 

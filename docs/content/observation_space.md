@@ -13,16 +13,16 @@ In all MiniWoB++ environments, an observation is a `dict` with the following fie
   - `str`
   - Task instruction string.
 * - `fields`
-  - `list[tuple[str, str]]`
+  - `tuple[tuple[str, str]]`
   - Environment-specific key-value pairs extracted from the utterance;
-    e.g., "Click on the OK button" → `[("target", "OK")]`.
+    e.g., "Click on the OK button" → `(("target", "OK"),)`.
     The fields are guaranteed to be the same during the same episode.
 * - `screenshot`
   - `np.ndarray` with shape `(height, width, 3)` and type `uint8`
   - Screenshot as RGB values for each pixel.
 * - `dom_elements`
-  - `list[dict]`
-  - List of dicts, each listing properties of a *visible* DOM elements (see below).
+  - `tuple[dict]`
+  - Tuple of dicts, each listing properties of a *visible* DOM elements (see below).
 ```
 
 ## DOM Element Properties
