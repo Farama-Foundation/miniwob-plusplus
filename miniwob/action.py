@@ -5,9 +5,7 @@ from typing import Any, Dict, Optional, Sequence, Tuple
 
 import numpy as np
 from gymnasium import spaces
-from selenium.webdriver import Chrome as ChromeDriver
 
-from miniwob import selenium_actions
 from miniwob.constants import (
     DEFAULT_ALLOWED_KEYS,
     DEFAULT_SCROLL_AMOUNT,
@@ -46,32 +44,42 @@ class ActionTypes(str, Enum):
     FOCUS_ELEMENT_AND_TYPE_FIELD = "FOCUS_ELEMENT_AND_TYPE_FIELD"
 
 
-COORDS_ACTIONS = {
-    ActionTypes.MOVE_COORDS,
-    ActionTypes.CLICK_COORDS,
-    ActionTypes.DBLCLICK_COORDS,
-    ActionTypes.MOUSEDOWN_COORDS,
-    ActionTypes.MOUSEUP_COORDS,
-    ActionTypes.SCROLL_UP_COORDS,
-    ActionTypes.SCROLL_DOWN_COORDS,
-}
-SCROLL_ACTIONS = {
-    ActionTypes.SCROLL_UP_COORDS,
-    ActionTypes.SCROLL_DOWN_COORDS,
-}
-ELEMENT_ACTIONS = {
-    ActionTypes.CLICK_ELEMENT,
-    ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT,
-    ActionTypes.FOCUS_ELEMENT_AND_TYPE_FIELD,
-}
-TEXT_ACTIONS = {
-    ActionTypes.TYPE_TEXT,
-    ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT,
-}
-FIELD_ACTIONS = {
-    ActionTypes.TYPE_FIELD,
-    ActionTypes.FOCUS_ELEMENT_AND_TYPE_FIELD,
-}
+COORDS_ACTIONS = frozenset(
+    {
+        ActionTypes.MOVE_COORDS,
+        ActionTypes.CLICK_COORDS,
+        ActionTypes.DBLCLICK_COORDS,
+        ActionTypes.MOUSEDOWN_COORDS,
+        ActionTypes.MOUSEUP_COORDS,
+        ActionTypes.SCROLL_UP_COORDS,
+        ActionTypes.SCROLL_DOWN_COORDS,
+    }
+)
+SCROLL_ACTIONS = frozenset(
+    {
+        ActionTypes.SCROLL_UP_COORDS,
+        ActionTypes.SCROLL_DOWN_COORDS,
+    }
+)
+ELEMENT_ACTIONS = frozenset(
+    {
+        ActionTypes.CLICK_ELEMENT,
+        ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT,
+        ActionTypes.FOCUS_ELEMENT_AND_TYPE_FIELD,
+    }
+)
+TEXT_ACTIONS = frozenset(
+    {
+        ActionTypes.TYPE_TEXT,
+        ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT,
+    }
+)
+FIELD_ACTIONS = frozenset(
+    {
+        ActionTypes.TYPE_FIELD,
+        ActionTypes.FOCUS_ELEMENT_AND_TYPE_FIELD,
+    }
+)
 
 
 @dataclass
@@ -217,58 +225,3 @@ class ActionSpaceConfig:
             left = float(action["coords"][0])
             top = float(action["coords"][1])
         return left, top
-
-
-_SELENIUM_COORDS_ACTIONS = {
-    ActionTypes.MOVE_COORDS: selenium_actions.execute_move_coords,
-    ActionTypes.CLICK_COORDS: selenium_actions.execute_click_coords,
-    ActionTypes.DBLCLICK_COORDS: selenium_actions.execute_dblclick_coords,
-    ActionTypes.MOUSEDOWN_COORDS: selenium_actions.execute_mousedown_coords,
-    ActionTypes.MOUSEUP_COORDS: selenium_actions.execute_mouseup_coords,
-}
-
-
-def execute_action(
-    action: Action,
-    fields: Sequence[Tuple[str, str]],
-    config: ActionSpaceConfig,
-    driver: ChromeDriver,
-):
-    """Execute the action on the ChromeDriver."""
-    action_type = config.action_types[action["action_type"]]
-    if action_type == ActionTypes.NONE:
-        return
-    # Coords actions
-    if action_type in COORDS_ACTIONS:
-        left, top = config.compute_raw_coords(action)
-        if action_type in SCROLL_ACTIONS:
-            scroll_amount = config.scroll_amount
-            if action_type == ActionTypes.SCROLL_UP_COORDS:
-                scroll_amount = -scroll_amount
-            selenium_actions.execute_scroll_coords(
-                left, top, scroll_amount, config.scroll_time, driver
-            )
-        else:
-            _SELENIUM_COORDS_ACTIONS[action_type](left, top, driver)
-        return
-    # Key press action
-    if action_type == ActionTypes.PRESS_KEY:
-        key_idx = int(action["key"])
-        key = config.allowed_keys[key_idx]
-        selenium_actions.execute_press_key(key, driver)
-        return
-    # Element and typing actions
-    if action_type in ELEMENT_ACTIONS:
-        ref = int(action["ref"])
-        selenium_actions.execute_click_element(ref, driver)
-    if action_type in TEXT_ACTIONS:
-        text = action["text"]
-        selenium_actions.execute_type_text(text, driver)
-    elif action_type in FIELD_ACTIONS:
-        field_idx = int(action["field"])
-        if field_idx >= len(fields):
-            # Treat the value as empty
-            text = ""
-        else:
-            text = fields[field_idx][1]
-        selenium_actions.execute_type_text(text, driver)

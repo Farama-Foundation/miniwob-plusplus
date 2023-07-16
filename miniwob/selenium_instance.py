@@ -16,7 +16,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from miniwob.action import Action, ActionSpaceConfig, execute_action
+from miniwob.action import Action, ActionSpaceConfig
 from miniwob.constants import (
     FLIGHT_TASK_HEIGHT,
     FLIGHT_TASK_WIDTH,
@@ -38,13 +38,14 @@ from miniwob.observation import (
 )
 from miniwob.reward import RewardPreprocessor, get_original_reward
 from miniwob.screenshot import get_screenshot, pil_to_numpy_array
+from miniwob.selenium_actions import execute_action_on_chromedriver
 
 
 HTML_DIR = pathlib.Path(__file__).parent / "html"
 DEFAULT_BASE_URL = f"file://{HTML_DIR}/miniwob/"
 
 
-class MiniWoBInstance(Thread):
+class SeleniumInstance(Thread):
     """Interface between Python and ChromeDriver via Selenium."""
 
     def __init__(
@@ -327,7 +328,7 @@ class MiniWoBInstance(Thread):
                     self.index,
                 )
             else:
-                execute_action(
+                execute_action_on_chromedriver(
                     action, self.cached_fields, action_space_config, self.driver
                 )
         if self.wait_ms:
