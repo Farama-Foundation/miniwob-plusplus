@@ -1,4 +1,5 @@
 """Test environment methods."""
+import functools
 import time
 
 import gymnasium
@@ -7,6 +8,12 @@ import pytest
 
 from miniwob.action import ActionTypes
 from miniwob.fields import field_lookup
+from miniwob.reward import (
+    get_binary_reward,
+    get_original_reward,
+    get_raw_reward,
+    get_thresholded_reward,
+)
 
 
 class MiniWoBTester:
@@ -60,7 +67,7 @@ class TestMiniWoBEnvironment(MiniWoBTester):
         assert obs["utterance"] == "Click the button."
         assert reward == 0
         assert terminated is False
-        assert terminated is False
+        assert truncated is False
         # Test clicking
         action = self.create_click_button_action(env, obs, "Click Me!")
         obs, reward, terminated, truncated, info = env.step(action)
@@ -247,3 +254,157 @@ class TestMiniWoBFields(MiniWoBTester):
         assert {"by", "to"} <= {x[0] for x in obs["fields"]}
         assert field_lookup(obs["fields"], "by") in obs["utterance"]
         assert field_lookup(obs["fields"], "to") in obs["utterance"]
+
+
+################################################
+
+
+class RewardProcessorTester(MiniWoBTester):
+    """Base class for testing reward processors."""
+
+    ENV_NAME = "miniwob/ascending-numbers-v1"
+
+    def _create_click_number(self, env, initial_obs, number):
+        for element in initial_obs["dom_elements"]:
+            if element["tag"] == "text" and element["text"] == str(number):
+                left = element["left"].item() + 5
+                top = element["top"].item() + 5
+                return env.create_action(
+                    ActionTypes.CLICK_COORDS,
+                    coords=np.array([left, top], dtype=np.float32),
+                )
+        assert False, f"Number {number} not found"
+
+
+class TestGetOriginalReward(RewardProcessorTester):
+    @pytest.fixture
+    def env(self):
+        env = gymnasium.make(self.ENV_NAME, reward_processor=get_original_reward)
+        yield env
+        env.close()
+
+    @pytest.mark.parametrize(
+        "numbers,check_reward",
+        [
+            # correct --> reward = 1 * time left
+            ([1, 2, 3, 4, 5], lambda r: 0.8 < r < 0.9),
+            # 2 out of 5 correct --> reward = 0.4 * time left
+            ([1, 2, 5], lambda r: 0.8 * 0.4 < r < 0.9 * 0.4),
+            # initially incorrect --> reward = -1 (no time scaling)
+            ([2], lambda r: r == -1),
+        ],
+    )
+    def test_get_original_reward(self, env, numbers, check_reward):
+        """Test the get_original_reward reward processor."""
+        initial_obs, info = env.reset()
+        time.sleep(1)
+        for number in numbers[:-1]:
+            action = self._create_click_number(env, initial_obs, number)
+            obs, reward, terminated, truncated, info = env.step(action)
+            assert terminated is False
+            assert reward == 0
+        action = self._create_click_number(env, initial_obs, numbers[-1])
+        obs, reward, terminated, truncated, info = env.step(action)
+        assert terminated is True
+        assert check_reward(reward)
+
+
+class TestGetRawReward(RewardProcessorTester):
+    @pytest.fixture
+    def env(self):
+        env = gymnasium.make(self.ENV_NAME, reward_processor=get_raw_reward)
+        yield env
+        env.close()
+
+    @pytest.mark.parametrize(
+        "numbers,check_reward",
+        [
+            # correct --> reward = 1
+            ([1, 2, 3, 4, 5], lambda r: r == 1),
+            # 2 out of 5 correct --> reward = 0.4
+            ([1, 2, 5], lambda r: r == 0.4),
+            # initially incorrect --> reward = -1
+            ([2], lambda r: r == -1),
+        ],
+    )
+    def test_get_raw_reward(self, env, numbers, check_reward):
+        """Test the get_raw_reward reward processor."""
+        initial_obs, info = env.reset()
+        for number in numbers[:-1]:
+            action = self._create_click_number(env, initial_obs, number)
+            obs, reward, terminated, truncated, info = env.step(action)
+            assert terminated is False
+            assert reward == 0
+        action = self._create_click_number(env, initial_obs, numbers[-1])
+        obs, reward, terminated, truncated, info = env.step(action)
+        assert terminated is True
+        assert check_reward(reward)
+
+
+class TestGetBinaryReward(RewardProcessorTester):
+    @pytest.fixture
+    def env(self):
+        env = gymnasium.make(self.ENV_NAME, reward_processor=get_binary_reward)
+        yield env
+        env.close()
+
+    @pytest.mark.parametrize(
+        "numbers,check_reward",
+        [
+            # correct --> reward = 1
+            ([1, 2, 3, 4, 5], lambda r: r == 1),
+            # 2 out of 5 correct --> reward = -1 (no partial reward)
+            ([1, 2, 5], lambda r: r == -1),
+            # initially incorrect --> reward = -1
+            ([2], lambda r: r == -1),
+        ],
+    )
+    def test_get_binary_reward(self, env, numbers, check_reward):
+        """Test the get_binary_reward reward processor."""
+        initial_obs, info = env.reset()
+        for number in numbers[:-1]:
+            action = self._create_click_number(env, initial_obs, number)
+            obs, reward, terminated, truncated, info = env.step(action)
+            assert terminated is False
+            assert reward == 0
+        action = self._create_click_number(env, initial_obs, numbers[-1])
+        obs, reward, terminated, truncated, info = env.step(action)
+        assert terminated is True
+        assert check_reward(reward)
+
+
+class TestGetThresholdedReward(RewardProcessorTester):
+    @pytest.fixture
+    def env(self):
+        env = gymnasium.make(
+            self.ENV_NAME,
+            reward_processor=functools.partial(get_thresholded_reward, threshold=0.5),
+        )
+        yield env
+        env.close()
+
+    @pytest.mark.parametrize(
+        "numbers,check_reward",
+        [
+            # correct --> reward = 1
+            ([1, 2, 3, 4, 5], lambda r: r == 1),
+            # 3 out of 5 correct --> raw reward = 0.6 --> reward = 1
+            ([1, 2, 3, 5], lambda r: r == 1),
+            # 2 out of 5 correct --> raw reward = 0.4 --> reward = -1
+            ([1, 2, 5], lambda r: r == -1),
+            # initially incorrect --> reward = -1
+            ([2], lambda r: r == -1),
+        ],
+    )
+    def test_get_thresholded_reward(self, env, numbers, check_reward):
+        """Test the get_thresholded_reward reward processor."""
+        initial_obs, info = env.reset()
+        for number in numbers[:-1]:
+            action = self._create_click_number(env, initial_obs, number)
+            obs, reward, terminated, truncated, info = env.step(action)
+            assert terminated is False
+            assert reward == 0
+        action = self._create_click_number(env, initial_obs, numbers[-1])
+        obs, reward, terminated, truncated, info = env.step(action)
+        assert terminated is True
+        assert check_reward(reward)
