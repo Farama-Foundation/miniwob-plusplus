@@ -10,7 +10,7 @@ from typing import Any, Callable, Mapping
 
 
 Metadata = Mapping[str, Any]
-RewardPreprocessor = Callable[[Metadata], float]
+RewardProcessor = Callable[[Metadata], float]
 
 
 def get_original_reward(metadata: Metadata) -> float:
@@ -56,7 +56,7 @@ def get_thresholded_reward(metadata: Metadata, threshold: float = 1.0) -> float:
     This is needed for tasks that give continuous-valued partial rewards
     depending on how close the answer is to the correct answer.
 
-    To specify this method as the RewardPreprocessor, use
+    To specify this method as the reward processor, use
     `lambda metadata: get_thresholded_reward(metadata, threshold=VALUE)`
     or `functools.partial(get_thresholded_reward, threshold=VALUE)`.
 

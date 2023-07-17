@@ -55,6 +55,7 @@ content/basic_usage
 
 content/observation_space
 content/action_space
+content/reward
 ```
 
 ```{toctree}
