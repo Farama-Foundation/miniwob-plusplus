@@ -16,8 +16,8 @@ RewardPreprocessor = Callable[[Metadata], float]
 def get_original_reward(metadata: Metadata) -> float:
     """Returns the original reward.
 
-    This is the reward as defined in the environment. In most environments,
-    this reward is scaled by the fraction of remaining time. Some environments
+    This is the reward as defined in the environment. In all environments,
+    any positive reward is scaled by the remaining time. Some environments
     also give partial rewards. See the documentation or docstring of each
     environment for details.
 
@@ -30,8 +30,8 @@ def get_original_reward(metadata: Metadata) -> float:
 def get_raw_reward(metadata: Metadata) -> float:
     """Returns the raw reward without time penalty.
 
-    Some environments still give partial rewards. See the documentation
-    or docstring of each environment for details.
+    Some environments give partial rewards. See the documentation or docstring
+    of each environment for details.
 
     The returned value is 0.0 if the episode has not terminated yet,
     and a value between -1.0 and 1.0 (inclusive) otherwise.
@@ -40,7 +40,7 @@ def get_raw_reward(metadata: Metadata) -> float:
 
 
 def get_binary_reward(metadata: Metadata) -> float:
-    """Returns the reward without time penalty or partial credits.
+    """Returns the reward without time penalty or partial reward.
 
     The returned value is 0.0 if the episode has not terminated yet,
     and either -1.0 or 1.0 otherwise.
