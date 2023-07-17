@@ -16,6 +16,10 @@ class AscendingNumbersEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
+
+    ## Additional notes
+
+    * **Partial reward:** If the first number is correctly clicked, the partial reward is 1 - fraction of remaining numbers.
     """
 
     subdomain = "ascending-numbers"
@@ -34,6 +38,11 @@ class BisectAngleEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
+
+    ## Additional notes
+
+    * **Partial reward:** If the line is inside the angle, the partial reward is how close it is to the bisector (from 0 to 1).
+    * Since the reward is a continuous value, use the `get_thresholded_reward` reward preprocessor to binarize the reward instead of `get_binary_reward`.
     """
 
     subdomain = "bisect-angle"
@@ -105,6 +114,10 @@ class BuyTicketEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
+
+    ## Additional notes
+
+    * **Partial reward:** If the bought ticket is not the best but also not the worst according to the criterion, the partial reward is -0.5.
     """
 
     subdomain = "buy-ticket"
@@ -241,6 +254,11 @@ class CircleCenterEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
+
+    ## Additional notes
+
+    * **Partial reward:** If the point is inside the circle, the partial reward is how close it is to the center (from 0 to 1).
+    * Since the reward is a continuous value, use the `get_thresholded_reward` reward preprocessor to binarize the reward instead of `get_binary_reward`.
     """
 
     subdomain = "circle-center"
@@ -263,6 +281,10 @@ class ClickButtonEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
+
+    ## Additional notes
+
+    * Clicking other non-buttons first is OK.
     """
 
     subdomain = "click-button"
@@ -307,6 +329,10 @@ class ClickCheckboxesEnv(MiniWoBEnvironment):
     * target 1
     * target 2
     * target 3
+
+    ## Additional notes
+
+    * **Partial reward:** The score is 1 for each correct checkbox and -1 for each incorrect one. The reward is the average score.
     """
 
     subdomain = "click-checkboxes"
@@ -341,6 +367,10 @@ class ClickCheckboxesLargeEnv(MiniWoBEnvironment):
     * target 7
     * target 8
     * target 9
+
+    ## Additional notes
+
+    * **Partial reward:** The score is 1 for each correct checkbox and -1 for each incorrect one. The reward is the average score.
     """
 
     subdomain = "click-checkboxes-large"
@@ -368,6 +398,10 @@ class ClickCheckboxesSoftEnv(MiniWoBEnvironment):
     * target 2
     * target 3
     * target 4
+
+    ## Additional notes
+
+    * **Partial reward:** The score is 1 for each correct checkbox and -1 for each incorrect one. The reward is the average score.
     """
 
     subdomain = "click-checkboxes-soft"
@@ -393,6 +427,11 @@ class ClickCheckboxesTransferEnv(MiniWoBEnvironment):
     * target 0
     * target 1
     * target 2
+
+    ## Additional notes
+
+    * **Partial reward:** The score is 1 for each correct checkbox and -1 for each incorrect one. The reward is the average score.
+    * Use the `set_data_mode` method of the environment to switch between the train and test scenarios.
     """
 
     subdomain = "click-checkboxes-transfer"
@@ -495,6 +534,10 @@ class ClickColorEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
+
+    ## Additional notes
+
+    * The utterance will have the color name transcribed.
     """
 
     subdomain = "click-color"
@@ -840,6 +883,10 @@ class ClickTab2MediumEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
+
+    ## Additional notes
+
+    * The second tab should only be clicked if the specified link is not in the current tab.
     """
 
     subdomain = "click-tab-2-medium"
@@ -894,6 +941,10 @@ class ClickTestTransferEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
+
+    ## Additional notes
+
+    * Use the `set_data_mode` method of the environment to switch between the train and test scenarios.
     """
 
     subdomain = "click-test-transfer"
@@ -934,6 +985,10 @@ class CopyPasteEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
+
+    ## Additional notes
+
+    * The input is checked against the original content of the source textarea.
     """
 
     subdomain = "copy-paste"
@@ -954,6 +1009,10 @@ class CopyPaste2Env(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
+
+    ## Additional notes
+
+    * The input is checked against the original content of the source textarea.
     """
 
     subdomain = "copy-paste-2"
@@ -1022,6 +1081,10 @@ class DailyCalendarEnv(MiniWoBEnvironment):
     * between to
     * length
     * name
+
+    ## Additional notes
+
+    * The created event must not overlap with existing events.
     """
 
     subdomain = "daily-calendar"
@@ -1083,6 +1146,10 @@ class DragCubeEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
+
+    ## Additional notes
+
+    * Non-deterministic: How much the cube moves depends on the mouse speed in real time.
     """
 
     subdomain = "drag-cube"
@@ -1169,6 +1236,10 @@ class DragShapes2Env(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
+
+    ## Additional notes
+
+    * **Partial reward:** The reward is (1.3 x % correct) - (% incorrect), clipped to range -1 to 1.
     """
 
     subdomain = "drag-shapes-2"
@@ -1226,6 +1297,10 @@ class DrawCircleEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
+
+    ## Additional notes
+
+    * **Partial reward:** The reward is -0.25 if the shape is too small. Otherwise the reward is based on how big the shape is and how consistent the circle radius is.
     """
 
     subdomain = "draw-circle"
@@ -1245,6 +1320,10 @@ class DrawLineEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * direction
+
+    ## Additional notes
+
+    * **Partial reward:** The reward is based on the line direction and the distance from the marked point.
     """
 
     subdomain = "draw-line"
@@ -1326,7 +1405,7 @@ class EmailInboxForwardNlEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [email-inbox-forward] NL instruction (30 templates).
+    [email-inbox-forward] varied instruction texts (30 templates).
 
     ## Example utterances
 
@@ -1340,6 +1419,10 @@ class EmailInboxForwardNlEnv(MiniWoBEnvironment):
 
     * by
     * to
+
+    ## Additional notes
+
+    * Test instruction templates are different from training one. Use the `set_data_mode` method of the environment to switch between the train and test templates.
     """
 
     subdomain = "email-inbox-forward-nl"
@@ -1349,7 +1432,7 @@ class EmailInboxForwardNlTurkEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [email-inbox-forward] NL instruction (100 templates).
+    [email-inbox-forward] varied instruction texts (100 templates).
 
     ## Example utterances
 
@@ -1363,6 +1446,10 @@ class EmailInboxForwardNlTurkEnv(MiniWoBEnvironment):
 
     * by
     * to
+
+    ## Additional notes
+
+    * Test instruction templates are different from training one. Use the `set_data_mode` method of the environment to switch between the train and test templates.
     """
 
     subdomain = "email-inbox-forward-nl-turk"
@@ -1395,7 +1482,7 @@ class EmailInboxNlTurkEnv(MiniWoBEnvironment):
     """
     ## Description
 
-    [email-inbox] NL instruction (100 templates for each subtask).
+    [email-inbox] varied instruction texts (100 templates for each subtask).
 
     ## Example utterances
 
@@ -1411,6 +1498,10 @@ class EmailInboxNlTurkEnv(MiniWoBEnvironment):
     * message
     * task
     * to
+
+    ## Additional notes
+
+    * Test instruction templates are different from training one. Use the `set_data_mode` method of the environment to switch between the train and test templates.
     """
 
     subdomain = "email-inbox-nl-turk"
@@ -1635,6 +1726,10 @@ class FindGreatestEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
+
+    ## Additional notes
+
+    * **Partial reward:** If a card is open but it is not the greatest number, the partial reward is 0.1.
     """
 
     subdomain = "find-greatest"
@@ -1653,6 +1748,11 @@ class FindMidpointEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
+
+    ## Additional notes
+
+    * **Partial reward:** If the point is at most 30px away from the midpoint, the partial reward is how close it is to the midpoint (from 0 to 1).
+    * Since the reward is a continuous value, use the `get_thresholded_reward` reward preprocessor to binarize the reward instead of `get_binary_reward`.
     """
 
     subdomain = "find-midpoint"
@@ -1847,6 +1947,10 @@ class GuessNumberEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
+
+    ## Additional notes
+
+    * Can make as many guesses as needed.
     """
 
     subdomain = "guess-number"
@@ -1903,6 +2007,10 @@ class HotColdEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
+
+    ## Additional notes
+
+    * **Partial reward:** The partial reward is 0.5 for clicking a "warm" area, and 0.25 for a "cold" area.
     """
 
     subdomain = "hot-cold"
@@ -2077,6 +2185,10 @@ class OddOrEvenEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
+
+    ## Additional notes
+
+    * **Partial reward:** The score for each number is 1 for correct, -1 for incorrect, and -0.25 for unselected. The final reward is the average score.
     """
 
     subdomain = "odd-or-even"
@@ -2126,6 +2238,10 @@ class PhoneBookEnv(MiniWoBEnvironment):
 
     * name
     * target
+
+    ## Additional notes
+
+    * **Partial reward:** The partial reward is 0.7 for the correct person and 0.3 for the correct contact type.
     """
 
     subdomain = "phone-book"
@@ -2205,6 +2321,10 @@ class RightAngleEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
+
+    ## Additional notes
+
+    * **Partial reward:** If the angle is less than 45 degrees away from a right angle, the partial reward is how close it is to a right angle (from 0 to 1).
     """
 
     subdomain = "right-angle"
@@ -2499,6 +2619,10 @@ class TicTacToeEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
+
+    ## Additional notes
+
+    * **Partial reward:** The partial reward is -0.5 for a draw and -0.75 for a loss (not finishing the game gives -1).
     """
 
     subdomain = "tic-tac-toe"
@@ -2589,6 +2713,11 @@ class UseColorwheelEnv(MiniWoBEnvironment):
     ## Utterance fields
 
     * target
+
+    ## Additional notes
+
+    * **Partial reward:** The reward is how far the chosen color is from the specified color.
+    * Since the reward is a continuous value, use the `get_thresholded_reward` reward preprocessor to binarize the reward instead of `get_binary_reward`.
     """
 
     subdomain = "use-colorwheel"
@@ -2607,6 +2736,11 @@ class UseColorwheel2Env(MiniWoBEnvironment):
     ## Utterance fields
 
     (none)
+
+    ## Additional notes
+
+    * **Partial reward:** The reward is how far the chosen color is from the specified color.
+    * Since the reward is a continuous value, use the `get_thresholded_reward` reward preprocessor to binarize the reward instead of `get_binary_reward`.
     """
 
     subdomain = "use-colorwheel-2"

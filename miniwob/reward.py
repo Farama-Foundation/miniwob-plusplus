@@ -40,7 +40,7 @@ def get_raw_reward(metadata: Metadata) -> float:
 
 
 def get_binary_reward(metadata: Metadata) -> float:
-    """Returns the reward without time penalty or partial reward.
+    """Returns the binary reward without time penalty or partial reward.
 
     The returned value is 0.0 if the episode has not terminated yet,
     and either -1.0 or 1.0 otherwise.
@@ -48,3 +48,21 @@ def get_binary_reward(metadata: Metadata) -> float:
     if not metadata["done"]:
         return 0.0
     return 1.0 if metadata["raw_reward"] == 1.0 else -1.0
+
+
+def get_thresholded_reward(metadata: Metadata, threshold: float = 1.0) -> float:
+    """Returns the binary reward where raw reward >= threshold is treated as 1.0.
+
+    This is needed for tasks that give continuous-valued partial rewards
+    depending on how close the answer is to the correct answer.
+
+    To specify this method as the RewardPreprocessor, use
+    `lambda metadata: get_thresholded_reward(metadata, threshold=VALUE)`
+    or `functools.partial(get_thresholded_reward, threshold=VALUE)`.
+
+    The returned value is 0.0 if the episode has not terminated yet,
+    and either -1.0 or 1.0 otherwise.
+    """
+    if not metadata["done"]:
+        return 0.0
+    return 1.0 if metadata["raw_reward"] >= threshold else -1.0

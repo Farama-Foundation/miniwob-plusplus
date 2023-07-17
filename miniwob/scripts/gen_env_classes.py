@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 """Generate environment classes and their docstrings."""
 import argparse
+import csv
 import re
-from typing import Sequence
+from typing import Mapping, Sequence
 
 import gymnasium
 from gymnasium.envs.registration import parse_env_id
@@ -21,11 +22,18 @@ class {camel_name}Env(MiniWoBEnvironment):
 
     ## Utterance fields
 
-    {fields}
+    {fields}{notes}
     \"\"\"
 
     subdomain = "{name}"
 """
+
+
+NOTES_TEMPLATE = """
+
+    ## Additional notes
+
+    {notes}"""
 
 
 def _raw_env_name(env_id: str) -> str:
@@ -44,7 +52,9 @@ def _markdown_bullets(items: Sequence[str], indent=4) -> str:
     return "\n".join(" " * indent + "* " + x for x in items)
 
 
-def print_class(env_id: str, desc: str, seeds: Sequence[int], max_utterances: int = 5):
+def print_class(
+    env_id: str, desc: Mapping[str, str], seeds: Sequence[int], max_utterances: int = 5
+):
     """Print the class for the environment.
 
     Args:
@@ -64,12 +74,23 @@ def print_class(env_id: str, desc: str, seeds: Sequence[int], max_utterances: in
             utterances.append(utt)
         fields.update(x[0] for x in obs["fields"])
     env.close()
+    # Collect additional notes
+    notes = []
+    if desc.get("Partial reward") not in (None, "none"):
+        notes.append("**Partial reward:** " + desc["Partial reward"])
+    if desc.get("Notes"):
+        notes += desc["Notes"].split("\n")
+    notes_section = ""
+    if notes:
+        notes_section = NOTES_TEMPLATE.format(notes=_markdown_bullets(notes).strip())
+    # Print the class
     print(
         CLASS_TEMPLATE.format(
             camel_name=_camel_case(_raw_env_name(env_id)),
-            desc=desc,
+            desc=desc.get("Description", "TODO"),
             utterances=(_markdown_bullets(sorted(utterances)).strip() or "TODO"),
             fields=(_markdown_bullets(sorted(fields)).strip() or "(none)"),
+            notes=notes_section,
             name=_raw_env_name(env_id),
         ).strip()
     )
@@ -81,8 +102,8 @@ def main():
     parser.add_argument("-v", "--verbose", action="store_true")
     parser.add_argument(
         "-d",
-        "--env-desc-tsv",
-        help="TSV file where each line is `name [TAB] description`.",
+        "--env-desc-csv",
+        help="CSV file containing the environment info.",
     )
     parser.add_argument(
         "-s",
@@ -100,13 +121,12 @@ def main():
     )
     args = parser.parse_args()
 
-    # Read environment descriptions from a TSV file.
+    # Read environment descriptions from a CSV file.
     env_descs = {}
-    if args.env_desc_tsv:
-        with open(args.env_desc_tsv) as fin:
-            for line in fin:
-                env_id, desc = line.strip().split("\t")
-                env_descs[env_id] = desc
+    if args.env_desc_csv:
+        with open(args.env_desc_csv) as fin:
+            for record in csv.DictReader(fin):
+                env_descs[record["Name"]] = record
 
     # Get the list of all miniwob environments.
     envs = []
@@ -118,7 +138,11 @@ def main():
     # Sample the environment.
     seeds = list(range(args.num_seeds))
     for env_id in envs:
-        desc = env_descs.get(_raw_env_name(env_id), "TODO")
+        raw_env_id = _raw_env_name(env_id)
+        if raw_env_id in env_descs:
+            desc = env_descs[raw_env_id]
+        else:
+            desc = {}
         print_class(env_id, desc, seeds, args.max_utterances)
         # Separate by 2 newlines
         print()
