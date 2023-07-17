@@ -117,7 +117,7 @@ class MiniWoBInstance(Thread):
             self.task_width = TASK_WIDTH
             self.task_height = TASK_HEIGHT
         self.inner_height = self.window_height
-        self.inner_height = self.window_width
+        self.inner_width = self.window_width
         self.threading = threading
         if not field_extractor:
             self.field_extractor = get_field_extractor(subdomain)
