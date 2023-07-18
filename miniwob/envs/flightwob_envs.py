@@ -23,9 +23,10 @@ class FlightAAEnv(MiniWoBEnvironment):
     * Returning Day
     * Returning Month
 
-    ## Custom settings
+    ## Additional notes
 
-    None
+    * **Partial reward:** If all required fields are filled, the partial reward is the fraction of correct fields.
+    * The instructions come from a fixed set from the original FlightWoB dataset. Use the `set_data_mode` method of the environment to switch between the train and test scenarios.
     """
 
     subdomain = "flight.AA"
@@ -50,6 +51,11 @@ class FlightAlaskaEnv(MiniWoBEnvironment):
     * One Way or Round Trip
     * Returning Day
     * Returning Month
+
+    ## Additional notes
+
+    * **Partial reward:** If all required fields are filled, the partial reward is the fraction of correct fields.
+    * The instructions come from a fixed set from the original FlightWoB dataset. Use the `set_data_mode` method of the environment to switch between the train and test scenarios.
     """
 
     subdomain = "flight.Alaska"
@@ -74,6 +80,11 @@ class FlightAlaskaAutoEnv(MiniWoBEnvironment):
     * Returning Day
     * Seat type
     * Ticket Type
+
+    ## Additional notes
+
+    * **Partial reward:** If all required fields are filled, the partial reward is the fraction of correct fields.
+    * The instructions are automatically generated.
     """
 
     subdomain = "flight.Alaska-auto"

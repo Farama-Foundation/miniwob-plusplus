@@ -52,7 +52,7 @@ var genProblem = function() {
     if(e.html() === correct_text) {
       e.on('click', function(){ core.endEpisode(1.0, true, 'Cool!'); })
     } else {
-      e.on('click', function(){ core.endEpisode(-1.0, false, 'Well you clicked on ' + this.innerHTML + 'when you should have clicked on ' + correct_text + ', stupid agent!'); })
+      e.on('click', function(){ core.endEpisode(-1.0, false, 'You clicked on ' + this.innerHTML + ' when you should have clicked on ' + correct_text); })
     }
   }
 

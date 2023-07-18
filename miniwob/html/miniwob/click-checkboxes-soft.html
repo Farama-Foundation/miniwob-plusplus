@@ -100,7 +100,7 @@ var genProblem = function() {
       var is_checked = d3.select('#ch'+i)[0][0].checked;
       r += is_checked === checkboxData.toclick[i] ? 1.0 : -1.0;
     }
-    core.endEpisode(r == checkboxData.elems ? 1.0 : -1.0, true);
+    core.endEpisode(r / checkboxData.elems, r > 0);
   });
 }
 

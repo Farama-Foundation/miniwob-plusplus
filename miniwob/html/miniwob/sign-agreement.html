@@ -59,7 +59,7 @@ var signAndAgree = function(){
   $('#agree').on('click', function(){
     var userName = $('#name').val();
     var reward = expectedName === userName ? 1.0 : -1.0;
-    core.endEpisode(reward, true);
+    core.endEpisode(reward, reward > 0);
   });
 }
 
@@ -71,7 +71,7 @@ var signAndCancel = function(){
   $('#cancel').on('click', function(){
     var userName = $('#name').val();
     var reward = expectedName === userName ? 1.0 : -1.0;
-    core.endEpisode(reward, true);
+    core.endEpisode(reward, reward > 0);
   });
 }
 

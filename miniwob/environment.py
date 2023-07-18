@@ -9,7 +9,7 @@ from miniwob.action import Action, ActionSpaceConfig, ActionTypes
 from miniwob.fields import FieldExtractor
 from miniwob.instance import MiniWoBInstance
 from miniwob.observation import Observation, get_observation_space
-from miniwob.reward import RewardPreprocessor
+from miniwob.reward import RewardProcessor
 
 
 class MiniWoBEnvironment(gym.Env):
@@ -28,7 +28,7 @@ class MiniWoBEnvironment(gym.Env):
         base_url: Optional[str] = None,
         action_space_config: Union[str, ActionSpaceConfig] = "all_supported",
         field_extractor: Optional[FieldExtractor] = None,
-        reward_processor: Optional[RewardPreprocessor] = None,
+        reward_processor: Optional[RewardProcessor] = None,
         wait_ms: float = 0.0,
         block_on_reset: bool = True,
         refresh_freq: int = 0,

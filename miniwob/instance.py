@@ -36,7 +36,7 @@ from miniwob.observation import (
     create_empty_screenshot,
     create_observation,
 )
-from miniwob.reward import RewardPreprocessor, get_original_reward
+from miniwob.reward import RewardProcessor, get_original_reward
 from miniwob.screenshot import get_screenshot, pil_to_numpy_array
 
 
@@ -55,7 +55,7 @@ class MiniWoBInstance(Thread):
         base_url: Optional[str] = None,
         threading: bool = False,
         field_extractor: Optional[FieldExtractor] = None,
-        reward_processor: Optional[RewardPreprocessor] = None,
+        reward_processor: Optional[RewardProcessor] = None,
         wait_ms: float = 0.0,
         block_on_reset: bool = True,
         refresh_freq: int = 0,
