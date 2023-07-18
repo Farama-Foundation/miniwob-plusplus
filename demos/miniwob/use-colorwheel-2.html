@@ -43,7 +43,7 @@ var genProblem = function() {
     var des = ui_utils.hexToRgb(col_desired);
 
     var r = 1.0 - (Math.abs(sel.r - des.r)/255.0 + Math.abs(sel.g - des.g)/255.0 + Math.abs(sel.b - des.b)/255.0)/3;
-    core.endEpisode(r, false);
+    core.endEpisode(r, r > 0);
   });
 }
 

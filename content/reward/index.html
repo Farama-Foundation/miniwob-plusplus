@@ -7,12 +7,12 @@
     <meta property="og:title" content="MiniWoB++ Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="A collection of over 100 web interaction environments, along with JavaScript and Python interfaces." />
-    <meta property="og:url" content="https://miniwob.farama.org/environments/drag-items.html" /><meta property="og:image" content="https://miniwob.farama.org/_static/img/miniwobplusplus-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="drag-items-grid" href="../drag-items-grid/" /><link rel="prev" title="drag-cube" href="../drag-cube/" />
-        <link rel="canonical" href="https://miniwob.farama.org/environments/drag-items.html" />
+    <meta property="og:url" content="https://miniwob.farama.org/content/reward.html" /><meta property="og:image" content="https://miniwob.farama.org/_static/img/miniwobplusplus-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Viewing the Environments" href="../viewing/" /><link rel="prev" title="Action Space" href="../action_space/" />
+        <link rel="canonical" href="https://miniwob.farama.org/content/reward.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20.dev1 -->
-        <title>drag-items - MiniWoB++ Documentation</title>
+        <title>Reward - MiniWoB++ Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=a022fd11c0d7e10ac71ac296890386cea7a2fa24" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=093e2efd5a2c7b46ab7c7157e45f5f05a1e0a463" />
@@ -224,152 +224,152 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../content/getting_started/">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../content/basic_usage/">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage/">Basic Usage</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../content/observation_space/">Observation Space</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../content/action_space/">Action Space</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../content/reward/">Reward</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../observation_space/">Observation Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../action_space/">Action Space</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Reward</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../content/viewing/">Viewing the Environments</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="../list/">Environments List</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Environments List</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../ascending-numbers/">ascending-numbers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../bisect-angle/">bisect-angle</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../book-flight/">book-flight</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../book-flight-nodelay/">book-flight-nodelay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../buy-ticket/">buy-ticket</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../choose-date/">choose-date</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../choose-date-easy/">choose-date-easy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../choose-date-medium/">choose-date-medium</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../choose-date-nodelay/">choose-date-nodelay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../choose-list/">choose-list</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../circle-center/">circle-center</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-button/">click-button</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-button-sequence/">click-button-sequence</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-checkboxes/">click-checkboxes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-checkboxes-large/">click-checkboxes-large</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-checkboxes-soft/">click-checkboxes-soft</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-checkboxes-transfer/">click-checkboxes-transfer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-collapsible/">click-collapsible</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-collapsible-2/">click-collapsible-2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-collapsible-2-nodelay/">click-collapsible-2-nodelay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-collapsible-nodelay/">click-collapsible-nodelay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-color/">click-color</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-dialog/">click-dialog</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-dialog-2/">click-dialog-2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-link/">click-link</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-menu/">click-menu</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-menu-2/">click-menu-2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-option/">click-option</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-pie/">click-pie</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-pie-nodelay/">click-pie-nodelay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-scroll-list/">click-scroll-list</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-shades/">click-shades</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-shape/">click-shape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-tab/">click-tab</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-tab-2/">click-tab-2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-tab-2-easy/">click-tab-2-easy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-tab-2-hard/">click-tab-2-hard</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-tab-2-medium/">click-tab-2-medium</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-test/">click-test</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-test-2/">click-test-2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-test-transfer/">click-test-transfer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../click-widget/">click-widget</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../copy-paste/">copy-paste</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../copy-paste-2/">copy-paste-2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../count-shape/">count-shape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../count-sides/">count-sides</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../daily-calendar/">daily-calendar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../drag-box/">drag-box</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../drag-circle/">drag-circle</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../drag-cube/">drag-cube</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">drag-items</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../drag-items-grid/">drag-items-grid</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../drag-shapes/">drag-shapes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../drag-shapes-2/">drag-shapes-2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../drag-single-shape/">drag-single-shape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../drag-sort-numbers/">drag-sort-numbers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../draw-circle/">draw-circle</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../draw-line/">draw-line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../email-inbox/">email-inbox</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../email-inbox-delete/">email-inbox-delete</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../email-inbox-forward/">email-inbox-forward</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../email-inbox-forward-nl/">email-inbox-forward-nl</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../email-inbox-forward-nl-turk/">email-inbox-forward-nl-turk</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../email-inbox-important/">email-inbox-important</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../email-inbox-nl-turk/">email-inbox-nl-turk</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../email-inbox-noscroll/">email-inbox-noscroll</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../email-inbox-reply/">email-inbox-reply</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../email-inbox-star-reply/">email-inbox-star-reply</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../enter-date/">enter-date</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../enter-password/">enter-password</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../enter-text/">enter-text</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../enter-text-2/">enter-text-2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../enter-text-dynamic/">enter-text-dynamic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../enter-time/">enter-time</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../find-greatest/">find-greatest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../find-midpoint/">find-midpoint</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../find-word/">find-word</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../flight.AA/">flight.AA</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../flight.Alaska/">flight.Alaska</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../flight.Alaska-auto/">flight.Alaska-auto</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../focus-text/">focus-text</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../focus-text-2/">focus-text-2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../form-sequence/">form-sequence</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../form-sequence-2/">form-sequence-2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../form-sequence-3/">form-sequence-3</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../generate-number/">generate-number</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../grid-coordinate/">grid-coordinate</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guess-number/">guess-number</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../highlight-text/">highlight-text</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../highlight-text-2/">highlight-text-2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../hot-cold/">hot-cold</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../identify-shape/">identify-shape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../login-user/">login-user</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../login-user-popup/">login-user-popup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../multi-layouts/">multi-layouts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../multi-orderings/">multi-orderings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../navigate-tree/">navigate-tree</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../number-checkboxes/">number-checkboxes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../odd-or-even/">odd-or-even</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../order-food/">order-food</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../phone-book/">phone-book</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../read-table/">read-table</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../read-table-2/">read-table-2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../resize-textarea/">resize-textarea</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../right-angle/">right-angle</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../scroll-text/">scroll-text</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../scroll-text-2/">scroll-text-2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../search-engine/">search-engine</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../sign-agreement/">sign-agreement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../simple-algebra/">simple-algebra</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../simple-arithmetic/">simple-arithmetic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../social-media/">social-media</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../social-media-all/">social-media-all</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../social-media-some/">social-media-some</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../stock-market/">stock-market</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../terminal/">terminal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../text-editor/">text-editor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../text-transform/">text-transform</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tic-tac-toe/">tic-tac-toe</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../unicode-test/">unicode-test</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../use-autocomplete/">use-autocomplete</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../use-autocomplete-nodelay/">use-autocomplete-nodelay</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../use-colorwheel/">use-colorwheel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../use-colorwheel-2/">use-colorwheel-2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../use-slider/">use-slider</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../use-slider-2/">use-slider-2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../use-spinner/">use-spinner</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../visual-addition/">visual-addition</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../viewing/">Viewing the Environments</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../environments/list/">Environments List</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Environments List</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/ascending-numbers/">ascending-numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/bisect-angle/">bisect-angle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/book-flight/">book-flight</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/book-flight-nodelay/">book-flight-nodelay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/buy-ticket/">buy-ticket</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/choose-date/">choose-date</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/choose-date-easy/">choose-date-easy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/choose-date-medium/">choose-date-medium</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/choose-date-nodelay/">choose-date-nodelay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/choose-list/">choose-list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/circle-center/">circle-center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-button/">click-button</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-button-sequence/">click-button-sequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-checkboxes/">click-checkboxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-checkboxes-large/">click-checkboxes-large</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-checkboxes-soft/">click-checkboxes-soft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-checkboxes-transfer/">click-checkboxes-transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-collapsible/">click-collapsible</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-collapsible-2/">click-collapsible-2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-collapsible-2-nodelay/">click-collapsible-2-nodelay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-collapsible-nodelay/">click-collapsible-nodelay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-color/">click-color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-dialog/">click-dialog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-dialog-2/">click-dialog-2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-link/">click-link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-menu/">click-menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-menu-2/">click-menu-2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-option/">click-option</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-pie/">click-pie</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-pie-nodelay/">click-pie-nodelay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-scroll-list/">click-scroll-list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-shades/">click-shades</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-shape/">click-shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-tab/">click-tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-tab-2/">click-tab-2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-tab-2-easy/">click-tab-2-easy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-tab-2-hard/">click-tab-2-hard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-tab-2-medium/">click-tab-2-medium</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-test/">click-test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-test-2/">click-test-2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-test-transfer/">click-test-transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/click-widget/">click-widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/copy-paste/">copy-paste</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/copy-paste-2/">copy-paste-2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/count-shape/">count-shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/count-sides/">count-sides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/daily-calendar/">daily-calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/drag-box/">drag-box</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/drag-circle/">drag-circle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/drag-cube/">drag-cube</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/drag-items/">drag-items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/drag-items-grid/">drag-items-grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/drag-shapes/">drag-shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/drag-shapes-2/">drag-shapes-2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/drag-single-shape/">drag-single-shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/drag-sort-numbers/">drag-sort-numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/draw-circle/">draw-circle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/draw-line/">draw-line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/email-inbox/">email-inbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/email-inbox-delete/">email-inbox-delete</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/email-inbox-forward/">email-inbox-forward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/email-inbox-forward-nl/">email-inbox-forward-nl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/email-inbox-forward-nl-turk/">email-inbox-forward-nl-turk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/email-inbox-important/">email-inbox-important</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/email-inbox-nl-turk/">email-inbox-nl-turk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/email-inbox-noscroll/">email-inbox-noscroll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/email-inbox-reply/">email-inbox-reply</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/email-inbox-star-reply/">email-inbox-star-reply</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/enter-date/">enter-date</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/enter-password/">enter-password</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/enter-text/">enter-text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/enter-text-2/">enter-text-2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/enter-text-dynamic/">enter-text-dynamic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/enter-time/">enter-time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/find-greatest/">find-greatest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/find-midpoint/">find-midpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/find-word/">find-word</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/flight.AA/">flight.AA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/flight.Alaska/">flight.Alaska</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/flight.Alaska-auto/">flight.Alaska-auto</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/focus-text/">focus-text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/focus-text-2/">focus-text-2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/form-sequence/">form-sequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/form-sequence-2/">form-sequence-2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/form-sequence-3/">form-sequence-3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/generate-number/">generate-number</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/grid-coordinate/">grid-coordinate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/guess-number/">guess-number</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/highlight-text/">highlight-text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/highlight-text-2/">highlight-text-2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/hot-cold/">hot-cold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/identify-shape/">identify-shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/login-user/">login-user</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/login-user-popup/">login-user-popup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/multi-layouts/">multi-layouts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/multi-orderings/">multi-orderings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/navigate-tree/">navigate-tree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/number-checkboxes/">number-checkboxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/odd-or-even/">odd-or-even</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/order-food/">order-food</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/phone-book/">phone-book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/read-table/">read-table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/read-table-2/">read-table-2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/resize-textarea/">resize-textarea</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/right-angle/">right-angle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/scroll-text/">scroll-text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/scroll-text-2/">scroll-text-2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/search-engine/">search-engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/sign-agreement/">sign-agreement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/simple-algebra/">simple-algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/simple-arithmetic/">simple-arithmetic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/social-media/">social-media</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/social-media-all/">social-media-all</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/social-media-some/">social-media-some</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/stock-market/">stock-market</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/terminal/">terminal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/text-editor/">text-editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/text-transform/">text-transform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/tic-tac-toe/">tic-tac-toe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/unicode-test/">unicode-test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/use-autocomplete/">use-autocomplete</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/use-autocomplete-nodelay/">use-autocomplete-nodelay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/use-colorwheel/">use-colorwheel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/use-colorwheel-2/">use-colorwheel-2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/use-slider/">use-slider</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/use-slider-2/">use-slider-2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/use-spinner/">use-spinner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/visual-addition/">visual-addition</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../content/custom_environment/">Creating a Custom Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../content/javascript_api/">Javascript API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../content/demonstrations/">Demonstrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom_environment/">Creating a Custom Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../javascript_api/">Javascript API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demonstrations/">Demonstrations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
@@ -399,7 +399,16 @@
             </svg>
             <span>Back to top</span>
           </a>
-          <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
+          <div class="content-icon-container"><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/miniwob-plusplus/edit/master/docs/content/reward.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
               <button class="theme-toggle" title="Toggle color theme">
                 <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
                 <svg class="theme-icon-when-auto">
@@ -422,31 +431,30 @@
           </div>
           <article role="main">
             
-            <section id="drag-items">
-<h1>drag-items<a class="headerlink" href="#drag-items" title="Permalink to this heading">#</a></h1>
-<center>
-    <iframe src="../../demos/miniwob/drag-items.html" width="325" height="210" scrolling="no" style="overflow:hidden;">
-    </iframe><br>
-    <a href="../../demos/miniwob/drag-items.html" target="_blank"><button>Open demo in a separate tab.</button></a>
-</center>
-<section id="description">
-<h2>Description<a class="headerlink" href="#description" title="Permalink to this heading">#</a></h2>
-<p>Drag items in a list, in a specified direction</p>
-</section>
-<section id="example-utterances">
-<h2>Example utterances<a class="headerlink" href="#example-utterances" title="Permalink to this heading">#</a></h2>
+            <section id="reward">
+<h1>Reward<a class="headerlink" href="#reward" title="Permalink to this heading">#</a></h1>
+<p>In all environments, the reward is 0 during the episode, and a value in the range -1 to 1 (inclusive)
+when the episode terminates.</p>
+<section id="reward-processor">
+<h2>Reward processor<a class="headerlink" href="#reward-processor" title="Permalink to this heading">#</a></h2>
+<p>Originally, any positive reward is scaled by the remaining time on the timer.
+Some environments also give partial rewards for partially correct answers
+(see the documentation or docstring of each environment for details).</p>
+<p>A <strong>reward processor</strong> can be used to returns custom rewards that ignore
+the time penalty or partial rewards. A reward processor can be specified during
+environment initialization:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gymnasium</span>
+<span class="kn">from</span> <span class="nn">miniwob.reward</span> <span class="kn">import</span> <span class="n">get_binary_reward</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;miniwob/ascending-numbers-v1&#39;</span><span class="p">,</span> <span class="n">reward_processor</span><span class="o">=</span><span class="n">get_binary_reward</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The available reward processors include:</p>
 <ul class="simple">
-<li><p>Drag Gerda to the 3rd position.</p></li>
-<li><p>Drag Jerrilyn to the 1st position.</p></li>
-<li><p>Drag Margette down by one position.</p></li>
-<li><p>Drag Sara-Ann to the 1st position.</p></li>
-<li><p>Drag Theodosia to the 3rd position.</p></li>
-</ul>
-</section>
-<section id="utterance-fields">
-<h2>Utterance fields<a class="headerlink" href="#utterance-fields" title="Permalink to this heading">#</a></h2>
-<ul class="simple">
-<li><p>target</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_original_reward</span></code>: Returns the original reward. This is the default.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_raw_reward</span></code>: Returns the raw reward without time penalty.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_binary_reward</span></code>: Returns the binary reward without time penalty or partial reward. The terminal reward will be either -1 or 1. This is used in most previous publications.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_thresholded_reward</span></code>: Returns the binary reward without time penalty or partial reward, but with any partial reward ≥ the specified threshold being treated as 1. This is needed for tasks that give continuous-valued partial rewards depending on how close the answer is to the correct answer. To specify this method as the reward processor, use <code class="docutils literal notranslate"><span class="pre">lambda</span> <span class="pre">metadata:</span> <span class="pre">get_thresholded_reward(metadata,</span> <span class="pre">threshold=VALUE)</span></code> or <code class="docutils literal notranslate"><span class="pre">functools.partial(get_thresholded_reward,</span> <span class="pre">threshold=VALUE)</span></code>.</p></li>
 </ul>
 </section>
 </section>
@@ -456,18 +464,18 @@
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../drag-items-grid/">
+            <a class="next-page" href="../viewing/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">drag-items-grid</div>
+                <div class="title">Viewing the Environments</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
             </a>
-            <a class="prev-page" href="../drag-cube/">
+            <a class="prev-page" href="../action_space/">
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
@@ -476,7 +484,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">drag-cube</div>
+                <div class="title">Action Space</div>
                 
               </div>
             </a>
@@ -520,10 +528,8 @@
           <div class="toc-tree-container">
             <div class="toc-tree">
               <ul>
-<li><a class="reference internal" href="#">drag-items</a><ul>
-<li><a class="reference internal" href="#description">Description</a></li>
-<li><a class="reference internal" href="#example-utterances">Example utterances</a></li>
-<li><a class="reference internal" href="#utterance-fields">Utterance fields</a></li>
+<li><a class="reference internal" href="#">Reward</a><ul>
+<li><a class="reference internal" href="#reward-processor">Reward processor</a></li>
 </ul>
 </li>
 </ul>

@@ -231,6 +231,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../content/observation_space/">Observation Space</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../content/action_space/">Action Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/reward/">Reward</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul class="current">
@@ -442,6 +443,13 @@
 <h2>Utterance fields<a class="headerlink" href="#utterance-fields" title="Permalink to this heading">#</a></h2>
 <p>(none)</p>
 </section>
+<section id="additional-notes">
+<h2>Additional notes<a class="headerlink" href="#additional-notes" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Partial reward:</strong> If the point is at most 30px away from the midpoint, the partial reward is how close it is to the midpoint (from 0 to 1).</p></li>
+<li><p>Since the reward is a continuous value, use the <code class="docutils literal notranslate"><span class="pre">get_thresholded_reward</span></code> reward preprocessor to binarize the reward instead of <code class="docutils literal notranslate"><span class="pre">get_binary_reward</span></code>.</p></li>
+</ul>
+</section>
 </section>
 
           </article>
@@ -517,6 +525,7 @@
 <li><a class="reference internal" href="#description">Description</a></li>
 <li><a class="reference internal" href="#example-utterances">Example utterances</a></li>
 <li><a class="reference internal" href="#utterance-fields">Utterance fields</a></li>
+<li><a class="reference internal" href="#additional-notes">Additional notes</a></li>
 </ul>
 </li>
 </ul>
