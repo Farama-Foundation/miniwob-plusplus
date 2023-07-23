@@ -1,9 +1,20 @@
 """Methods that execute actions in Selenium."""
 import logging
+from typing import Sequence, Tuple
 
 from selenium.webdriver import Chrome as ChromeDriver
 from selenium.webdriver.common.action_chains import ActionChains
 
+from miniwob.action import (
+    COORDS_ACTIONS,
+    ELEMENT_ACTIONS,
+    FIELD_ACTIONS,
+    SCROLL_ACTIONS,
+    TEXT_ACTIONS,
+    Action,
+    ActionSpaceConfig,
+    ActionTypes,
+)
 from miniwob.constants import WEBDRIVER_MODIFIER_KEYS, WEBDRIVER_SPECIAL_KEYS
 
 
@@ -113,3 +124,56 @@ def execute_type_text(text: str, driver: ChromeDriver):
         chain.w3c_actions.key_action.key_down(key)
         chain.w3c_actions.key_action.key_up(key)
     chain.perform()
+
+
+_SELENIUM_COORDS_ACTIONS = {
+    ActionTypes.MOVE_COORDS: execute_move_coords,
+    ActionTypes.CLICK_COORDS: execute_click_coords,
+    ActionTypes.DBLCLICK_COORDS: execute_dblclick_coords,
+    ActionTypes.MOUSEDOWN_COORDS: execute_mousedown_coords,
+    ActionTypes.MOUSEUP_COORDS: execute_mouseup_coords,
+}
+
+
+def execute_action_on_chromedriver(
+    action: Action,
+    fields: Sequence[Tuple[str, str]],
+    config: ActionSpaceConfig,
+    driver: ChromeDriver,
+):
+    """Execute the action on the ChromeDriver."""
+    action_type = config.action_types[action["action_type"]]
+    if action_type == ActionTypes.NONE:
+        return
+    # Coords actions
+    if action_type in COORDS_ACTIONS:
+        left, top = config.compute_raw_coords(action)
+        if action_type in SCROLL_ACTIONS:
+            scroll_amount = config.scroll_amount
+            if action_type == ActionTypes.SCROLL_UP_COORDS:
+                scroll_amount = -scroll_amount
+            execute_scroll_coords(left, top, scroll_amount, config.scroll_time, driver)
+        else:
+            _SELENIUM_COORDS_ACTIONS[action_type](left, top, driver)
+        return
+    # Key press action
+    if action_type == ActionTypes.PRESS_KEY:
+        key_idx = int(action["key"])
+        key = config.allowed_keys[key_idx]
+        execute_press_key(key, driver)
+        return
+    # Element and typing actions
+    if action_type in ELEMENT_ACTIONS:
+        ref = int(action["ref"])
+        execute_click_element(ref, driver)
+    if action_type in TEXT_ACTIONS:
+        text = action["text"]
+        execute_type_text(text, driver)
+    elif action_type in FIELD_ACTIONS:
+        field_idx = int(action["field"])
+        if field_idx >= len(fields):
+            # Treat the value as empty
+            text = ""
+        else:
+            text = fields[field_idx][1]
+        execute_type_text(text, driver)

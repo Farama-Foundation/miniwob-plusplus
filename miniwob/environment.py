@@ -7,9 +7,9 @@ import numpy as np
 
 from miniwob.action import Action, ActionSpaceConfig, ActionTypes
 from miniwob.fields import FieldExtractor
-from miniwob.instance import MiniWoBInstance
 from miniwob.observation import Observation, get_observation_space
 from miniwob.reward import RewardProcessor
+from miniwob.selenium_instance import SeleniumInstance
 
 
 class MiniWoBEnvironment(gym.Env):
@@ -97,11 +97,11 @@ class MiniWoBEnvironment(gym.Env):
         )
 
     def _hard_reset_instance(self):
-        """Close the current MiniWoBInstance (if exists) and starts a new one."""
+        """Close the current SeleniumInstance (if exists) and starts a new one."""
         if hasattr(self, "instance") and self.instance:
             self.instance.close()
         logging.info("Starting WebDriver Instance")
-        self.instance = MiniWoBInstance(index=0, **self.instance_kwargs)
+        self.instance = SeleniumInstance(index=0, **self.instance_kwargs)
         self.instance.start()
         self.instance.wait()
 
