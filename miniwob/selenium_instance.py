@@ -36,7 +36,7 @@ from miniwob.observation import (
     create_empty_screenshot,
     create_observation,
 )
-from miniwob.reward import RewardPreprocessor, get_original_reward
+from miniwob.reward import RewardProcessor, get_original_reward
 from miniwob.screenshot import get_screenshot, pil_to_numpy_array
 from miniwob.selenium_actions import execute_action_on_chromedriver
 
@@ -56,7 +56,7 @@ class SeleniumInstance(Thread):
         base_url: Optional[str] = None,
         threading: bool = False,
         field_extractor: Optional[FieldExtractor] = None,
-        reward_processor: Optional[RewardPreprocessor] = None,
+        reward_processor: Optional[RewardProcessor] = None,
         wait_ms: float = 0.0,
         block_on_reset: bool = True,
         refresh_freq: int = 0,
@@ -118,7 +118,7 @@ class SeleniumInstance(Thread):
             self.task_width = TASK_WIDTH
             self.task_height = TASK_HEIGHT
         self.inner_height = self.window_height
-        self.inner_height = self.window_width
+        self.inner_width = self.window_width
         self.threading = threading
         if not field_extractor:
             self.field_extractor = get_field_extractor(subdomain)
