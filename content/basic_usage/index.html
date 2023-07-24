@@ -445,7 +445,7 @@
       <span class="k">break</span>
 
   <span class="c1"># Click on the element.</span>
-  <span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">create_action</span><span class="p">(</span><span class="n">ActionTypes</span><span class="o">.</span><span class="n">CLICK_ELEMENT</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">element</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">])</span>
+  <span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">create_action</span><span class="p">(</span><span class="n">ActionTypes</span><span class="o">.</span><span class="n">CLICK_ELEMENT</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">element</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">])</span>
   <span class="n">observation</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
 
   <span class="c1"># Check if the action was correct. </span>
@@ -520,16 +520,16 @@ return an observation, which is a <code class="docutils literal notranslate"><sp
 </section>
 <section id="action-space">
 <h2>Action Space<a class="headerlink" href="#action-space" title="Permalink to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">create_action</span><span class="p">(</span><span class="n">ActionTypes</span><span class="o">.</span><span class="n">CLICK_ELEMENT</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">element</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">create_action</span><span class="p">(</span><span class="n">ActionTypes</span><span class="o">.</span><span class="n">CLICK_ELEMENT</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">element</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">])</span>
 <span class="n">observation</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The <a class="reference external" href="https://gymnasium.farama.org/api/env/#gymnasium.Env.step"><code class="docutils literal notranslate"><span class="pre">step</span></code></a> method
 takes an <code class="docutils literal notranslate"><span class="pre">action</span></code> object, which should be a <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following fields:</p>
 <ul class="simple">
-<li><p><strong><code class="docutils literal notranslate"><span class="pre">action_type</span></code>:</strong> The action type index from <code class="docutils literal notranslate"><span class="pre">env.action_space_config.action_types</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">action_type</span></code>:</strong> The action type index from <code class="docutils literal notranslate"><span class="pre">env.unwrapped.action_space_config.action_types</span></code>.</p></li>
 <li><p>Other fields such as <code class="docutils literal notranslate"><span class="pre">ref</span></code>, <code class="docutils literal notranslate"><span class="pre">coords</span></code>, <code class="docutils literal notranslate"><span class="pre">text</span></code>, etc. should be specified based on the action type.
-The action space <code class="docutils literal notranslate"><span class="pre">env.action_space</span></code> specifies which fields should be included.</p></li>
+The action space <code class="docutils literal notranslate"><span class="pre">env.unwrapped.action_space</span></code> specifies which fields should be included.</p></li>
 </ul>
 <p>For example, the <code class="docutils literal notranslate"><span class="pre">action</span></code> from the <code class="docutils literal notranslate"><span class="pre">create_action</span></code> command above is</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
