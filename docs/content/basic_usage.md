@@ -26,7 +26,7 @@ try:
       break
 
   # Click on the element.
-  action = env.create_action(ActionTypes.CLICK_ELEMENT, ref=element["ref"])
+  action = env.unwrapped.create_action(ActionTypes.CLICK_ELEMENT, ref=element["ref"])
   observation, reward, terminated, truncated, info = env.step(action)
 
   # Check if the action was correct. 
@@ -108,16 +108,16 @@ See the [Observation Space](/content/observation_space) page for more details.
 ## Action Space
 
 ```python
-action = env.create_action(ActionTypes.CLICK_ELEMENT, ref=element["ref"])
+action = env.unwrapped.create_action(ActionTypes.CLICK_ELEMENT, ref=element["ref"])
 observation, reward, terminated, truncated, info = env.step(action)
 ```
 
 The [`step`](https://gymnasium.farama.org/api/env/#gymnasium.Env.step) method
 takes an `action` object, which should be a `dict` with the following fields:
 
-* **`action_type`:** The action type index from `env.action_space_config.action_types`.
+* **`action_type`:** The action type index from `env.unwrapped.action_space_config.action_types`.
 * Other fields such as `ref`, `coords`, `text`, etc. should be specified based on the action type.
-  The action space `env.action_space` specifies which fields should be included.
+  The action space `env.unwrapped.action_space` specifies which fields should be included.
 
 For example, the `action` from the `create_action` command above is
 ```python

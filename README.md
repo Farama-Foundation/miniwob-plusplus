@@ -81,7 +81,7 @@ try:
       break
 
   # Click on the element.
-  action = env.create_action(ActionTypes.CLICK_ELEMENT, ref=element["ref"])
+  action = env.unwrapped.create_action(ActionTypes.CLICK_ELEMENT, ref=element["ref"])
   obs, reward, terminated, truncated, info = env.step(action)
 
   # Check if the action was correct. 
