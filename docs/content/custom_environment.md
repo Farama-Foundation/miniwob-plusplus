@@ -145,12 +145,12 @@ try:
   amount = int(field_lookup(observation['fields'], 'amount'))
   for _ in range(amount):
     # Click Hello.
-    action = env.create_action(ActionTypes.CLICK_ELEMENT, ref=hello_button["ref"])
+    action = env.unwrapped.create_action(ActionTypes.CLICK_ELEMENT, ref=hello_button["ref"])
     observation, reward, terminated, truncated, info = env.step(action)
     time.sleep(0.5)
 
   # Click Submit.
-  action = env.create_action(ActionTypes.CLICK_ELEMENT, ref=submit_button["ref"])
+  action = env.unwrapped.create_action(ActionTypes.CLICK_ELEMENT, ref=submit_button["ref"])
   observation, reward, terminated, truncated, info = env.step(action)
   
   # Check if the action was correct. 

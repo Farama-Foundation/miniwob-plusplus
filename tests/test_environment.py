@@ -34,7 +34,9 @@ class MiniWoBTester:
 
     def create_click_element_action(self, env, element):
         """Create an action that clicks in the specified element."""
-        return env.create_action(ActionTypes.CLICK_ELEMENT, ref=element["ref"])
+        return env.unwrapped.create_action(
+            ActionTypes.CLICK_ELEMENT, ref=element["ref"]
+        )
 
     def create_click_button_action(self, env, obs, button_text):
         """Create an action that clicks on the button with the specified text."""
@@ -122,9 +124,9 @@ class TestMiniWoBEnvironment(MiniWoBTester):
         """Test that visualize_attention() does not crash."""
         env.reset()
         attention = np.random.rand(20, 20) * 0.02
-        env.visualize_attention(attention)
+        env.unwrapped.visualize_attention(attention)
         time.sleep(1)
-        env.visualize_attention(None)
+        env.unwrapped.visualize_attention(None)
         time.sleep(1)
 
     def test_screenshot(self, env):
@@ -204,7 +206,7 @@ class TestMiniWoBMode(MiniWoBTester):
         obs, reward, terminated, truncated, info = env.step(action)
         assert reward < 0
         # Test time
-        env.set_data_mode("test")
+        env.unwrapped.set_data_mode("test")
         obs, info = env.reset()
         assert obs["utterance"] == "Click button TWO."
         action = self.create_click_button_action(env, obs, "ONE")
@@ -269,7 +271,7 @@ class RewardProcessorTester(MiniWoBTester):
             if element["tag"] == "text" and element["text"] == str(number):
                 left = element["left"].item() + 5
                 top = element["top"].item() + 5
-                return env.create_action(
+                return env.unwrapped.create_action(
                     ActionTypes.CLICK_COORDS,
                     coords=np.array([left, top], dtype=np.float32),
                 )
