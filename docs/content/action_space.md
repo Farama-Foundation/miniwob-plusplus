@@ -101,14 +101,17 @@ The following preset names can be specified in place of the `ActionSpaceConfig` 
 * `"humphreys22"`: The action space from (Humphreys et al., 2022)
   [A data-driven approach for learning to control computers](https://arxiv.org/abs/2202.08137).
 
+Adding `"_mac_os"` to the preset name will change the key modifiers in `allowed_keys`
+from Control to Meta.
+
 (key-combinations)=
 ### Key combinations
 
 The `PRESS_KEY` action type issues a key combination via Selenium.
 Each key combination in the `allowed_keys` config follow the rules:
 
-* Modifiers are specified using prefixes "C-" (control), "S-" (shift),
-    "A-" (alternate), or "M-" (meta).
+* Modifiers are specified using prefixes "C-" (Control), "S-" (Shift),
+    "A-" (Alternate), or "M-" (Meta).
 * Printable character keys (a, 1, etc.) are specified directly.
     Shifted characters (A, !, etc.) are equivalent to "S-" + non-shifted counterpart.
 * Special keys are inclosed in "<...>". The list of valid names is specified in
