@@ -611,6 +611,7 @@ class TestCopyPaste(RepeatedTester):
     MAX_STEPS = 6
 
     # Note: Does not work in human render mode on ChromeOS.
+    # Note: Mac OS needs to change C- to M-.
     def _get_action(self, env, obs, info, step):
         if step == 0:
             for element in obs["dom_elements"]:
