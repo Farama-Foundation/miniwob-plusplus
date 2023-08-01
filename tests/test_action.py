@@ -1,4 +1,5 @@
 """Test action execution."""
+import platform
 from typing import Mapping, Tuple
 
 import gymnasium
@@ -7,6 +8,9 @@ import pytest
 
 from miniwob.action import ActionSpaceConfig, ActionTypes
 from miniwob.fields import field_lookup
+
+
+_IS_MAC_OS = platform.system() == "Darwin"
 
 
 class RepeatedTester:
@@ -607,6 +611,7 @@ class TestDragBoxWithMove(RepeatedTester):
 class TestCopyPaste(RepeatedTester):
     """Tests for task copy-paste."""
 
+    ACTION_SPACE_PRESET_NAME = "all_supported_mac_os" if _IS_MAC_OS else "all_supported"
     ENV_NAME = "miniwob/copy-paste-v1"
     MAX_STEPS = 6
 
@@ -617,15 +622,15 @@ class TestCopyPaste(RepeatedTester):
                 if element["id"] == "to-copy":
                     return self.create_click_element_action(env, element)
         elif step == 1:
-            return self.create_press_key_action(env, "C-a")
+            return self.create_press_key_action(env, "M-a" if _IS_MAC_OS else "C-a")
         elif step == 2:
-            return self.create_press_key_action(env, "C-c")
+            return self.create_press_key_action(env, "M-c" if _IS_MAC_OS else "C-c")
         elif step == 3:
             for element in obs["dom_elements"]:
                 if element["id"] == "answer-input":
                     return self.create_click_element_action(env, element)
         elif step == 4:
-            return self.create_press_key_action(env, "C-v")
+            return self.create_press_key_action(env, "M-v" if _IS_MAC_OS else "C-v")
         elif step == 5:
             return self.create_click_button_action(env, obs, "Submit")
 

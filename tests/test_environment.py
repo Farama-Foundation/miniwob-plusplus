@@ -134,13 +134,13 @@ class TestMiniWoBEnvironment(MiniWoBTester):
         obs, info = env.reset()
         assert obs["screenshot"].shape == (210, 160, 3)
         # Upper-left should be the instruction (yellow).
-        np.testing.assert_almost_equal(
-            obs["screenshot"][0, 0], np.array([255.0, 255.0, 0.0])
-        )
+        color_diff = obs["screenshot"][0, 0] - np.array([255.0, 255.0, 0.0])
+        for i in range(3):
+            assert abs(color_diff[i]) < 5.0
         # Lower-right should be the background (white).
-        np.testing.assert_almost_equal(
-            obs["screenshot"][-1, -1], np.array([255.0, 255.0, 255.0])
-        )
+        color_diff = obs["screenshot"][-1, -1] - np.array([255.0, 255.0, 255.0])
+        for i in range(3):
+            assert abs(color_diff[i]) < 5.0
         # Now click the button to complete the task.
         action = self.create_click_button_action(env, obs, "Click Me!")
         obs, reward, terminated, truncated, info = env.step(action)

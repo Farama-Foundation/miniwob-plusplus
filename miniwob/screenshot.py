@@ -3,7 +3,7 @@ import json
 from io import BytesIO
 
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageCms, ImageDraw
 from selenium.webdriver import Chrome as ChromeDriver
 
 
@@ -28,9 +28,20 @@ def get_screenshot(
     """
     png_data = driver.get_screenshot_as_png()
     pil_image = Image.open(BytesIO(png_data)).convert("RGB")
-    if pil_image.size != (true_width, true_height):
-        pil_image = pil_image.resize((true_width, true_height))
-    pil_image = pil_image.crop((0, 0, crop_width, crop_height))
+    pil_image = pil_image.crop(
+        (
+            0,
+            0,
+            crop_width * pil_image.size[0] // true_width,
+            crop_height * pil_image.size[1] // true_height,
+        )
+    )
+    pil_image = pil_image.resize((crop_width, crop_height))
+    icc_profile = pil_image.info.get("icc_profile")
+    if icc_profile:
+        orig_icc = ImageCms.ImageCmsProfile(BytesIO(icc_profile))
+        srgb_icc = ImageCms.createProfile("sRGB")
+        pil_image = ImageCms.profileToProfile(pil_image, orig_icc, srgb_icc)
     return pil_image
 
 

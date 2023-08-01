@@ -8,6 +8,7 @@ from gymnasium import spaces
 
 from miniwob.constants import (
     DEFAULT_ALLOWED_KEYS,
+    DEFAULT_ALLOWED_KEYS_MAC_OS,
     DEFAULT_SCROLL_AMOUNT,
     DEFAULT_SCROLL_TIME,
     MAX_FIELDS,
@@ -114,6 +115,10 @@ class ActionSpaceConfig:
     @classmethod
     def get_preset(cls, name="all_supported"):
         """Returns a preset config."""
+        allowed_keys = DEFAULT_ALLOWED_KEYS
+        if "_mac_os" in name:
+            allowed_keys = DEFAULT_ALLOWED_KEYS_MAC_OS
+            name = name.replace("_mac_os", "")
         if name == "all_supported":
             return cls(
                 action_types=[
@@ -131,7 +136,8 @@ class ActionSpaceConfig:
                     ActionTypes.TYPE_FIELD,
                     ActionTypes.FOCUS_ELEMENT_AND_TYPE_TEXT,
                     ActionTypes.FOCUS_ELEMENT_AND_TYPE_FIELD,
-                ]
+                ],
+                allowed_keys=allowed_keys,
             )
         elif name == "shi17":
             # Action space from (Shi et al., 2017) "World of Bits:
@@ -148,7 +154,8 @@ class ActionSpaceConfig:
                     ActionTypes.SCROLL_UP_COORDS,
                     ActionTypes.SCROLL_DOWN_COORDS,
                     ActionTypes.PRESS_KEY,
-                ]
+                ],
+                allowed_keys=allowed_keys,
             )
         elif name == "liu18":
             # Action space from (Liu et al., 2018) "Reinforcement Learning
@@ -160,7 +167,8 @@ class ActionSpaceConfig:
                     ActionTypes.NONE,
                     ActionTypes.CLICK_ELEMENT,
                     ActionTypes.FOCUS_ELEMENT_AND_TYPE_FIELD,
-                ]
+                ],
+                allowed_keys=allowed_keys,
             )
         elif name == "humphreys22":
             # Action space from (Humphreys et al., 2022) "A data-driven
@@ -181,6 +189,7 @@ class ActionSpaceConfig:
                     ActionTypes.TYPE_FIELD,
                 ],
                 coord_bins=(51, 51),
+                allowed_keys=allowed_keys,
             )
         else:
             raise ValueError(f"Unknown preset name {name}")
