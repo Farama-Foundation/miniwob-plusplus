@@ -549,14 +549,16 @@ Mouse actions will be executed at the middle of the specified partition.</p></td
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;humphreys22&quot;</span></code>: The action space from (Humphreys et al., 2022)
 <a class="reference external" href="https://arxiv.org/abs/2202.08137">A data-driven approach for learning to control computers</a>.</p></li>
 </ul>
+<p>Adding <code class="docutils literal notranslate"><span class="pre">&quot;_mac_os&quot;</span></code> to the preset name will change the key modifiers in <code class="docutils literal notranslate"><span class="pre">allowed_keys</span></code>
+from Control to Meta.</p>
 </section>
 <section id="key-combinations">
 <span id="id3"></span><h3>Key combinations<a class="headerlink" href="#key-combinations" title="Permalink to this heading">#</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">PRESS_KEY</span></code> action type issues a key combination via Selenium.
 Each key combination in the <code class="docutils literal notranslate"><span class="pre">allowed_keys</span></code> config follow the rules:</p>
 <ul class="simple">
-<li><p>Modifiers are specified using prefixes “C-” (control), “S-” (shift),
-“A-” (alternate), or “M-” (meta).</p></li>
+<li><p>Modifiers are specified using prefixes “C-” (Control), “S-” (Shift),
+“A-” (Alternate), or “M-” (Meta).</p></li>
 <li><p>Printable character keys (a, 1, etc.) are specified directly.
 Shifted characters (A, !, etc.) are equivalent to “S-” + non-shifted counterpart.</p></li>
 <li><p>Special keys are inclosed in “&lt;…&gt;”. The list of valid names is specified in
@@ -736,7 +738,7 @@ the action object can be</p>
     
     
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=62892134"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=43f7dc57"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
