@@ -72,6 +72,7 @@ html_theme_options = {
     "source_branch": "master",
     "source_directory": "docs/",
     "versioning": True,
+    "gtag": "G-PR9ZPS99C2",
 }
 
 html_static_path = ["_static"]
