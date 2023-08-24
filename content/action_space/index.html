@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark">
@@ -11,11 +11,11 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Reward" href="../reward/" /><link rel="prev" title="Observation Space" href="../observation_space/" />
         <link rel="canonical" href="https://miniwob.farama.org/content/action_space.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.3 and Furo 2023.08.19.dev1 -->
         <title>Action Space - MiniWoB++ Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=2b6f8eb5452c44539a42dd9ada0a48f56e5f404d" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=5d0deb98f4b2e6cecaee64745957f1068f205919" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=49cbaffd" />
     
     
 
@@ -420,11 +420,11 @@
           <article role="main">
             
             <section id="action-space">
-<h1>Action Space<a class="headerlink" href="#action-space" title="Permalink to this heading">#</a></h1>
+<h1>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">#</a></h1>
 <p>An action is specified by an <strong>action type</strong> (e.g., <code class="docutils literal notranslate"><span class="pre">CLICK_COORDS</span></code>)
 and the necessary fields for that action type (e.g., <code class="docutils literal notranslate"><span class="pre">coords=[30,</span> <span class="pre">60]</span></code>).</p>
 <section id="supported-action-types">
-<h2>Supported Action Types<a class="headerlink" href="#supported-action-types" title="Permalink to this heading">#</a></h2>
+<h2>Supported Action Types<a class="headerlink" href="#supported-action-types" title="Link to this heading">#</a></h2>
 <p>MiniWoB++ environments support the following action types:</p>
 <div class="table-wrapper docutils container">
 <table class="docutils align-default">
@@ -483,7 +483,7 @@ and the necessary fields for that action type (e.g., <code class="docutils liter
 A common practice is to specify a subset of action types that the agent can use in the config, as described below.</p>
 </section>
 <section id="action-configs">
-<span id="id1"></span><h2>Action Configs<a class="headerlink" href="#action-configs" title="Permalink to this heading">#</a></h2>
+<span id="id1"></span><h2>Action Configs<a class="headerlink" href="#action-configs" title="Link to this heading">#</a></h2>
 <p>The list of selected action types, along with other configurations, can be customized
 by passing a <code class="docutils literal notranslate"><span class="pre">miniwob.action.ActionSpaceConfig</span></code> object to the <code class="docutils literal notranslate"><span class="pre">action_space_config</span></code> argument
 during environment construction.</p>
@@ -538,7 +538,7 @@ Mouse actions will be executed at the middle of the specified partition.</p></td
 </table>
 </div>
 <section id="presets">
-<span id="id2"></span><h3>Presets<a class="headerlink" href="#presets" title="Permalink to this heading">#</a></h3>
+<span id="id2"></span><h3>Presets<a class="headerlink" href="#presets" title="Link to this heading">#</a></h3>
 <p>The following preset names can be specified in place of the <code class="docutils literal notranslate"><span class="pre">ActionSpaceConfig</span></code> object:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;all_supported&quot;</span></code>: Select all supported actions, including redundant ones.</p></li>
@@ -553,7 +553,7 @@ Mouse actions will be executed at the middle of the specified partition.</p></td
 from Control to Meta.</p>
 </section>
 <section id="key-combinations">
-<span id="id3"></span><h3>Key combinations<a class="headerlink" href="#key-combinations" title="Permalink to this heading">#</a></h3>
+<span id="id3"></span><h3>Key combinations<a class="headerlink" href="#key-combinations" title="Link to this heading">#</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">PRESS_KEY</span></code> action type issues a key combination via Selenium.
 Each key combination in the <code class="docutils literal notranslate"><span class="pre">allowed_keys</span></code> config follow the rules:</p>
 <ul class="simple">
@@ -568,7 +568,7 @@ Shifted characters (A, !, etc.) are equivalent to “S-” + non-shifted counter
 </section>
 </section>
 <section id="action-object">
-<h2>Action Object<a class="headerlink" href="#action-object" title="Permalink to this heading">#</a></h2>
+<h2>Action Object<a class="headerlink" href="#action-object" title="Link to this heading">#</a></h2>
 <p>The action passed to the <a class="reference external" href="https://gymnasium.farama.org/api/env/#gymnasium.Env.step"><code class="docutils literal notranslate"><span class="pre">step</span></code></a> method
 should be a <code class="docutils literal notranslate"><span class="pre">dict</span></code> whose field inclusion depends on the selected action types in the config:</p>
 <div class="table-wrapper docutils container">
@@ -790,9 +790,9 @@ the action object can be</p>
         })()
       </script>
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=43f7dc57"></script>
+    <script src="../../_static/documentation_options.js?v=14e74cc1"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     
     <script>

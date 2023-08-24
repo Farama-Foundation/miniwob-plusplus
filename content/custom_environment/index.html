@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark">
@@ -11,11 +11,11 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Javascript API" href="../javascript_api/" /><link rel="prev" title="visual-addition" href="../../environments/visual-addition/" />
         <link rel="canonical" href="https://miniwob.farama.org/content/custom_environment.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.3 and Furo 2023.08.19.dev1 -->
         <title>Creating a Custom Environment - MiniWoB++ Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=2b6f8eb5452c44539a42dd9ada0a48f56e5f404d" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=5d0deb98f4b2e6cecaee64745957f1068f205919" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=49cbaffd" />
     
     
 
@@ -420,11 +420,11 @@
           <article role="main">
             
             <section id="creating-a-custom-environment">
-<h1>Creating a Custom Environment<a class="headerlink" href="#creating-a-custom-environment" title="Permalink to this heading">#</a></h1>
+<h1>Creating a Custom Environment<a class="headerlink" href="#creating-a-custom-environment" title="Link to this heading">#</a></h1>
 <p>Creating a custom MiniWoB++ environment is as simple as creating a new task HTML page, and then specifying the URL to the HTML file when registering the environment.</p>
 <p>The following tutorial illustrates how to create a custom environment with the standard <a class="reference internal" href="../observation_space/"><span class="doc std std-doc">observation space</span></a> and <a class="reference internal" href="../action_space/"><span class="doc std std-doc">action space</span></a>. For more advanced needs (customizing the spaces, creating a package, etc.), see this <a class="reference external" href="https://gymnasium.farama.org/tutorials/gymnasium_basics/environment_creation/">Gymnasium tutorial</a>.</p>
 <section id="creating-the-task-html-page">
-<h2>Creating the Task HTML Page<a class="headerlink" href="#creating-the-task-html-page" title="Permalink to this heading">#</a></h2>
+<h2>Creating the Task HTML Page<a class="headerlink" href="#creating-the-task-html-page" title="Link to this heading">#</a></h2>
 <a class="reference internal image-reference" href="../../_images/custom-environment-1.png"><img alt="../../_images/custom-environment-1.png" class="align-center" src="../../_images/custom-environment-1.png" style="width: 50%;" /></a>
 <p>To properly interface with the MiniWoB++ library, the HTML file must include
 <a class="reference external" href="https://github.com/Farama-Foundation/miniwob-plusplus/blob/master/miniwob/html/core/core.css"><code class="docutils literal notranslate"><span class="pre">core.css</span></code></a>
@@ -494,7 +494,7 @@ These files are also available from the Python package (under <code class="docut
 </div>
 </section>
 <section id="registering-the-environment">
-<h2>Registering the Environment<a class="headerlink" href="#registering-the-environment" title="Permalink to this heading">#</a></h2>
+<h2>Registering the Environment<a class="headerlink" href="#registering-the-environment" title="Link to this heading">#</a></h2>
 <p>The generic environment class <code class="docutils literal notranslate"><span class="pre">MiniWoBEnvironment</span></code> from <code class="docutils literal notranslate"><span class="pre">miniwob.environment</span></code> can be used as the entry point for the environment.
 The following keyword arguments should be specified:</p>
 <ul class="simple">
@@ -525,7 +525,7 @@ The following keyword arguments should be specified:</p>
 </div>
 </section>
 <section id="using-the-environment">
-<h2>Using the Environment<a class="headerlink" href="#using-the-environment" title="Permalink to this heading">#</a></h2>
+<h2>Using the Environment<a class="headerlink" href="#using-the-environment" title="Link to this heading">#</a></h2>
 <p>The following code is adapted from the example in the <a class="reference internal" href="../basic_usage/"><span class="doc std std-doc">Basic Usage</span></a> page:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">gymnasium</span>
@@ -733,9 +733,9 @@ The following keyword arguments should be specified:</p>
         })()
       </script>
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=43f7dc57"></script>
+    <script src="../../_static/documentation_options.js?v=14e74cc1"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     
     <script>
