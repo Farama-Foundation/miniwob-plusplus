@@ -101,7 +101,7 @@ def execute_press_key(key: str, driver: ChromeDriver):
     raw_key = key
     modifiers = []
     while raw_key[:2] in WEBDRIVER_MODIFIER_KEYS:
-        modifiers.append(WEBDRIVER_MODIFIER_KEYS[key[:2]])
+        modifiers.append(WEBDRIVER_MODIFIER_KEYS[raw_key[:2]])
         raw_key = raw_key[2:]
     if raw_key in WEBDRIVER_SPECIAL_KEYS:
         raw_key = WEBDRIVER_SPECIAL_KEYS[raw_key]
