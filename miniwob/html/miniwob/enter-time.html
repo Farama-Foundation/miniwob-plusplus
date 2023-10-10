@@ -20,8 +20,13 @@ core.EPISODE_MAX_TIME = 20000; // set episode interval to 20 seconds
 var START_DATE = new Date(2016, 0, 1); // January 1, 2015
 var END_DATE = new Date(2016, 11, 31); // December 31, 2016
 
+var TARGET_HOUR = null;
+var TARGET_MINUTES = null;
+
 var genProblem = function() {
   var d = ui_utils.randomDate(START_DATE, END_DATE);
+  TARGET_HOUR = d.getHours();
+  TARGET_MINUTES = d.getMinutes();
   d3.select('#tt')[0][0].value = '';
 
   var readableTime = d.toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, '$1$3');
