@@ -4,7 +4,7 @@ import sys
 from miniwob.registration import register_miniwob_envs
 
 
-__version__ = "1.0"
+__version__ = "1.0.1"
 
 register_miniwob_envs()
 
