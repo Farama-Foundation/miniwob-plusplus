@@ -4,11 +4,13 @@ import shutil
 
 import gymnasium as gym
 
+import miniwob
 from utils import get_all_registered_miniwob_envs, trim_docstring
 
 
 LAYOUT = "env"
 
+gym.register_envs(miniwob)
 gym.logger.set_level(gym.logger.DISABLED)
 
 

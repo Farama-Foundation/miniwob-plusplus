@@ -4,9 +4,11 @@ import os
 import gymnasium as gym
 import pandas as pd
 
+import miniwob
 from utils import extract_description_from_docstring, get_all_registered_miniwob_envs
 
 
+gym.register_envs(miniwob)
 gym.logger.set_level(gym.logger.DISABLED)
 
 ENV_TYPES = [
