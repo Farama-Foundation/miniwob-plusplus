@@ -63,7 +63,10 @@ The following code performs a deterministic action on the
 ```python
 import time
 import gymnasium
+import miniwob
 from miniwob.action import ActionTypes
+
+gymnasium.register_envs(miniwob)
 
 env = gymnasium.make('miniwob/click-test-2-v1', render_mode='human')
 
