@@ -29,6 +29,8 @@ Exploration](https://arxiv.org/abs/1802.08802).
 The Gymnasium interface allows an agent to initialize and interact with a MiniWoB++ environment as follows:
 ```python
 import gymnasium
+import miniwob
+gymnasium.register_envs(miniwob)
 env = gymnasium.make('miniwob/click-test-2-v1', render_mode='human')
 try:
   observation, info = env.reset(seed=42)

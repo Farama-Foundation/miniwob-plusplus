@@ -24,11 +24,11 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = [
-    "Gymnasium==0.29.0",
+    "Gymnasium>=1.0.0a1",
     "Pillow>=9.0.0",
     "selenium>=4.5.0",
     "numpy>=1.18.0",
-    "farama-notifications >=0.0.1",
+    "farama-notifications>=0.0.1",
 ]
 dynamic = ["version"]
 
