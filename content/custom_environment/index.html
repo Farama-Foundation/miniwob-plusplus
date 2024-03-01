@@ -11,7 +11,7 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Javascript API" href="../javascript_api/" /><link rel="prev" title="visual-addition" href="../../environments/visual-addition/" />
         <link rel="canonical" href="https://miniwob.farama.org/content/custom_environment.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.3 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
         <title>Creating a Custom Environment - MiniWoB++ Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
@@ -419,7 +419,7 @@
           </div>
           <article role="main">
             
-            <section id="creating-a-custom-environment">
+            <section class="tex2jax_ignore mathjax_ignore" id="creating-a-custom-environment">
 <h1>Creating a Custom Environment<a class="headerlink" href="#creating-a-custom-environment" title="Link to this heading">#</a></h1>
 <p>Creating a custom MiniWoB++ environment is as simple as creating a new task HTML page, and then specifying the URL to the HTML file when registering the environment.</p>
 <p>The following tutorial illustrates how to create a custom environment with the standard <a class="reference internal" href="../observation_space/"><span class="doc std std-doc">observation space</span></a> and <a class="reference internal" href="../action_space/"><span class="doc std std-doc">action space</span></a>. For more advanced needs (customizing the spaces, creating a package, etc.), see this <a class="reference external" href="https://gymnasium.farama.org/tutorials/gymnasium_basics/environment_creation/">Gymnasium tutorial</a>.</p>
@@ -534,6 +534,7 @@ The following keyword arguments should be specified:</p>
 
 <span class="c1"># Import `custom_registry.py` above to register the task.</span>
 <span class="kn">import</span> <span class="nn">custom_registry</span>
+<span class="n">gymnasium</span><span class="o">.</span><span class="n">register_envs</span><span class="p">(</span><span class="n">custom_registry</span><span class="p">)</span>
 
 <span class="c1"># Create an environment.</span>
 <span class="n">env</span> <span class="o">=</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;miniwob/custom-v0&#39;</span><span class="p">,</span> <span class="n">render_mode</span><span class="o">=</span><span class="s1">&#39;human&#39;</span><span class="p">)</span>
@@ -733,7 +734,7 @@ The following keyword arguments should be specified:</p>
         })()
       </script>
 
-    <script src="../../_static/documentation_options.js?v=14e74cc1"></script>
+    <script src="../../_static/documentation_options.js?v=c8e69ae7"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
