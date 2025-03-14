@@ -194,7 +194,6 @@ class SeleniumInstance(Thread):
         else:
             options.add_argument("app=" + self.url)
         self.driver = webdriver.Chrome(options=options)
-        self.driver.maximize_window()
         self.driver.implicitly_wait(5)
         if self.headless:
             self.driver.get(self.url)
