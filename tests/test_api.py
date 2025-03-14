@@ -3,7 +3,7 @@ import gymnasium
 import pytest
 from gymnasium import spaces
 from gymnasium.utils.env_checker import check_env
-from gymnasium.wrappers import FlattenObservation
+from gymnasium.wrappers.flatten_observation import FlattenObservation
 
 from tests.utils import get_all_registered_miniwob_envs
 
