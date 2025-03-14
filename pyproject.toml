@@ -25,10 +25,10 @@ classifiers = [
 ]
 dependencies = [
     "Gymnasium>=1.0.0",
-    "Pillow>=8.3.0",
-    "selenium>=4.15.1",
-    "numpy>=1.24.0",
-    "farama-notifications>=0.0.4",
+    "Pillow>=9.0.0",
+    "selenium>=4.5.0",
+    "numpy>=1.18.0",
+    "farama-notifications>=0.0.1",
 ]
 dynamic = ["version"]
 
