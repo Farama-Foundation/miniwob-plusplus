@@ -24,7 +24,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = [
-    "Gymnasium>=1.0.0",
+    "Gymnasium>=1.1.1",
     "Pillow>=9.0.0",
     "selenium>=4.5.0",
     "numpy>=1.18.0",

@@ -125,10 +125,6 @@ class MiniWoBEnvironment(gym.Env):
         """
         # The seed in Env is actually not used
         super().reset(seed=seed)
-        # Explicitly set NumPy's random seed to ensure deterministic observations
-        if seed is not None:
-            np.random.seed(seed)
-
         # Hard reset the instances if needed
         if not self.instance or self.instance.died:
             logging.warning("Hard-resetting the instance ...")
@@ -139,11 +135,6 @@ class MiniWoBEnvironment(gym.Env):
             self.set_data_mode(options["data_mode"])
         if "record_screenshots" in options:
             self.set_record_screenshots(options["record_screenshots"])
-
-        # Force a page reload to eliminate stale elements
-        self.instance.driver.refresh()
-        self.instance.wait()
-
         # We pass lists for the instance to modify in-place.
         obs = [{}]
         infos = [{}]
