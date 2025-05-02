@@ -17,7 +17,7 @@
 var genProblem = function() {
   var w = core.randi(35, 100);
   var L = core.randi(0, 160 - w - 2);
-  var U = core.randi(0, 160 - w - 20);
+  var U = core.randi(0, 160 - w - 2);
 
   var btn = d3.select('#subbtn');
   btn.attr('style', 'margin-left:'+L+'px; margin-top:'+U+'px; width:'+w+'px; height:'+w+'px;');
