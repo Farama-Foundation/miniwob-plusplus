@@ -186,7 +186,6 @@ class SeleniumInstance(Thread):
             self.index
         )
         options = webdriver.ChromeOptions()
-        options.add_argument(f"window-size={self.window_width},{self.window_height}")
         if self.headless:
             options.add_argument("headless")
             options.add_argument("disable-gpu")
