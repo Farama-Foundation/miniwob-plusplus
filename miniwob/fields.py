@@ -1,10 +1,10 @@
 """Task-specific key-value pairs extracted from the task instructions."""
 import json
 import re
-from typing import Callable, Dict, Sequence, Tuple, Union
+from collections.abc import Callable, Sequence
 
 
-Fields = Sequence[Tuple[str, str]]
+Fields = Sequence[tuple[str, str]]
 
 
 def field_lookup(fields: Fields, key: str):
@@ -28,7 +28,7 @@ FieldExtractor = Callable[[str], Fields]
 
 
 def create_regex_field_extractor(
-    regex: Union[str, re.Pattern], keys: Sequence[str]
+    regex: str | re.Pattern, keys: Sequence[str]
 ) -> FieldExtractor:
     """Creates a field extractor based on a regular expression.
 
@@ -53,7 +53,7 @@ def create_regex_field_extractor(
 
 
 # The global registry mapping task_name to FieldExtractor.
-FIELD_EXTRACTORS: Dict[str, FieldExtractor] = {}
+FIELD_EXTRACTORS: dict[str, FieldExtractor] = {}
 
 
 def get_field_extractor(task_name: str) -> FieldExtractor:
@@ -64,7 +64,7 @@ def get_field_extractor(task_name: str) -> FieldExtractor:
         raise KeyError(f"{task_name} does not have a field extractor.")
 
 
-def _add(task_name: str, regex: Union[str, re.Pattern], keys: Sequence[str]):
+def _add(task_name: str, regex: str | re.Pattern, keys: Sequence[str]):
     FIELD_EXTRACTORS[task_name] = create_regex_field_extractor(regex, keys)
 
 

@@ -6,7 +6,8 @@ Each method takes the metadata with the following keys:
     - done: Whether the task is done
 Then it returns a reward (float).
 """
-from typing import Any, Callable, Mapping
+from collections.abc import Callable, Mapping
+from typing import Any
 
 
 Metadata = Mapping[str, Any]

@@ -1,6 +1,7 @@
 """MiniWoB environment."""
 import logging
-from typing import Any, Dict, Mapping, Optional, Tuple, Union
+from collections.abc import Mapping
+from typing import Any
 
 import gymnasium as gym
 import numpy as np
@@ -23,12 +24,12 @@ class MiniWoBEnvironment(gym.Env):
 
     def __init__(
         self,
-        subdomain: Optional[str] = None,
-        render_mode: Optional[str] = None,
-        base_url: Optional[str] = None,
-        action_space_config: Union[str, ActionSpaceConfig] = "all_supported",
-        field_extractor: Optional[FieldExtractor] = None,
-        reward_processor: Optional[RewardProcessor] = None,
+        subdomain: str | None = None,
+        render_mode: str | None = None,
+        base_url: str | None = None,
+        action_space_config: str | ActionSpaceConfig = "all_supported",
+        field_extractor: FieldExtractor | None = None,
+        reward_processor: RewardProcessor | None = None,
         wait_ms: float = 0.0,
         block_on_reset: bool = True,
         refresh_freq: int = 0,
@@ -107,9 +108,9 @@ class MiniWoBEnvironment(gym.Env):
 
     def reset(
         self,
-        seed: Optional[int] = None,
-        options: Optional[Mapping[str, Any]] = None,
-    ) -> Tuple[Observation, Dict[str, Any]]:
+        seed: int | None = None,
+        options: Mapping[str, Any] | None = None,
+    ) -> tuple[Observation, dict[str, Any]]:
         """Reset the instance.
 
         Args:
@@ -144,7 +145,7 @@ class MiniWoBEnvironment(gym.Env):
 
     def step(
         self, action: Action
-    ) -> Tuple[Observation, float, bool, bool, Dict[str, Any]]:
+    ) -> tuple[Observation, float, bool, bool, dict[str, Any]]:
         """Apply an action on the instance and returns the result.
 
         Args:
@@ -199,7 +200,7 @@ class MiniWoBEnvironment(gym.Env):
         """
         self.instance.record_screenshots = record_screenshots
 
-    def visualize_attention(self, attentions: Optional[np.ndarray]):
+    def visualize_attention(self, attentions: np.ndarray | None):
         """Send the attention weights to be visualized.
 
         Args:
@@ -218,7 +219,7 @@ class MiniWoBEnvironment(gym.Env):
 
     def create_action(
         self,
-        action_type: Union[int, np.ndarray, str, ActionTypes],
+        action_type: int | np.ndarray | str | ActionTypes,
         **kwargs,
     ) -> Action:
         """Initializes an action with the specified type and random values.

@@ -12,7 +12,8 @@ import os
 import time
 import zlib
 from codecs import open
-from typing import Any, Optional, Sequence
+from collections.abc import Sequence
+from typing import Any
 
 from bottle import Bottle, FormsDict, request, response
 
@@ -23,7 +24,7 @@ app = Bottle()
 class Saver:
     """A manager for saving demonstrations."""
 
-    outdir: Optional[str] = None
+    outdir: str | None = None
 
     def init_directory(self, outdir: str):
         """Set the directory to save demonstrations to."""
