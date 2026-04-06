@@ -7,7 +7,7 @@ import traceback
 import urllib.parse
 from queue import Queue
 from threading import Thread
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 from selenium import webdriver
@@ -53,10 +53,10 @@ class SeleniumInstance(Thread):
         index: int,
         subdomain: str,
         headless: bool = False,
-        base_url: Optional[str] = None,
+        base_url: str | None = None,
         threading: bool = False,
-        field_extractor: Optional[FieldExtractor] = None,
-        reward_processor: Optional[RewardProcessor] = None,
+        field_extractor: FieldExtractor | None = None,
+        reward_processor: RewardProcessor | None = None,
         wait_ms: float = 0.0,
         block_on_reset: bool = True,
         refresh_freq: int = 0,
@@ -218,7 +218,7 @@ class SeleniumInstance(Thread):
             traceback.print_exc()
         self.died = True
 
-    def reset(self, obs: List[Any], infos: List[Any], seed: Any):
+    def reset(self, obs: list[Any], infos: list[Any], seed: Any):
         """Force stop and start this instance.
 
         Also sets obs[i] to be the initial observation (where i = self.index).
@@ -242,12 +242,12 @@ class SeleniumInstance(Thread):
 
     def step(
         self,
-        action: Optional[Action],
+        action: Action | None,
         action_space_config: ActionSpaceConfig,
-        obs: List[Any],
-        rewards: List[Any],
-        dones: List[Any],
-        infos: List[Any],
+        obs: list[Any],
+        rewards: list[Any],
+        dones: list[Any],
+        infos: list[Any],
     ):
         """Apply an action on this instance.
 
@@ -312,7 +312,7 @@ class SeleniumInstance(Thread):
             time.sleep(self.wait_ms / 1000.0)
         self.start_time = time.time()
 
-    def perform(self, action: Optional[Action], action_space_config: ActionSpaceConfig):
+    def perform(self, action: Action | None, action_space_config: ActionSpaceConfig):
         """Perform an action.
 
         Args:
@@ -339,7 +339,7 @@ class SeleniumInstance(Thread):
 
     def get_observation(
         self, use_cached_fields: bool = False
-    ) -> Tuple[Observation, Dict[str, Any]]:
+    ) -> tuple[Observation, dict[str, Any]]:
         """Get the current observation.
 
         Args;
@@ -383,7 +383,7 @@ class SeleniumInstance(Thread):
         observation = create_observation(utterance, root_dom, img, fields)
         return observation, {"root_dom": root_dom}
 
-    def get_metadata(self) -> Dict[str, Any]:
+    def get_metadata(self) -> dict[str, Any]:
         """Get other metadata.
 
         Returns:
@@ -405,7 +405,7 @@ class SeleniumInstance(Thread):
             "};"
         )
 
-    def visualize_attention(self, attention: Optional[np.ndarray]):
+    def visualize_attention(self, attention: np.ndarray | None):
         """Sends the attention weights to be visualized.
 
         Args:

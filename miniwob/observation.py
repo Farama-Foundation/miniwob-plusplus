@@ -1,5 +1,6 @@
 """MiniWoB observation space."""
-from typing import Any, Dict, Sequence, Tuple
+from collections.abc import Sequence
+from typing import Any
 
 import numpy as np
 from gymnasium import spaces
@@ -17,7 +18,7 @@ from miniwob.dom import DOMElement
 from miniwob.spaces import Unicode
 
 
-Observation = Dict[str, Any]
+Observation = dict[str, Any]
 
 
 def get_observation_space(screen_width: int, screen_height: int) -> spaces.Space:
@@ -112,7 +113,7 @@ def get_observation_space(screen_width: int, screen_height: int) -> spaces.Space
     return observation_space
 
 
-def serialize_dom_element(element: DOMElement) -> Dict[str, Any]:
+def serialize_dom_element(element: DOMElement) -> dict[str, Any]:
     """Serialize the given DOMElement to fit the element space."""
     serialized = {
         "ref": element.ref,
@@ -161,7 +162,7 @@ def create_observation(
     utterance: str,
     root_dom: DOMElement,
     screenshot: np.ndarray,
-    fields: Sequence[Tuple[str, str]],
+    fields: Sequence[tuple[str, str]],
 ) -> Observation:
     """Returns an observation that fits in the observation space.
 

@@ -1,7 +1,8 @@
 """MiniWoB action space."""
+from collections.abc import Sequence
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional, Sequence, Tuple
+from typing import Any
 
 import numpy as np
 from gymnasium import spaces
@@ -18,7 +19,7 @@ from miniwob.constants import (
 from miniwob.spaces import Unicode
 
 
-Action = Dict[str, Any]
+Action = dict[str, Any]
 
 
 class ActionTypes(str, Enum):
@@ -104,9 +105,9 @@ class ActionSpaceConfig:
     """
 
     action_types: Sequence[ActionTypes]
-    screen_width: Optional[float] = None
-    screen_height: Optional[float] = None
-    coord_bins: Optional[Tuple[int, int]] = None
+    screen_width: float | None = None
+    screen_height: float | None = None
+    coord_bins: tuple[int, int] | None = None
     scroll_amount: int = DEFAULT_SCROLL_AMOUNT
     scroll_time: int = DEFAULT_SCROLL_TIME
     allowed_keys: Sequence[str] = DEFAULT_ALLOWED_KEYS
@@ -218,7 +219,7 @@ class ActionSpaceConfig:
             space["field"] = spaces.Discrete(MAX_FIELDS)
         return spaces.Dict(space)
 
-    def compute_raw_coords(self, action: Action) -> Tuple[float, float]:
+    def compute_raw_coords(self, action: Action) -> tuple[float, float]:
         """Extract the left and top coordinates from the action."""
         if self.coord_bins:
             # Add 0.5 to click at the middle of the partition.

@@ -3,7 +3,7 @@
 import argparse
 import csv
 import re
-from typing import Mapping, Sequence
+from collections.abc import Mapping, Sequence
 
 import gymnasium
 from gymnasium.envs.registration import parse_env_id
