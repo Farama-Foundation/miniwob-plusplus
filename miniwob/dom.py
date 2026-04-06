@@ -1,12 +1,13 @@
 """Encapsulation of the DOM element tree."""
 import re
-from typing import Any, Collection, Dict, Optional, Sequence, Tuple, Union
+from collections.abc import Collection, Sequence
+from typing import Any, Optional
 
 
 class DOMElement:
     """Encapsulate the DOM element."""
 
-    def __init__(self, raw_dom: Dict[str, Any], parent: Optional["DOMElement"] = None):
+    def __init__(self, raw_dom: dict[str, Any], parent: Optional["DOMElement"] = None):
         """Create a new DOMElement based on the data from getDOMInfo in JavaScript.
 
         Args:
@@ -110,7 +111,7 @@ class DOMElement:
         return self._ref
 
     @property
-    def text(self) -> Optional[str]:
+    def text(self) -> str | None:
         """Return the text content of the element.
 
         For non-leaf nodes, return None.
@@ -118,7 +119,7 @@ class DOMElement:
         return self._text
 
     @property
-    def value(self) -> Union[None, bool, str]:
+    def value(self) -> None | bool | str:
         """Return the value of an input element, and None otherwise.
 
         - For checkbox and radio, return whether the element is selected (bool).
@@ -140,12 +141,12 @@ class DOMElement:
         return self._classes
 
     @property
-    def bg_color(self) -> Tuple[float, float, float, float]:
+    def bg_color(self) -> tuple[float, float, float, float]:
         """Return the background color as RGBA with value range 0.0 to 1.0."""
         return self._bg_color
 
     @property
-    def fg_color(self) -> Tuple[float, float, float, float]:
+    def fg_color(self) -> tuple[float, float, float, float]:
         """Return the foreground color as RGBA with value range 0.0 to 1.0."""
         return self._fg_color
 
@@ -229,7 +230,7 @@ class DOMElement:
 
     __repr__ = __str__
 
-    def visualize(self, join: bool = True) -> Union[str, Sequence[str]]:
+    def visualize(self, join: bool = True) -> str | Sequence[str]:
         """Return a string visualizing the tree structure.
 
         Args:
@@ -356,8 +357,8 @@ class DOMElement:
         return different_elements
 
     def _rgba_str_to_floats(
-        self, rgba: Optional[str]
-    ) -> Tuple[float, float, float, float]:
+        self, rgba: str | None
+    ) -> tuple[float, float, float, float]:
         """Convert the color string into normalized RGBA values.
 
         Takes a string of the form rgb(?, ?, ?) or rgba(?, ?, ?, ?)

@@ -1,6 +1,6 @@
 """Methods that execute actions in Selenium."""
 import logging
-from typing import Sequence, Tuple
+from collections.abc import Sequence
 
 from selenium.webdriver import Chrome as ChromeDriver
 from selenium.webdriver.common.action_chains import ActionChains
@@ -137,7 +137,7 @@ _SELENIUM_COORDS_ACTIONS = {
 
 def execute_action_on_chromedriver(
     action: Action,
-    fields: Sequence[Tuple[str, str]],
+    fields: Sequence[tuple[str, str]],
     config: ActionSpaceConfig,
     driver: ChromeDriver,
 ):

@@ -1,6 +1,6 @@
 """Test action execution."""
 import platform
-from typing import Mapping, Tuple
+from collections.abc import Mapping
 
 import gymnasium
 import numpy as np
@@ -460,7 +460,7 @@ class TestClickColor(RepeatedTester):
     """Tests for task click-color."""
 
     ENV_NAME = "miniwob/click-color-v1"
-    COLORS: Mapping[Tuple[int, int, int], str] = {
+    COLORS: Mapping[tuple[int, int, int], str] = {
         (0, 0, 0): "black",
         (255, 0, 0): "red",
         (0, 255, 0): "lime",
