@@ -144,17 +144,3 @@ cython_debug/
 *.swo
 
 
-# Python virtual environment
-.venv/
-venv/
-env/
-
-# macOS system files
-.DS_Store
-
-# Python cache
-__pycache__/
-*.pyc
-
-# Jupyter notebooks checkpoints
-.ipynb_checkpoints/
