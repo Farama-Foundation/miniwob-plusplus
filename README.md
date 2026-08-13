@@ -56,6 +56,19 @@ For Chromium, the driver may also be available in a software package; for exampl
 sudo apt install chromium-driver
 ```
 
+The browser and ChromeDriver versions must match. If more than one Chrome or
+ChromeDriver installation is available, set `MINIWOB_CHROME_BINARY` and
+`MINIWOB_CHROMEDRIVER` together to the matching executables before starting
+MiniWoB++:
+
+```sh
+export MINIWOB_CHROME_BINARY=/path/to/chrome
+export MINIWOB_CHROMEDRIVER=/path/to/chromedriver
+```
+
+Both variables must be set together. If neither variable is set, Selenium uses
+its normal browser and driver discovery behavior.
+
 # Example Usage
 
 The following code performs a deterministic action on the

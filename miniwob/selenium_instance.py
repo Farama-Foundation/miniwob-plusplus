@@ -1,6 +1,7 @@
 """Low-level interface with ChromeDriver via Selenium."""
 import json
 import logging
+import os
 import pathlib
 import time
 import traceback
@@ -12,6 +13,7 @@ from typing import Any
 import numpy as np
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -192,7 +194,23 @@ class SeleniumInstance(Thread):
             options.add_argument("no-sandbox")
         else:
             options.add_argument("app=" + self.url)
-        self.driver = webdriver.Chrome(options=options)
+
+        chrome_binary = os.getenv("MINIWOB_CHROME_BINARY")
+        chromedriver = os.getenv("MINIWOB_CHROMEDRIVER")
+        if bool(chrome_binary) != bool(chromedriver):
+            raise ValueError(
+                "MINIWOB_CHROME_BINARY and MINIWOB_CHROMEDRIVER must be set together"
+            )
+        if chrome_binary:
+            options.binary_location = chrome_binary
+
+        if chrome_binary and chromedriver:
+            self.driver = webdriver.Chrome(
+                service=ChromeService(executable_path=chromedriver),
+                options=options,
+            )
+        else:
+            self.driver = webdriver.Chrome(options=options)
         self.driver.implicitly_wait(5)
         if self.headless:
             self.driver.get(self.url)
