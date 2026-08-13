@@ -11,7 +11,14 @@ readme = "README.md"
 requires-python = ">= 3.10"
 authors = [{ name = "Farama Foundation", email = "contact@farama.org" }]
 license = { text = "MIT License" }
-keywords = ["Reinforcement Learning", "game", "RL", "AI", "gymnasium"]
+keywords = [
+    "reinforcement learning", 
+    "rl", 
+    "ai", 
+    "gymnasium", 
+    "web agents", 
+    "GUI agents",
+]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "License :: OSI Approved :: MIT License",
