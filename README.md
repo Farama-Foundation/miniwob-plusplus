@@ -6,6 +6,12 @@
   <img src="https://raw.githubusercontent.com/Farama-Foundation/miniwob-plusplus/main/miniwobplusplus-text.png" width="500px"/>
 </p>
 
+> [!IMPORTANT]
+> **Maintenance status:** MiniWoB++ is in maintenance mode and is unlikely to
+> receive new features or substantial updates. Responses to issues and pull
+> requests may be delayed.
+
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/Farama-Foundation/miniwob-plusplus/main/docs/_static/img/showcase-static.png" width="100%"/>
 </p>
