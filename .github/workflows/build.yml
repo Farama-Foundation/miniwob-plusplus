@@ -30,6 +30,7 @@ jobs:
       - name: Install Chrome and matching ChromeDriver
         uses: browser-actions/setup-chrome@v2
         with:
+          chrome-version: 152
           install-chromedriver: true
       - name: Install dependencies
         run: |
