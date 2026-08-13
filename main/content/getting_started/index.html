@@ -450,6 +450,16 @@ unzip it, and then add the directory containing the <code class="docutils litera
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>chromium-driver
 </pre></div>
 </div>
+<p>The browser and ChromeDriver versions must match. If more than one Chrome or
+ChromeDriver installation is available, set <code class="docutils literal notranslate"><span class="pre">MINIWOB_CHROME_BINARY</span></code> and
+<code class="docutils literal notranslate"><span class="pre">MINIWOB_CHROMEDRIVER</span></code> together to the matching executables before starting
+MiniWoB++:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MINIWOB_CHROME_BINARY</span><span class="o">=</span>/path/to/chrome
+<span class="nb">export</span><span class="w"> </span><span class="nv">MINIWOB_CHROMEDRIVER</span><span class="o">=</span>/path/to/chromedriver
+</pre></div>
+</div>
+<p>Both variables must be set together. If neither variable is set, Selenium uses
+its normal browser and driver discovery behavior.</p>
 </section>
 <section id="development-environment">
 <h2>Development Environment<a class="headerlink" href="#development-environment" title="Link to this heading">¶</a></h2>
