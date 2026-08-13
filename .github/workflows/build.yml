@@ -32,6 +32,10 @@ jobs:
         with:
           chrome-version: 152
           install-chromedriver: true
+      - name: Output Chrome Info
+        run: |
+          ${{ steps.setup-chrome.outputs.chrome-path }} --version
+          ${{ steps.setup-chrome.outputs.chromedriver-path }} --version
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
