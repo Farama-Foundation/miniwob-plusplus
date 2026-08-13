@@ -9,7 +9,7 @@ __version__ = "1.1.0"
 register_miniwob_envs()
 
 try:
-    from farama_notificatgions import notifications
+    from farama_notifications import notifications
 
     if (
         "miniwob-plusplus" in notifications
